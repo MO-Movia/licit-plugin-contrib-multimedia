@@ -1,6 +1,7 @@
-# Video ProseMirror Plugin For Licit
 
-Helps to insert YouTube video. Automatically calculates the default video size. Allows to resize. Allows to align text around. 
+# Multimedia ProseMirror Plugin For Licit
+
+Helps to insert images and YouTube video. Automatically calculates the default video size. Allows to resize. Allows to align text around. 
 
 ## Build
 
@@ -16,16 +17,16 @@ Helps to insert YouTube video. Automatically calculates the default video size. 
 
 Include plugin in licit component
 
-- import VideoPlugin
+- import Multimedia
 
 - add VideoPlugin instance in licit's plugin array
 
 ```
 
-import { VideoPlugin }  from  '@modusoperandi/licit-video';
+import { MultimediaPlugin }  from  '@modusoperandi/licit-multimedia';
 
 
-const  plugins = [new  VideoPlugin()]
+const  plugins = [new  MultimediaPlugin()]
 
 ReactDOM.render(<Licit docID={0} plugins={plugins}/>
 

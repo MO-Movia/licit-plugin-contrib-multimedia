@@ -1,8 +1,8 @@
 {
-  "name": "@mo/licit-video",
-  "version": "0.0.9",
+  "name": "@modusoperandi/licit-multimedia",
+  "version": "0.0.1",
   "subversion": "1",
-  "description": "Video plugin built with ProseMirror",
+  "description": "Multimedia plugin built with ProseMirror",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
   },
   "bundleDependencies": [],
   "scripts": {
-    "clean": "rm -rf dist/ coverage/ bin/ && rm -f modusoperandi-licit-video-*.*.*.tgz",
+    "clean": "rm -rf dist/ coverage/ bin/ && rm -f modusoperandi-licit-multimedia-*.*.*.tgz",
     "build:ts": "tsc -p tsconfig.json",
     "build:babel": "babel src --out-dir dist --extensions .ts,.tsx",
     "build:dist": "npm run clean && npm run build:ts && npm run webpack && npm run build:babel && npm run build:css",
@@ -50,7 +50,6 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@cyclonedx/bom": "^3.0.3",
-    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-0.1.10.tgz",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -101,11 +100,11 @@
   },
   "dependencies": {
     "@modusoperandi/licit-doc-attrs-step": "^0.1.3",
+    "@modusoperandi/licit-ui-commands": "^0.1.11",
     "@types/node": "^16.10.1",
     "@types/prosemirror-state": "^1.3.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "axios": "^1.1.3",
     "classnames": "^2.3.2",
     "nullthrows": "^1.1.1",
