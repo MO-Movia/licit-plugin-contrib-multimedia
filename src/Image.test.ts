@@ -179,7 +179,7 @@ describe('Image Node View ', () => {
     });
     expect(ImageUploadPlaceholderPlugin).toBeDefined();
   });
-  xit('should resolve Image - onLoad', async () => {
+  it('should resolve Image - onLoad', async () => {
     const res = {
       complete: true,
       height: 400,
@@ -209,7 +209,7 @@ describe('Image Node View ', () => {
   });
 });
 
-xit('should resolve Image - Img Instance', async () => {
+it('should resolve Image - Img Instance', async () => {
   const res = {
     complete: true,
     height: 400,

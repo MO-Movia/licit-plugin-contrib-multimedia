@@ -56,7 +56,7 @@ class CursorPlaceholderPlugin extends Plugin {
   }
 }
 
-function specFinder(spec: Record<string, unknown>): boolean {
+export function specFinder(spec: Record<string, unknown>): boolean {
   return spec.id === PLACE_HOLDER_ID;
 }
 

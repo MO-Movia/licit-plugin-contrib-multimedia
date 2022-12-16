@@ -113,7 +113,7 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
 
   _didSrcChange = (): void => {
     resolveImage(this.state.src).then((result) => {
-      if (isSrcUnmounted(result)) {
+      if (this.state.src === result.src && !this._unmounted) {
         const validValue = result.complete ? result : null;
         this.setState({ validValue });
       }
@@ -128,12 +128,6 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
     const { validValue } = this.state;
     this.props.close(validValue);
   };
-}
-export function isSrcUnmounted(result): boolean {
-  if (this.state.src === result.src && !this._unmounted) {
-    return true;
-  }
-  return false;
 }
 
 export default ImageURLEditor;
