@@ -1,12 +1,11 @@
-import { createEditor, doc, image, p } from 'jest-prosemirror';
+import { screen } from '@testing-library/dom'
+import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { VideoPlugin } from './index';
+import { MultimediaPlugin } from './index';
 import resolveImage from './ui/resolveImage';
 import ImageSourceCommand, { insertImage } from './ImageSourceCommand';
 import * as ImgNodSpec from './ImageNodeSpec';
-import * as VideoNSpec from './VideoNodeSpec';
-import * as ImgURLEdtr from './ui/ImageURLEditor';
 import * as resolveImg from './ui/resolveImage';
 import ImageNodeView from './ui/ImageNodeView';
 import { Schema } from 'prosemirror-model';
@@ -15,11 +14,12 @@ import ImageUploadPlaceholderPlugin, {
   uploadImageFiles,
   customEditorView,
 } from './ImageUploadPlaceholderPlugin';
-import * as offLinefunc from './ui/isOffline';
 import { ImageEditorState } from './ui/ImageURLEditor';
 import ImageURLEditor, { ImageEditorProps } from './ui/ImageURLEditor';
 import ImageInlineEditor from './ui/ImageInlineEditor';
 import { EditorView } from 'prosemirror-view';
+import ImageNodeSpec from './ImageNodeSpec';
+import ImageResizeBox from './ui/ImageResizeBox';
 class TestPlugin extends Plugin {
   constructor() {
     super({
@@ -28,7 +28,7 @@ class TestPlugin extends Plugin {
   }
 }
 
-const plugin = new VideoPlugin();
+const plugin = new MultimediaPlugin();
 const editor = createEditor(doc(p('<cursor>')), {
   plugins: [plugin],
 });
@@ -49,12 +49,12 @@ const ImageArgs = {
 const state: EditorState = EditorState.create({
   schema: schema,
   selection: editor.selection,
-  plugins: [new VideoPlugin()],
+  plugins: [new MultimediaPlugin()],
 });
 const newstate: EditorState = EditorState.create({
   schema: schema,
   selection: undefined,
-  plugins: [new VideoPlugin()],
+  plugins: [new MultimediaPlugin()],
 });
 
 
@@ -66,11 +66,10 @@ editor.view.updateState(
 );
 
 editor.view.dispatch(tr);
-
 const newstate1: EditorState = EditorState.create({
   schema: schema,
   selection: selection,
-  plugins: [new VideoPlugin()],
+  plugins: [new MultimediaPlugin()],
 });
 const srcevent = {
   target: { value: 'https://www.youtube.com/embed/ru60J99ojJw' },
@@ -89,31 +88,22 @@ describe('MultimediaPlugin', () => {
       editor.view,
       ImageArgs
     );
-    // ImgSrcCmd.getEditor();
     ImgSrcCmd.__isEnabled(state, editor.view);
     ImgSrcCmd.__isEnabled(newstate, editor.view);
     ImgSrcCmd.__isEnabled(newstate1, editor.view);
-
-    // ImgSrcCmd.waitForUserInput(
-    //   state,
-    //   editor.view.dispatch as (tr: Transform) => void,
-    //   editor.view
-    // );
+    ImgSrcCmd.isEnabled(state, editor.view);
   });
+
   it('ImageNodespec ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
-    // img.style.align='left';
     img.setAttribute('align', 'left');
-    // img.style.cssFloat='left';
     ImgNodSpec.getAttrs(img);
   });
 
   it('ImageNodespec ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
-    // img.style.align='left';
-    // img.setAttribute('align', 'left');
     img.style.cssFloat = 'left';
     ImgNodSpec.getAttrs(img);
   });
@@ -121,8 +111,6 @@ describe('MultimediaPlugin', () => {
   it('ImageNodespec ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
-    // img.style.align='left';
-    // img.setAttribute('align', 'left');
     img.style.cssFloat = 'right';
     ImgNodSpec.getAttrs(img);
   });
@@ -130,23 +118,33 @@ describe('MultimediaPlugin', () => {
   it('ImageNodespec ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
-    // img.style.align='left';
-    // img.setAttribute('align', 'left');
     img.style.display = 'block';
     ImgNodSpec.getAttrs(img);
   });
 
-  // it('ImageNodeView ', () => {
-  //   const imgNod =require('./ui/ImageNodeView')
-  //   const img = document.createElement('img');
-  //   img.src = '1200x800';
-  //   imgNod.getMaxResizeWidth(img);
-  // });
+  it('ImageNodeView ', () => {
+    const node = {
+      attrs: {
+        id: '',
+        align: null,
+        alt: '',
+        crop: null,
+        height: 200,
+        rotate: null,
+        src: 'https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400',
+
+        title: '',
+        width: 400,
+      },
+    };
+    ImageNodeSpec.toDOM(node);
+
+  });
 });
 
 describe('Image Node View ', () => {
   it('should handle View', () => {
-    const Vplugin = new VideoPlugin();
+    const Vplugin = new MultimediaPlugin();
     const editor = createEditor(doc(p('<cursor>')), {
       plugins: [Vplugin],
     });
@@ -195,7 +193,18 @@ describe('Image Node View ', () => {
     isBodyMock.mockImplementation((body) => {
       return false;
     });
-    //window.dispatchEvent(new Event('load'));
+    global.document.createElement = (function (create) {
+      return function () {
+        const element = create.apply(this, arguments)
+
+        if (element.tagName === 'IMG') {
+          setTimeout(() => {
+            element.onload(new Event('load'))
+          }, 100)
+        }
+        return element
+      }
+    })(document.createElement)
     await resolveImage(res.src);
   });
 });
@@ -214,18 +223,21 @@ xit('should resolve Image - Img Instance', async () => {
   isImgInsMock.mockImplementation(() => {
     return true;
   });
+  global.document.createElement = (function (create) {
+    return function () {
+      const element = create.apply(this, arguments)
+
+      if (element.tagName === 'IMG') {
+        setTimeout(() => {
+          element.onload(new Event('load'))
+        }, 100)
+      }
+      return element
+    }
+  })(document.createElement)
+
   await resolveImage(res.src);
 });
-
-// describe('ImageNodeView', () => {
-//   it('should load   ImageNodeView', () => {
-//     const newNode = { "type": "image", "attrs": { "align": null, "alt": "", "crop": null, "height": null, "rotate": null, "src": "https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400", "title": "", "width": null } }
-
-//     const ImgView = new ImageNodeView();
-
-//   })
-// });
-
 
 describe('ImageEditor ', () => {
   const attrs = {
@@ -284,23 +296,56 @@ describe('ImageEditor ', () => {
     const x = ImgInlinEdtr.render();
   });
 
-  it('should upload image files', () => {
+  it('should upload image files readonly and disabled true and runtime.canuploadimage true', () => {
+    const state: EditorState = EditorState.create({
+      schema: schema,
+      selection: editor.selection,
+      plugins: [new MultimediaPlugin()],
+    });
     const view1 = new EditorView(document.querySelector('#editor'), {
       state,
-      handleKeyPress() {
-        console.log('key');
-      },
-
     });
     const cusEdtView = {
-      ...view1 as EditorView, runtime: '1',
-      readOnly: '2',
-      disabled: true
+      ...view1 as EditorView, runtime: { canUploadImage: () => true },
+      readOnly: false,
+      disabled: false
     };
     const view: customEditorView = cusEdtView as customEditorView;
 
-    expect(uploadImageFiles(view, [], { x: 1, y: 2 })).toBeDefined;
+    const filex: File = new File([], 'NEW FILE')
 
+    expect(uploadImageFiles(view, [filex], { x: 1, y: 2 })).toBeDefined;
+  });
 
+  it('should upload image files readonly and disabled true and runtime.canuploadimage true', () => {
+    const state: EditorState = EditorState.create({
+      schema: schema,
+      selection: editor.selection,
+      plugins: [new MultimediaPlugin()],
+    });
+    const view1 = new EditorView(document.querySelector('#editor'), {
+      state,
+    });
+    const cusEdtView = {
+      ...view1 as EditorView, runtime: {},
+      readOnly: false,
+      disabled: false
+    };
+    const view: customEditorView = cusEdtView as customEditorView;
+    const filex: File = new File([], 'NEW FILE')
+
+    expect(uploadImageFiles(view, [filex], { x: 1, y: 2 })).toBeDefined;
+  });
+});
+
+describe('Image Resize Box ', () => {
+  it('should render Image Resize Box', () => {
+    const Props = {
+      height: 400,
+      onResizeEnd: (w: 200, height: 113) => { },
+      src: "https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400",
+      width: 200,
+    };
+    const ImgResBox = new ImageResizeBox(Props);
   });
 });

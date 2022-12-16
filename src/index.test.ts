@@ -1,7 +1,7 @@
 import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Transaction, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { VideoPlugin, bindImageView, bindVideoView } from './index';
+import { MultimediaPlugin, bindImageView, bindVideoView } from './index';
 import { VideoEditorState } from './ui/VideoEditor';
 import VideoSourceCommand, { insertIFrame } from './VideoSourceCommand';
 import ImageUploadCommand from './ImageUploadCommand';
@@ -10,31 +10,17 @@ import { VideoEditorProps } from './ui/VideoEditor';
 import ImageUploadPlaceholderPlugin from './ImageUploadPlaceholderPlugin';
 import canUseCSSFont from './ui/canUseCSSFont';
 import isOffline from './ui/isOffline';
-import { EditorFocused } from './ui/CustomNodeView';
-import renderer from 'react-test-renderer';
-import TestRenderer from 'react-test-renderer';
-import { configure, shallow } from 'enzyme';
-import Icon from './ui/Icon';
-import { render, fireEvent, screen } from '@testing-library/react';
 import ImageNodeView from './ui/ImageNodeView';
-import ImageInlineEditor from './ui/ImageInlineEditor';
 import { EditorView } from 'prosemirror-view';
 import VideoFromURLCommand from './VideoFromURLCommand';
 import SelectionObserver from './ui/SelectionObserver';
 import uuid from './ui/uuid';
 import {
-  DOMOutputSpec,
-  Mark,
-  MarkSpec,
   Schema,
-  ResolvedPos,
 } from 'prosemirror-model';
-import ImageURLEditor from './ui/ImageURLEditor';
 import CustomNodeView from './ui/CustomNodeView';
-import { node } from 'prop-types';
 import ImageFromURLCommand from './ImageFromURLCommand';
 import { EditorRuntime } from './Types';
-
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -44,9 +30,8 @@ class TestPlugin extends Plugin {
   }
 }
 
-
-describe('VideoPlugin', () => {
-  const plugin = new VideoPlugin();
+describe('MultimediaPlugin', () => {
+  const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {
     plugins: [plugin],
   });
@@ -56,7 +41,7 @@ describe('VideoPlugin', () => {
     doc: doc(p('Hello World!!!')),
     schema: schema,
     selection: editor.selection,
-    plugins: [new VideoPlugin()],
+    plugins: [new MultimediaPlugin()],
   });
 
   const selection = TextSelection.create(editor.view.state.doc, 0, 0);
@@ -70,17 +55,8 @@ describe('VideoPlugin', () => {
   const newstate1: EditorState = EditorState.create({
     schema: schema,
     selection: selection,
-    plugins: [new VideoPlugin()],
+    plugins: [new MultimediaPlugin()],
   });
-
-  // const state1: EditorState = EditorState.create({
-  //   doc: doc(p('Hello World!!!')),
-  //   schema: schema,
-  //   selection: undefined,
-  //   plugins: [new VideoPlugin()],
-  // });
-
-
   const attrs = {
     id: '',
     align: null,
@@ -89,7 +65,6 @@ describe('VideoPlugin', () => {
     height: 113,
     rotate: null,
     src: 'https://www.youtube.com/embed/ru60J99ojJw',
-
     title: '',
     width: 200,
   };
@@ -111,10 +86,8 @@ describe('VideoPlugin', () => {
   );
 
   const imageUploadPlaceholderPlugin = new ImageUploadPlaceholderPlugin();
-  // imageUploadPlaceholderPlugin.spec.props?.decorations(state);
   const fontSupported = canUseCSSFont('Material Icons');
   isOffline();
-  // new ImageUploadPlaceholderPlugin().props.decorations(state);
   new VideoSourceCommand().executeWithUserInput(
     state,
     editor.view.dispatch as (tr: Transform) => void,
@@ -129,7 +102,7 @@ describe('VideoPlugin', () => {
 
 
   it('should handle Video', () => {
-    const plugin = new VideoPlugin();
+    const plugin = new MultimediaPlugin();
     const editor = createEditor(doc(p('<cursor>')), {
       plugins: [plugin],
     });
@@ -159,7 +132,7 @@ describe('VideoPlugin', () => {
     const state: EditorState = EditorState.create({
       schema: schema,
       selection: editor.selection,
-      plugins: [new VideoPlugin()],
+      plugins: [new MultimediaPlugin()],
     });
 
     const newState = state.apply(
@@ -191,7 +164,7 @@ describe('VideoPlugin', () => {
       doc: doc(p('Hello World!!!')),
       schema: schema,
       selection: undefined,
-      plugins: [new VideoPlugin()],
+      plugins: [new MultimediaPlugin()],
     });
     new VideoSourceCommand().__isEnabled(
       statetest,
@@ -204,7 +177,7 @@ describe('VideoPlugin', () => {
       doc: doc(p('Hello World!!!')),
       schema: schema,
       selection: undefined,
-      plugins: [new VideoPlugin()],
+      plugins: [new MultimediaPlugin()],
     });
     new VideoSourceCommand().isEnabled(
       statetest,
@@ -231,7 +204,6 @@ describe('VideoPlugin', () => {
       // Comments
       canComment: () => true,
       createCommentThreadID: () => 'string',
-      //renderComment: (props: RenderCommentProps) => React.ReactElement,
       // External HTML
       canLoadHTML: () => true,
       //loadHTML: () => Promise<string>,
@@ -288,15 +260,12 @@ describe('VideoPlugin', () => {
   it('EditorFocused', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
-    // const { doc, p } = builders(effSchema, { p: { nodeType: 'paragraph' } });
     const view = new EditorView(
       { mount: dom },
       {
         state: state,
       }
     );
-
-
   });
 
   it('icon render', () => {
@@ -304,30 +273,18 @@ describe('VideoPlugin', () => {
     trans.getEditor();
     const trans1 = new VideoFromURLCommand();
     trans1.getEditor();
-    // TestRenderer.create(<LoadingIndicator/>);
-    // render(<LoadingIndicator/>) ;
-    // renderer.create(<LoadingIndicator /> as any);
-    // render(<ImageInlineEditor >);
-    //  const wrapper = shallow(<ImageInlineEditor >);
   });
 
   it('uuid', () => {
     const id = uuid();
-    // TestRenderer.create(<LoadingIndicator/>);
-    // render(<LoadingIndicator/>) ;
-    // renderer.create(<LoadingIndicator /> as any);
-    // render(<ImageInlineEditor >);
-    //  const wrapper = shallow(<ImageInlineEditor >);
   });
-  xit('icon', () => {
+
+  it('icon', () => {
     const modSchema = new Schema({
       nodes: schema.spec.nodes,
     });
-
-
     const dom = document.createElement('div');
     document.body.appendChild(dom);
-    // const { doc, p } = builders(effSchema, { p: { nodeType: 'paragraph' } });
     const view = new EditorView(
       { mount: dom },
       {
@@ -335,36 +292,16 @@ describe('VideoPlugin', () => {
       }
     );
 
-    const imagenodeview = new ImageNodeView(editor.view.state.doc.nodeAt(0), view as any, () => 0, null as any);
-    imagenodeview.update(editor.view.state.doc.nodeAt(0), null as any);
+    const imagenodeview = new ImageNodeView(editor.view.state.doc.nodeAt(0)!, view as any, () => 0, null as any);
+    imagenodeview.update(editor.view.state.doc.nodeAt(0)!, null as any);
     imagenodeview.renderReactComponent();
     const demodom = document.createElement('div');
-    // const spyiSNVMock = jest.spyOn(imagenodeview, 'getPos');
-    // spyiSNVMock.mockReturnValue(0);
+
 
     imagenodeview._updateDOM(demodom);
-
-    const objCustomNodeView = new CustomNodeView(editor.view.state.doc.nodeAt(0), view as any, () => 0 as any, null as any);
-    const el = document.createElement('span');
-    el.className = 'molm-czi-image-view';
-
-    const spyhsMock = jest.spyOn(objCustomNodeView, 'createDOMElement');
-    spyhsMock.mockReturnValue(el);
-
-    const spyhsMock1 = jest.spyOn(objCustomNodeView, 'renderReactComponent');
-    spyhsMock1.mockReturnValue(el as any);
-
-
-    objCustomNodeView.update(editor.view.state.doc.nodeAt(0), null);
-    objCustomNodeView.stopEvent();
-    objCustomNodeView.selectNode();
-    objCustomNodeView.deselectNode();
-    objCustomNodeView.destroy();
-    // render(<Icon />),
-    //   const component = renderer.create(
-    //     // <Link page="http://www.facebook.com">Facebook</Link>,
-    //     <Icon title='abcd' type = 'icon'/> ,
-    // );
+    expect(() => {
+      new CustomNodeView(editor.view.state.doc.nodeAt(0)!, view as any, 1 as any, null as any);
+    }).toThrow()
   });
 });
 
