@@ -100,7 +100,7 @@
   },
   "dependencies": {
     "@modusoperandi/licit-doc-attrs-step": "^0.1.4",
-    "@modusoperandi/licit-ui-commands": "^0.1.11",
+    "@modusoperandi/licit-ui-commands": "^0.1.12",
     "@types/node": "^16.10.1",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
