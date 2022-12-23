@@ -44,7 +44,7 @@ export type ImageLike = {
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean,
-  getProxyImageSrc?: (src: string) => string,
+  getProxyImageSrc?: (src: string) => Promise<string>,
 
   // Image Upload
   canUploadImage?: () => boolean,

@@ -71,13 +71,14 @@ function getMaxResizeWidth(el): number {
   return MAX_SIZE;
 }
 
-function resolveURL(runtime: EditorRuntime, src: string): string {
+async function resolveURL(runtime: EditorRuntime, src: string): Promise<string>  {
   if (!runtime) {
     return src;
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
   if (src && canProxyImageSrc && getProxyImageSrc && canProxyImageSrc(src)) {
-    return getProxyImageSrc(src);
+    const imageSrc = (await getProxyImageSrc(src).then(res => {return res;}).catch(_err => {return src;}));
+    return imageSrc;
   }
   return src;
 }
@@ -276,7 +277,7 @@ class ImageViewBody extends React.PureComponent {
 
     this.setState({ originalSize: DEFAULT_ORIGINAL_SIZE });
     const src = this.props.node.attrs.src;
-    const url = resolveURL(this.props.editorView.runtime as EditorRuntime, src);
+    const url = await resolveURL(this.props.editorView.runtime as EditorRuntime, src);
     const originalSize = await resolveImage(url);
     if (!this._mounted) {
       // unmounted;
