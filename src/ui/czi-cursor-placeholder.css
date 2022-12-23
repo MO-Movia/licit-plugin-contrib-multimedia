@@ -10,7 +10,7 @@
   animation-direction: alternate;
   animation-duration: 0.5s;
   animation-iteration-count: infinite;
-  animation-name: czi_cursor_blink;
+  animation-name: czi-cursor-blink;
   animation-timing-function: ease-in-out;
   background-color: var(--czi-selection-highlight-color-dark);
   bottom: 0;
@@ -21,7 +21,7 @@
   width: 3px;
 }
 
-@keyframes czi_cursor_blink {
+@keyframes czi-cursor-blink {
   from {
     opacity: 1;
   }

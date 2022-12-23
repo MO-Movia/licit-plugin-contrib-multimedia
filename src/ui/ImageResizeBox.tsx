@@ -19,7 +19,7 @@ type Props = {
 export const MIN_SIZE = 20;
 export const MAX_SIZE = 10000;
 
-function setWidth(el: HTMLElement, width: number, ): void {
+function setWidth(el: HTMLElement, width: number,): void {
   el.style.width = width + 'px';
 }
 

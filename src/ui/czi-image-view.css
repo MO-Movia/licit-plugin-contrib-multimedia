@@ -46,7 +46,7 @@
 }
 
 .molm-czi-image-view-body.loading::before {
-  animation: czi_animation_blink normal 800ms infinite ease-in-out;
+  animation: czi-animation-blink normal 800ms infinite ease-in-out;
   background-color: #cdcdcd;
   bottom: 0;
   content: "";
@@ -112,7 +112,7 @@
   }
 }
 
-@keyframes czi_animation_blink {
+@keyframes czi-animation-blink {
   0% {
     opacity: 1;
   }

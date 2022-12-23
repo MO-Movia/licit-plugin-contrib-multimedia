@@ -54,14 +54,14 @@ class ImageSourceCommand extends UICommand {
   isEnabled = (state: EditorState, view: EditorView): boolean => {
     return this.__isEnabled(state, view);
   };
- 
+
 
   isPopUp(popup) {
     if (popup) {
       return true;
     }
     else { return false; }
-  };
+  }
   waitForUserInput = (
     state: EditorState,
     dispatch: (tr: Transform) => void,

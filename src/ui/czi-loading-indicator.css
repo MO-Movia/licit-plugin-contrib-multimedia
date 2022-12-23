@@ -16,7 +16,7 @@
 }
 
 .molm-czi-loading-indicator-frag-1 {
-  animation: czi_loading_animation 0.6s infinite;
+  animation: czi-loading-animation 0.6s infinite;
   left: 6px;
 }
 
@@ -35,7 +35,7 @@
   left: 45px;
 }
 
-@keyframes czi_loading_animation {
+@keyframes czi-loading-animation {
   0% {
     transform: scale(0);
   }
