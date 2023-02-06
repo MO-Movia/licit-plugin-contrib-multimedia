@@ -1,9 +1,7 @@
 
 import nullthrows from 'nullthrows';
-import { Plugin, PluginKey } from 'prosemirror-state';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Decoration, DecorationSet } from 'prosemirror-view';
-import { EditorView } from 'prosemirror-view';
+import { Plugin, PluginKey ,EditorState, TextSelection } from 'prosemirror-state';
+import { Decoration, DecorationSet,EditorView } from 'prosemirror-view';
 import uuid from './ui/uuid';
 
 import './ui/czi-image-upload-placeholder.css';
