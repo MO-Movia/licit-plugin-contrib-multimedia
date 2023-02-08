@@ -113,7 +113,7 @@ class VideoSourceCommand extends UICommand {
     if (selection instanceof TextSelection) {
       return selection.from === selection.to;
     }
-    return false;
+    return true;
   };
 }
 

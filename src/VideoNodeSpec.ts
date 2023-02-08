@@ -56,7 +56,7 @@ function getAlign(dom: HTMLElement, cssFloat: string, display: string): string {
   } else if (!cssFloat && display === 'block') {
     align = 'block';
   }
-console.log(align);
+
   return align;
 }
 
