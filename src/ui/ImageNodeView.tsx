@@ -9,11 +9,9 @@ import ReactDOM from 'react-dom';
 
 import CustomNodeView from './CustomNodeView';
 import Icon from './Icon';
-import ImageResizeBox from './ImageResizeBox';
-import { MIN_SIZE } from './ImageResizeBox';
-import { atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
+import ImageResizeBox, { MIN_SIZE } from './ImageResizeBox';
+import { createPopUp, atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
 import ResizeObserver from './ResizeObserver';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import resolveImage from './resolveImage';
 import uuid from './uuid';
 
@@ -47,7 +45,7 @@ const DEFAULT_ORIGINAL_SIZE = {
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el): number {
   // Ideally, the image should bot be wider then its containing element.
-  let node= el.parentElement;
+  let node = el.parentElement;
   while (node && !node.offsetParent) {
     node = node.parentElement;
   }
@@ -71,14 +69,14 @@ function getMaxResizeWidth(el): number {
   return MAX_SIZE;
 }
 
-async function resolveURL(runtime: EditorRuntime, src: string): Promise<string>  {
+async function resolveURL(runtime: EditorRuntime, src: string): Promise<string> {
   if (!runtime) {
     return src;
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
   if (src && canProxyImageSrc && getProxyImageSrc && canProxyImageSrc(src)) {
-    const imageSrc = (await getProxyImageSrc(src).then(res => {return res;}).catch(_err => {return src;}));
-    return imageSrc;
+   // const imageSrc = (await getProxyImageSrc(src).then(res => { return res; }).catch(_err => { return src; }));
+    return (await getProxyImageSrc(src).then(res => { return res; }).catch(_err => { return src; }));
   }
   return src;
 }
@@ -130,12 +128,13 @@ class ImageViewBody extends React.PureComponent {
     const { attrs } = node;
     const { align, crop, rotate } = attrs;
 
-    // It's only active when the image's fully loaded.
-    const loading = originalSize === DEFAULT_ORIGINAL_SIZE;
-    const active = !loading && focused && !readOnly && originalSize.complete;
-    const src = originalSize.complete ? originalSize.src : EMPTY_SRC;
-    const aspectRatio = loading ? 1 : originalSize.width / originalSize.height;
-    const error = !loading && !originalSize.complete;
+    const retVal=this.assignVal(originalSize,focused,readOnly);
+    const loading = retVal.loading;
+    const active = retVal.active;
+    const src = retVal.src;
+    const aspectRatio = retVal.aspectRatio;
+    const error = retVal.error;
+
 
     let { width, height } = attrs;
 
@@ -144,15 +143,9 @@ class ImageViewBody extends React.PureComponent {
       height = height || IMAGE_PLACEHOLDER_SIZE;
     }
 
-    if (width && !height) {
-      height = width / aspectRatio;
-    } else if (height && !width) {
-      width = height * aspectRatio;
-    } else if (!width && !height) {
-      width = originalSize.width;
-      height = originalSize.height;
-    }
-
+    const dimensions = this.calcWidthAndHeight(width, height, aspectRatio, originalSize);
+    width = dimensions.width;
+    height = dimensions.height;
     let scale = 1;
     if (width > maxSize.width && (!crop || crop.width > maxSize.width)) {
       // Scale image to fit its containing space.
@@ -171,7 +164,7 @@ class ImageViewBody extends React.PureComponent {
     });
 
     const resizeBox =
-      active && !crop && !rotate ? (
+      this.isUnaltered(active, crop, rotate) ? (
         <ImageResizeBox
           height={height}
           onResizeEnd={this._onResizeEnd}
@@ -189,7 +182,7 @@ class ImageViewBody extends React.PureComponent {
       position: 'relative',
     };
 
-    const clipStyle: clipStyleType  = {};
+    const clipStyle: clipStyleType = {};
     if (crop) {
       const cropped = { ...crop };
       if (scale !== 1) {
@@ -241,6 +234,35 @@ class ImageViewBody extends React.PureComponent {
       </span>
     );
   }
+assignVal(originalSize,focused,readOnly){
+ // It's only active when the image's fully loaded.
+ const loading = originalSize === DEFAULT_ORIGINAL_SIZE;
+ const active = !loading && focused && !readOnly && originalSize.complete;
+ const src = originalSize.complete ? originalSize.src : EMPTY_SRC;
+ const aspectRatio = loading ? 1 : originalSize.width / originalSize.height;
+ const error = !loading && !originalSize.complete;
+ return {loading,active,src,aspectRatio,error};
+
+}
+  isUnaltered(active, crop, rotate) {
+    if (active && !crop && !rotate) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  calcWidthAndHeight(width, height, aspectRatio, originalSize) {
+    if (width && !height) {
+      height = width / aspectRatio;
+    } else if (height && !width) {
+      width = height * aspectRatio;
+    } else if (!width && !height) {
+      width = originalSize.width;
+      height = originalSize.height;
+    }
+    return { width, height };
+  }
 
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
@@ -253,6 +275,8 @@ class ImageViewBody extends React.PureComponent {
     const editorProps = {
       value: node.attrs,
       onSelect: this._onChange,
+      editorView: this.props.editorView,
+
     };
     if (this._inlineEditor) {
       this._inlineEditor.update(editorProps);
@@ -268,6 +292,7 @@ class ImageViewBody extends React.PureComponent {
       });
     }
   }
+
 
   _resolveOriginalSize = async (): Promise<void> => {
     if (!this._mounted) {
@@ -299,7 +324,6 @@ class ImageViewBody extends React.PureComponent {
     const pos = getPos();
     const attrs = {
       ...node.attrs,
-      // TODO: Support UI for cropping later.
       crop: null,
       width,
       height,

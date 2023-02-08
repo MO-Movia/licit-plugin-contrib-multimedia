@@ -59,16 +59,13 @@ export class MultimediaPlugin extends Plugin {
 
   initButtonCommands() {
     return {
-      '[video_label] Insert Video': [
-        {
-          'Insert Video by URL': new VideoFromURLCommand(),
-          'Upload video from computer': new VideoUploadCommand(),
-        },
-      ],
-      '[image] Insert image': [
+      '[mms] Insert MultiMedia': [
         {
           'Insert image by URL': new ImageFromURLCommand(),
           'Upload image from computer': new ImageUploadCommand(),
+          'Insert Video by URL': new VideoFromURLCommand(),
+          'Upload video from computer': new VideoUploadCommand(),
+
         },
       ],
     };

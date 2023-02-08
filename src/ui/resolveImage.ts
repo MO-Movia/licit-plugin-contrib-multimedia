@@ -1,5 +1,4 @@
 
-
 import url from 'url';
 
 import isOffline from './isOffline';
@@ -41,6 +40,15 @@ export function isBody(body) {
   return body ? true : false;
 }
 
+function resolveRes(srcStr,result,resolve){
+  if (!srcStr) {
+    resolve(result);
+  } else if (cache[srcStr]) {
+    const cachedResult = Object.assign({}, cache[srcStr]);
+    resolve(cachedResult);
+  }
+}
+
 function processPromise(
   src: string,
   resolve,
@@ -61,14 +69,8 @@ function processPromise(
   }
 
   const srcStr = src || '';
-  if (!srcStr) {
-    resolve(result);
-    return;
-  } else if (cache[srcStr]) {
-    const cachedResult = Object.assign({}, cache[srcStr]);
-    resolve(cachedResult);
-    return;
-  }
+
+  resolveRes(srcStr,result,resolve);
 
   const parsedURL = url.parse(srcStr);
   // [FS] IRAD-1007 2020-07-13

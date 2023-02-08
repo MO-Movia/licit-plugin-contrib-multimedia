@@ -3,9 +3,8 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton,preventEventDefault} from '@modusoperandi/licit-ui-commands';
 import LoadingIndicator from './LoadingIndicator';
-import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 
 import './czi-form.css';

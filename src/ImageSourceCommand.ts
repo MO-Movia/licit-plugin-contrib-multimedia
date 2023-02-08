@@ -1,8 +1,7 @@
 
 
 import { Fragment, Schema } from 'prosemirror-model';
-import { EditorState, Transaction } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, Transaction ,TextSelection} from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
@@ -118,7 +117,7 @@ class ImageSourceCommand extends UICommand {
     if (selection instanceof TextSelection) {
       return selection.from === selection.to;
     }
-    return false;
+    return true;
   };
 }
 
