@@ -1,35 +1,44 @@
-
-
 import cx from 'classnames';
 import nullthrows from 'nullthrows';
 import * as React from 'react';
 
-import { clamp } from '@modusoperandi/licit-ui-commands';
+import {clamp} from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 
 import './czi-image-resize-box.css';
+import {FP_HEIGHT, FP_WIDTH} from '../Constants';
 
 type Props = {
-  height: number,
-  onResizeEnd: (w: number, height: number) => void,
-  src: string,
-  width: number,
+  height: number;
+  onResizeEnd: (w: number, height: number) => void;
+  src: string;
+  width: number;
+  fitToParent: boolean;
 };
 
 export const MIN_SIZE = 20;
 export const MAX_SIZE = 10000;
 
-function setWidth(el: HTMLElement, width: number,): void {
-  el.style.width = width + 'px';
+function setWidth(el: HTMLElement, width: number, fitToParent: boolean): void {
+  el.style.width = fitToParent ? FP_WIDTH : width + 'px';
 }
 
-function setHeight(el: HTMLElement, height: number): void {
-  el.style.height = height + 'px';
+function setHeight(
+  el: HTMLElement,
+  height: number,
+  fitToParent: boolean
+): void {
+  el.style.height = fitToParent ? FP_HEIGHT : height + 'px';
 }
 
-function setSize(el: HTMLElement, width: number, height: number): void {
-  el.style.width = Math.round(width) + 'px';
-  el.style.height = Math.round(height) + 'px';
+function setSize(
+  el: HTMLElement,
+  width: number,
+  height: number,
+  fitToParent: boolean
+): void {
+  el.style.width = fitToParent ? FP_WIDTH : Math.round(width) + 'px';
+  el.style.height = fitToParent ? FP_HEIGHT : Math.round(height) + 'px';
 }
 
 const ResizeDirection = {
@@ -45,12 +54,13 @@ const ResizeDirection = {
 
 class ImageResizeBoxControl extends React.PureComponent {
   props: {
-    boxID: string,
+    boxID: string;
     config;
-    direction: string,
-    height: number,
-    onResizeEnd: (w: number, height: number) => void,
-    width: number,
+    direction: string;
+    height: number;
+    onResizeEnd: (w: number, height: number) => void;
+    width: number;
+    fitToParent: boolean;
   };
 
   _active = false;
@@ -70,7 +80,7 @@ class ImageResizeBoxControl extends React.PureComponent {
   }
 
   render(): React.ReactElement {
-    const { direction } = this.props;
+    const {direction} = this.props;
 
     const className = cx({
       'molm-czi-image-resize-box-control': true,
@@ -84,7 +94,7 @@ class ImageResizeBoxControl extends React.PureComponent {
     if (!this._active) {
       return;
     }
-    const { direction, width, height } = this.props;
+    const {direction, width, height} = this.props;
 
     const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
     const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
@@ -100,7 +110,7 @@ class ImageResizeBoxControl extends React.PureComponent {
       ww = hh * aspect;
     }
 
-    fn(el, Math.round(ww), Math.round(hh));
+    fn(el, Math.round(ww), Math.round(hh), this.props.fitToParent);
     this._ww = ww;
     this._hh = hh;
   };
@@ -112,7 +122,7 @@ class ImageResizeBoxControl extends React.PureComponent {
 
     this._active = true;
 
-    const { boxID, direction, width, height } = this.props;
+    const {boxID, direction, width, height} = this.props;
     const el = nullthrows(document.getElementById(boxID));
     el.className += ' ' + direction;
 
@@ -170,7 +180,7 @@ class ImageResizeBoxControl extends React.PureComponent {
     this._x2 = e.clientX;
     this._y2 = e.clientY;
 
-    const { direction } = this.props;
+    const {direction} = this.props;
     const el = nullthrows(this._el);
     el.classList.remove(direction);
 
@@ -185,11 +195,11 @@ class ImageResizeBox extends React.PureComponent {
   _id = uuid();
 
   render(): React.ReactElement {
-    const { onResizeEnd, width, height, src } = this.props;
+    const {onResizeEnd, width, height, src, fitToParent} = this.props;
 
     const style = {
-      height: height + 'px',
-      width: width + 'px',
+      height: fitToParent ? FP_HEIGHT : height + 'px',
+      width: fitToParent ? FP_WIDTH : width + 'px',
     };
 
     const boxID = this._id;
@@ -200,6 +210,7 @@ class ImageResizeBox extends React.PureComponent {
           boxID={boxID}
           config={ResizeDirection[key]}
           direction={key}
+          fitToParent={fitToParent}
           height={height}
           key={key}
           onResizeEnd={onResizeEnd}
