@@ -6,7 +6,7 @@ import {clamp} from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 
 import './czi-image-resize-box.css';
-import {FP_HEIGHT, FP_WIDTH} from '../Constants';
+import {FP_WIDTH} from '../Constants';
 
 type Props = {
   height: number;
@@ -26,9 +26,9 @@ function setWidth(el: HTMLElement, width: number, fitToParent: boolean): void {
 function setHeight(
   el: HTMLElement,
   height: number,
-  fitToParent: boolean
+  _fitToParent: boolean
 ): void {
-  el.style.height = fitToParent ? FP_HEIGHT : height + 'px';
+  el.style.height = height + 'px';
 }
 
 function setSize(
@@ -38,7 +38,7 @@ function setSize(
   fitToParent: boolean
 ): void {
   el.style.width = fitToParent ? FP_WIDTH : Math.round(width) + 'px';
-  el.style.height = fitToParent ? FP_HEIGHT : Math.round(height) + 'px';
+  el.style.height = Math.round(height) + 'px';
 }
 
 const ResizeDirection = {
@@ -197,10 +197,15 @@ class ImageResizeBox extends React.PureComponent {
   render(): React.ReactElement {
     const {onResizeEnd, width, height, src, fitToParent} = this.props;
 
-    const style = {
-      height: fitToParent ? FP_HEIGHT : height + 'px',
+    const style: React.CSSProperties = {
+      height: height + 'px',
       width: fitToParent ? FP_WIDTH : width + 'px',
     };
+
+    if (fitToParent) {
+      style.padding = '0';
+      style.margin = '0';
+    }
 
     const boxID = this._id;
 

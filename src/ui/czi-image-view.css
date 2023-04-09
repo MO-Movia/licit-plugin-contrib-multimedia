@@ -1,5 +1,11 @@
 @import url("./czi-vars.css");
 
+.ProseMirror td[fullsize="1"] > p {
+  line-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
 .molm-czi-image-view {
   clear: both;
   display: inline-block;
