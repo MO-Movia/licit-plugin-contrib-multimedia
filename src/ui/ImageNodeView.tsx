@@ -21,9 +21,8 @@ import './czi-image-view.css';
 import type {EditorRuntime} from '../Types';
 import type {NodeViewProps} from './CustomNodeView';
 import type {ResizeObserverEntry} from './ResizeObserver';
-import {clipStyleType, videoStyleType} from './VideoNodeView';
 import ImageInlineEditor from './ImageInlineEditor';
-import { FP_HEIGHT, FP_WIDTH } from '../Constants';
+import { FP_WIDTH } from '../Constants';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 const EMPTY_SRC =
@@ -187,7 +186,7 @@ class ImageViewBody extends React.PureComponent {
       />
     ) : null;
 
-    const imageStyle: videoStyleType = {
+    const imageStyle: React.CSSProperties = {
       display: 'inline-block',
       height: height + 'px',
       left: '0',
@@ -196,7 +195,7 @@ class ImageViewBody extends React.PureComponent {
       position: 'relative',
     };
 
-    const clipStyle: clipStyleType = {};
+    const clipStyle: React.CSSProperties = {};
     if (crop) {
       const cropped = {...crop};
       if (scale !== 1) {
@@ -221,17 +220,21 @@ class ImageViewBody extends React.PureComponent {
       ? `Unable to load image from ${attrs.src || ''}`
       : undefined;
 
-    const pStyle = {};
+    const pStyle: React.CSSProperties = {};
     if (this.props.node.attrs['fitToParent']) {
       width = FP_WIDTH;
       clipStyle.width = FP_WIDTH;
       imageStyle.width = FP_WIDTH;
-      pStyle['width'] = FP_WIDTH;
+      pStyle.width = FP_WIDTH;
 
-      height = FP_HEIGHT;
-      clipStyle.height = FP_HEIGHT;
-      imageStyle.height = FP_HEIGHT;
-      pStyle['height'] = FP_HEIGHT;
+      pStyle.height = height;
+
+      clipStyle.padding = '0';
+      clipStyle.margin = '0';
+      imageStyle.padding = '0';
+      imageStyle.margin = '0';
+      pStyle.padding = '0';
+      pStyle.margin = '0';
     }
 
     return (
@@ -455,7 +458,8 @@ class ImageNodeView extends CustomNodeView {
 
     if (this.props.node.attrs['fitToParent']) {
       el.style.width = FP_WIDTH;
-      el.style.height = FP_HEIGHT;
+      el.style.padding = '0';
+      el.style.margin = '0';
     }
   }
 }
