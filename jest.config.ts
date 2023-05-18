@@ -44,7 +44,8 @@ export default {
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  coverageThreshold: {global:{branches:80,functions:80,lines:80,},},
+  // coverageThreshold: undefined,
+  coverageThreshold: {global: {branches: 80, functions: 80, lines: 80}},
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
@@ -105,16 +106,14 @@ export default {
   // Use this configuration option to add custom reporters to Jest
   reporters: [
     'default',
-      [
-        'jest-junit',
-        {
-          outputDirectory: 'coverage',
-          outputName: 'TESTS.xml'
-        }
-      ]
-    ]
-    ,
-
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'coverage',
+        outputName: 'TESTS.xml',
+      },
+    ],
+  ],
   // Automatically reset mock state between every test
   // resetMocks: false,
 
@@ -139,7 +138,7 @@ export default {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['../jest.setup.js'],
+ 
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: ['jest-prosemirror/environment', 'jest-json'],
@@ -160,10 +159,10 @@ export default {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    //   "**/__tests__/**/*.[jt]s?(x)",
-    '**/?(*.)+(spec|test).[tj]s?(x)',
-  ],
+  // testMatch: [
+  //   "**/__tests__/**/*.[jt]s?(x)",
+  //   "**/?(*.)+(spec|test).[tj]s?(x)"
+  // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns:

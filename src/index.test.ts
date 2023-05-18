@@ -30,10 +30,9 @@ class TestPlugin extends Plugin {
   }
 }
 
-xdescribe('MultimediaPlugin', () => {
-  it.skip('dummy ', () => {
-  });
-  /*const plugin = new MultimediaPlugin();
+describe('MultimediaPlugin', () => {
+ 
+  const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {
     plugins: [plugin],
   });
@@ -46,13 +45,13 @@ xdescribe('MultimediaPlugin', () => {
     plugins: [new MultimediaPlugin()],
   });
 
-  const selection = TextSelection.create(editor.view.state.doc, 0, 0);
-  const tr = editor.view.state.tr.setSelection(selection);
-  editor.view.updateState(
-    editor.view.state.reconfigure({ plugins: [plugin, new TestPlugin()] })
+  const selection = TextSelection.create((editor.view as any).state.doc, 0, 0);
+  const tr = (editor.view as any).state.tr.setSelection(selection);
+  (editor.view as any).updateState(
+    (editor.view as any).state.reconfigure({ plugins: [plugin, new TestPlugin()] })
   );
 
-  editor.view.dispatch(tr);
+  (editor.view as any).dispatch(tr);
 
   const newstate1: EditorState = EditorState.create({
     schema: schema,
@@ -92,7 +91,7 @@ xdescribe('MultimediaPlugin', () => {
   isOffline();
   new VideoSourceCommand().executeWithUserInput(
     state,
-    editor.view.dispatch as (tr: Transform) => void,
+    (editor.view as any).dispatch as (tr: Transform) => void,
     editor.view as any,
     veState
   );
@@ -103,7 +102,7 @@ xdescribe('MultimediaPlugin', () => {
   );
 
 
-  it.skip('should handle Video', () => {
+  it('should handle Video', () => {
     const plugin = new MultimediaPlugin();
     const editor = createEditor(doc(p('<cursor>')), {
       plugins: [plugin],
@@ -143,7 +142,7 @@ xdescribe('MultimediaPlugin', () => {
 
     new VideoSourceCommand().executeWithUserInput(
       state,
-      editor.view.dispatch as (tr: Transform) => void,
+      (editor.view as any).dispatch as (tr: Transform) => void,
       editor.view  as any,
       veState
     );
@@ -161,7 +160,7 @@ xdescribe('MultimediaPlugin', () => {
     );
   });
 
-  it.skip('__isEnabled in VideoSourceCommand ', () => {
+  it('__isEnabled in VideoSourceCommand ', () => {
     const statetest: EditorState = EditorState.create({
       doc: doc(p('Hello World!!!')),
       schema: schema,
@@ -174,7 +173,7 @@ xdescribe('MultimediaPlugin', () => {
     );
   });
 
-  it.skip('isEnabled in VideoSourceCommand ', () => {
+  it('isEnabled in VideoSourceCommand ', () => {
     const statetest: EditorState = EditorState.create({
       doc: doc(p('Hello World!!!')),
       schema: schema,
@@ -187,14 +186,19 @@ xdescribe('MultimediaPlugin', () => {
     );
   });
 
-  it.skip('isEnabled in image', () => {
+  it('isEnabled in image', () => {
     const view = new EditorView(document.querySelector('#editor'), {
       state,
       handleKeyPress() {
         console.log('key');
       }
     });
-    const trans = new ImageUploadCommand();
+    const cusEdtView = {
+      ...view as EditorView, runtime: { canUploadImage: () => true },
+      readOnly: false,
+      disabled: false
+    };
+   // const trans = new ImageUploadCommand();
     const editorruntime: EditorRuntime = {
       // Image Proxy
       canProxyImageSrc: () => {
@@ -211,31 +215,166 @@ xdescribe('MultimediaPlugin', () => {
       canLoadHTML: () => true,
       //loadHTML: () => Promise<string>,
     };
+   // trans.runtime = editorruntime;
+  //  expect(trans.isEnabled(state, view)).toBeFalsy();
+  });
+
+  it('Image Upload Command', () => {
+    const editorruntime: EditorRuntime = {
+      // Image Proxy
+      canProxyImageSrc: () => {
+        return true;
+      },
+      // getProxyImageSrc: () => Promise.reject(),
+      // Image Upload
+      canUploadImage: () => false,
+      uploadImage: (obj: Blob) => Promise.reject(),
+      // Comments
+      canComment: () => false,
+      createCommentThreadID: () => 'string',
+      // External HTML
+      canLoadHTML: () => true,
+      //loadHTML: () => Promise<string>,
+    };
+    const trans = new ImageUploadCommand();
     trans.runtime = editorruntime;
-    expect(trans.isEnabled(state, view)).toBeFalsy();
-  });
 
-  it.skip('getEditor', () => {
-    const trans = new ImageUploadCommand();
+    const state = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+  
+    const editorView = new EditorView(
+      {mount: dom},
+      {
+        state: state,
+      }
+    );
+    editorView['runtime'] = editorruntime;
+    trans.isEnabled(state, editorView)
     trans.getEditor();
   });
 
-  it.skip('isEnabled', () => {
+  it('isEnabled', () => {
+    const editorruntime: EditorRuntime = {
+      // Image Proxy
+      canProxyImageSrc: () => {
+        return true;
+      },
+      // getProxyImageSrc: () => Promise.reject(),
+      // Image Upload
+      canUploadImage: () => true,
+      uploadImage: (obj: Blob) => Promise.reject(),
+      // Comments
+      canComment: () => false,
+      createCommentThreadID: () => 'string',
+      // External HTML
+      canLoadHTML: () => true,
+      //loadHTML: () => Promise<string>,
+    };
     const trans = new ImageUploadCommand();
-    trans.isEnabled(state, editor.view as any);
+    trans.runtime = editorruntime;
+
+    const state = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+  
+    const editorView = new EditorView(
+      {mount: dom},
+      {
+        state: state,
+      }
+    );
+    editorView['runtime'] = editorruntime;
+    trans.isEnabled(state, editorView)
   });
 
-  it.skip('getEditor', () => {
+  it('getEditor', () => {
+
     const trans = new VideoUploadCommand();
     trans.getEditor();
   });
 
-  it.skip('isEnabled', () => {
-    const trans = new VideoUploadCommand();
-    trans.isEnabled(state, editor.view as any);
+  it('can Image Upload', () => {
+    const editorruntime: EditorRuntime = {
+      // Image Proxy
+      canProxyImageSrc: () => {
+        return true;
+      },
+      // getProxyImageSrc: () => Promise.reject(),
+      // Image Upload
+      canUploadImage: undefined,
+      uploadImage: (obj: Blob) => Promise.reject(false),
+      // Comments
+      canComment: () => false,
+      createCommentThreadID: () => 'string',
+      // External HTML
+      canLoadHTML: () => true,
+      //loadHTML: () => Promise<string>,
+    };
+    const trans = new ImageUploadCommand();
+    trans.runtime = editorruntime;
+    trans.runtime.canUploadImage = undefined;
+    const state = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+  
+    const editorView = new EditorView(
+      {mount: dom},
+      {
+        state: state,
+      }
+    );
+    editorView['runtime'] = null;
+    trans.isEnabled(state, null)
+    
   });
 
-  it.skip('bindImageView', () => {
+
+  it('can Image Upload', () => {
+    const editorruntime: EditorRuntime = {
+      // Image Proxy
+      canProxyImageSrc: () => {
+        return true;
+      },
+      // getProxyImageSrc: () => Promise.reject(),
+      // Image Upload
+      canUploadImage: undefined,
+      uploadImage: (obj: Blob) => Promise.reject(false),
+      // Comments
+      canComment: () => false,
+      createCommentThreadID: () => 'string',
+      // External HTML
+      canLoadHTML: () => true,
+      //loadHTML: () => Promise<string>,
+    };
+    const trans = new ImageUploadCommand();
+    trans.runtime = editorruntime;
+    trans.runtime.canUploadImage = undefined;
+    const state = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+  
+    const editorView = new EditorView(
+      {mount: dom},
+      {
+        state: state,
+      }
+    );
+    editorView['runtime'] = null;
+    trans.isEnabled(state, editorView)
+    
+  });
+
+  
+  it('bindImageView', () => {
     const view = new EditorView(document.querySelector('#editor'), {
       state,
       handleKeyPress() {
@@ -245,7 +384,7 @@ xdescribe('MultimediaPlugin', () => {
     expect(bindImageView(doc(p('<cursor>')), view, true)).toBeDefined();
   });
 
-  it.skip('bindVideoView', () => {
+  it('bindVideoView', () => {
     const view = new EditorView(document.querySelector('#editor'), {
       state,
       handleKeyPress() {
@@ -255,14 +394,14 @@ xdescribe('MultimediaPlugin', () => {
     expect(bindVideoView(doc(p('<cursor>')), view, true)).toBeDefined();
   });
 
-  it.skip('selectionObserver', () => {
+  it('selectionObserver', () => {
     const selection = new SelectionObserver(undefined as any);
     selection.disconnect();
     selection.takeRecords();
     selection._check();
   });
 
-  it.skip('EditorFocused', () => {
+  it('EditorFocused', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
@@ -273,18 +412,18 @@ xdescribe('MultimediaPlugin', () => {
     );
   });
 
-  it.skip('icon render', () => {
+  it('icon render', () => {
     const trans = new ImageFromURLCommand();
     trans.getEditor();
     const trans1 = new VideoFromURLCommand();
     trans1.getEditor();
   });
 
-  it.skip('uuid', () => {
+  it('uuid', () => {
     const id = uuid();
   });
 
-  it.skip('icon', () => {
+  it('icon', () => {
     const modSchema = new Schema({
       nodes: schema.spec.nodes,
     });
@@ -297,16 +436,17 @@ xdescribe('MultimediaPlugin', () => {
       }
     );
 
-    const imagenodeview = new ImageNodeView(editor.view.state.doc.nodeAt(0)!, view as any, () => 0, null as any);
-    imagenodeview.update(editor.view.state.doc.nodeAt(0)!, null as any);
+    const imagenodeview = new ImageNodeView((editor.view as any).state.doc.nodeAt(0)!, view as any, () => 0, null as any);
+    imagenodeview.update((editor.view as any).state.doc.nodeAt(0)!, null as any);
     imagenodeview.renderReactComponent();
     const demodom = document.createElement('div');
 
 
     imagenodeview._updateDOM(demodom);
     expect(() => {
-      new CustomNodeView(editor.view.state.doc.nodeAt(0)!, view as any, 1 as any, null as any);
+      new CustomNodeView((editor.view as any).state.doc.nodeAt(0)!, view as any, 1 as any, null as any);
     }).toThrow();
-  });*/
+  });
+ 
 });
 

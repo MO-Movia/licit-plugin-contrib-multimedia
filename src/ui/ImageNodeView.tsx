@@ -90,7 +90,7 @@ async function resolveURL(
   return src;
 }
 
-class ImageViewBody extends React.PureComponent {
+export class ImageViewBody extends React.PureComponent {
   props: NodeViewProps;
 
   _body = null;

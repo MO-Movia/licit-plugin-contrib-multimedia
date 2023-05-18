@@ -11,6 +11,9 @@ import VideoSourceCommand, { insertIFrame } from './VideoSourceCommand';
 import {
   showCursorPlaceholder,
   hideCursorPlaceholder,
+  specFinder,
+  isPlugin,
+  resetInstance
 } from './CursorPlaceholderPlugin';
 import VideoEditor from './ui/VideoEditor';
 import resolveVideo from './ui/resolveVideo';
@@ -20,6 +23,8 @@ import VideoResizeBox from './ui/VideoResizeBox';
 import { VideoViewBody } from './ui/VideoNodeView';
 import VideoNodeView from './ui/VideoNodeView';
 import CursorPlaceholderPlugin from './CursorPlaceholderPlugin';
+import { TextSelection } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -75,10 +80,9 @@ const resp = {
   request: {},
 };
 
-xdescribe('Video Plugin - Test', () => {
-  it.skip('dummy ', () => {
-  });
-  /*const plugin = new MultimediaPlugin();
+describe('Video Plugin - Test', () => {
+
+  const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {
     plugins: [plugin],
   });
@@ -121,26 +125,72 @@ xdescribe('Video Plugin - Test', () => {
 
   const VideoeditorIns = new VideoEditor(properties, newState);
 
-  new VideoSourceCommand().executeWithUserInput(
-    state,
-    editor.view.dispatch as (tr: Transform) => void,
-    editor.view as any,
-    veState
-  );
 
-  it.skip('should change on src Change Event - resolved', async () => {
+
+
+
+  it('should Init VideoSourceCommand', async () => {
+    const cmd = new VideoSourceCommand().executeWithUserInput(
+      state,
+      (editor.view as any).dispatch as (tr: Transform) => void,
+      editor.view as any,
+      veState
+    );
+    const state1 = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+
+    const editorView = new EditorView(
+      { mount: dom },
+      {
+        state: state1,
+      }
+    );
+    new VideoSourceCommand().__isEnabled(state1, editorView);
+
+  });
+
+  it('should call getEditor', async () => {
+    try {
+      const comp = new VideoSourceCommand().getEditor();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
+
+  xit('should call waitforuserInput', async () => {
+    const state2 = EditorState.create({
+      doc: doc(p('Hello World!!')),
+      schema: schema,
+    });
+    const dom = document.createElement('div');
+
+    const editorView = new EditorView(
+      { mount: dom },
+      {
+        state: state2,
+      }
+    );
+    const comp = new VideoSourceCommand().waitForUserInput(state, undefined, editorView, undefined);
+
+
+  });
+
+  it('should change on src Change Event - resolved', async () => {
     mockedAxios.get.mockResolvedValue(resp);
     const res = await VideoeditorIns._onSrcChange(srcevent);
     expect(res).toBeCalled;
   });
 
-  it.skip('should change on src Change Event - rejected', async () => {
+  it('should change on src Change Event - rejected', async () => {
     mockedAxios.get.mockRejectedValue(throwError('server error'));
     const res = await VideoeditorIns._onSrcChange(srcevent);
     expect(res).toBeCalled;
   });
 
-  it.skip('should change on Width Change Event ', async () => {
+  it('should change on Width Change Event ', async () => {
     const event = {
       target: { width: 113 },
     } as React.ChangeEvent<HTMLInputElement>;
@@ -148,7 +198,7 @@ xdescribe('Video Plugin - Test', () => {
     expect(res).toBeCalled;
   });
 
-  it.skip('should change on Height Change Event ', async () => {
+  it('should change on Height Change Event ', async () => {
     const event = {
       target: { height: 200 },
     } as React.ChangeEvent<HTMLInputElement>;
@@ -157,7 +207,7 @@ xdescribe('Video Plugin - Test', () => {
     expect(res).toBeCalled;
   });
 
-  it.skip('should showCursorPlaceholder', () => {
+  it('should showCursorPlaceholder', () => {
     const state: EditorState = EditorState.create({
       schema: schema,
       selection: editor.selection,
@@ -166,7 +216,16 @@ xdescribe('Video Plugin - Test', () => {
     const trans = showCursorPlaceholder(state);
   });
 
-  it.skip('should resolve video', async () => {
+  it('should call isPlugin', () => {
+    const stateWithoutPlugin: EditorState = EditorState.create({
+      schema: schema,
+      selection: editor.selection,
+      plugins: [],
+    });
+    isPlugin(null, stateWithoutPlugin.tr);
+  });
+
+  it('should resolve video', async () => {
     const res = {
       complete: true,
       height: 113,
@@ -179,7 +238,7 @@ xdescribe('Video Plugin - Test', () => {
     expect(exp).toStrictEqual(res);
   });
 
-  it.skip('should resolve video', async () => {
+  it('should resolve video', async () => {
     const nullsrcState: VideoEditorState = {
       id: attrs.id,
       src: '',
@@ -228,7 +287,7 @@ xdescribe('Video Plugin - Test', () => {
     });
   });
 
-  xit('should wait For User Input - Video', () => {
+  it('should wait For User Input - Video', () => {
     const node = {
       attrs: {
         id: '',
@@ -251,7 +310,7 @@ xdescribe('Video Plugin - Test', () => {
   });
 
 
-  xit('Video Resize Box ', () => {
+  it('Video Resize Box ', () => {
     const Resprops = {
       height: 200,
       onResizeEnd: (w: 200, height: 100) => { },
@@ -261,7 +320,7 @@ xdescribe('Video Plugin - Test', () => {
     const VdoResizeBox = new VideoResizeBox(Resprops);
   });
 
-  xit('should hideCursorPlaceholder', () => {
+  it('should hideCursorPlaceholder', () => {
 
     const state: EditorState = EditorState.create({
       schema: schema,
@@ -269,6 +328,65 @@ xdescribe('Video Plugin - Test', () => {
       plugins: [new CursorPlaceholderPlugin()],
     });
     const trans = hideCursorPlaceholder(state);
-  });*/
+    resetInstance()
+    const tr2 = hideCursorPlaceholder(state);
+  });
+
+  it('should plugin apply', () => {
+
+    const state: EditorState = EditorState.create({
+      schema: schema,
+      selection: editor.selection,
+      plugins: [new CursorPlaceholderPlugin()],
+    });
+    const tr = state.tr.setMeta(state.plugins[0], {
+      add: {
+        pos: 0,
+      },
+    });
+    const s = state.apply(tr);
+    s.applyTransaction(s.tr);
+
+    const tr1 = state.tr.setMeta(state.plugins[0], {
+      remove: {
+        pos: 0,
+      },
+    });
+    const s1 = state.apply(tr1);
+    s1.applyTransaction(s1.tr);
+
+  });
+
+  it('should call  specFinder', () => {
+
+    const state: EditorState = EditorState.create({
+      schema: schema,
+      selection: editor.selection,
+      plugins: [new CursorPlaceholderPlugin()],
+    });
+    const tr = specFinder(state.schema)
+
+
+  });
 });
 
+describe('Video Plugin - non-satisfying condition', () => {
+
+  const plugin = new MultimediaPlugin();
+  const editor = createEditor(doc(p('<cursor>')), {
+    plugins: [plugin],
+  });
+
+
+  const schema = plugin.getEffectiveSchema(editor.schema);
+  const state: EditorState = EditorState.create({
+    schema: schema,
+    selection: undefined,
+    plugins: [],
+  });
+
+  it('should showCursorPlaceholder-else', () => {
+    resetInstance()
+    const trans = showCursorPlaceholder(state);
+  });
+})

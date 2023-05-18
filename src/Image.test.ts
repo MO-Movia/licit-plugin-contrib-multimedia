@@ -1,9 +1,9 @@
-import { screen } from '@testing-library/dom';
+//import * as myModule from './ui/ImageNodeView';
 import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { MultimediaPlugin } from './index';
-import resolveImage from './ui/resolveImage';
+import resolveImage, * as resolveImageMod from './ui/resolveImage';
 import ImageSourceCommand, { insertImage } from './ImageSourceCommand';
 import * as ImgNodSpec from './ImageNodeSpec';
 import * as resolveImg from './ui/resolveImage';
@@ -19,7 +19,9 @@ import ImageURLEditor, { ImageEditorProps } from './ui/ImageURLEditor';
 import ImageInlineEditor from './ui/ImageInlineEditor';
 import { EditorView } from 'prosemirror-view';
 import ImageNodeSpec from './ImageNodeSpec';
-import ImageResizeBox from './ui/ImageResizeBox';
+
+import * as ImgNodView from './ui/ImageNodeView';
+
 class TestPlugin extends Plugin {
   constructor() {
     super({
@@ -59,13 +61,13 @@ const newstate: EditorState = EditorState.create({
 
 
 
-const selection = TextSelection.create(editor.view.state.doc, 0, 0);
-const tr = editor.view.state.tr.setSelection(selection);
-editor.view.updateState(
-  editor.view.state.reconfigure({ plugins: [plugin, new TestPlugin()] })
+const selection = TextSelection.create((editor.view as any).state.doc, 0, 0);
+const tr = (editor.view as any).state.tr.setSelection(selection);
+(editor.view as any).updateState(
+  (editor.view as any).state.reconfigure({ plugins: [plugin, new TestPlugin()] })
 );
 
-editor.view.dispatch(tr);
+(editor.view as any).dispatch(tr);
 const newstate1: EditorState = EditorState.create({
   schema: schema,
   selection: selection,
@@ -76,7 +78,7 @@ const srcevent = {
 } as React.ChangeEvent<HTMLInputElement>;
 
 
-xdescribe('MultimediaPlugin', () => {
+describe('MultimediaPlugin', () => {
   it('should handle Image', () => {
     const schema = plugin.getEffectiveSchema(editor.schema);
 
@@ -84,8 +86,8 @@ xdescribe('MultimediaPlugin', () => {
 
     ImgSrcCmd.executeWithUserInput(
       state,
-      editor.view.dispatch as (tr: Transform) => void,
-      editor.view  as any,
+      (editor.view as any).dispatch as (tr: Transform) => void,
+      editor.view as any,
       ImageArgs
     );
     ImgSrcCmd.__isEnabled(state, editor.view as any);
@@ -142,20 +144,20 @@ xdescribe('MultimediaPlugin', () => {
   });
 });
 
-xdescribe('Image Node View ', () => {
+describe('Image Node View ', () => {
   it('should handle View', () => {
-    const Vplugin = new MultimediaPlugin();
+    const MMplugin = new MultimediaPlugin();
     const editor = createEditor(doc(p('<cursor>')), {
-      plugins: [Vplugin],
+      plugins: [MMplugin],
     });
 
-    const schema = Vplugin.getEffectiveSchema(editor.schema);
+    const schema = MMplugin.getEffectiveSchema(editor.schema);
 
     const modSchema = new Schema({
       nodes: schema.spec.nodes,
     });
 
-    const effSchema = Vplugin.getEffectiveSchema(modSchema);
+    const effSchema = MMplugin.getEffectiveSchema(modSchema);
     const newNode = effSchema.node(effSchema.nodes.paragraph);
     const newruntime = editor.view['runtime'];
     const foc = {
@@ -179,37 +181,10 @@ xdescribe('Image Node View ', () => {
     });
     expect(ImageUploadPlaceholderPlugin).toBeDefined();
   });
-  it('should resolve Image - onLoad', async () => {
-    const res = {
-      complete: true,
-      height: 400,
-      naturalHeight: 400,
-      naturalWidth: 200,
-      src: 'https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400',
-      width: 200,
-    };
 
-    const isBodyMock = jest.spyOn(resolveImg, 'isBody');
-    isBodyMock.mockImplementation((body) => {
-      return false;
-    });
-    global.document.createElement = (function (create) {
-      return function () {
-        const element = create.apply(this, arguments);
-
-        if (element.tagName === 'IMG') {
-          setTimeout(() => {
-            element.onload(new Event('load'));
-          }, 100);
-        }
-        return element;
-      };
-    })(document.createElement);
-    await resolveImage(res.src);
-  });
 });
 
-xit('should resolve Image - Img Instance', async () => {
+it('should resolve Image - Img Instance', async () => {
   const res = {
     complete: true,
     height: 400,
@@ -239,7 +214,7 @@ xit('should resolve Image - Img Instance', async () => {
   await resolveImage(res.src);
 });
 
-xdescribe('ImageEditor ', () => {
+describe('ImageEditor ', () => {
   const attrs = {
     id: '',
     align: null,
@@ -266,11 +241,19 @@ xdescribe('ImageEditor ', () => {
   const newState = state.apply(
     insertImage(state.tr, schema, ImgState.src) as Transaction);
   const ImgeditorIns = new ImageURLEditor(properties, newState);
+  ImgeditorIns._didSrcChange();
+ 
 
   it('should change on src Change Event', async () => {
 
 
     const fn = ImgeditorIns._onSrcChange(srcevent);
+    expect(fn).toBeCalled;
+  });
+  it('should check on src Change Event', async () => {
+
+
+    const fn = ImgeditorIns._didSrcChange();
     expect(fn).toBeCalled;
   });
 
@@ -338,14 +321,101 @@ xdescribe('ImageEditor ', () => {
   });
 });
 
-xdescribe('Image Resize Box ', () => {
-  it('should render Image Resize Box', () => {
-    const Props = {
+describe('resolveImage ', () => {
+  it('should resolve Image - onLoad', async () => {
+    const res = {
+      complete: true,
       height: 400,
-      onResizeEnd: (w: 200, height: 113) => { },
+      naturalHeight: 400,
+      naturalWidth: 200,
       src: 'https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400',
       width: 200,
     };
-    const ImgResBox = new ImageResizeBox(Props);
+
+    await resolveImage(res.src);
   });
 });
+
+describe('Image Node View ', () => {
+  it('should change attrs', () => {
+    const MMplugin = new MultimediaPlugin();
+    const editor = createEditor(doc(p('<cursor>')), {
+      plugins: [MMplugin],
+    });
+
+    const schema = MMplugin.getEffectiveSchema(editor.schema);
+
+    const modSchema = new Schema({
+      nodes: schema.spec.nodes,
+    });
+
+    const effSchema = MMplugin.getEffectiveSchema(modSchema);
+    const newNode = effSchema.node(effSchema.nodes.paragraph);
+    //const newruntime = editor.view['runtime'];
+
+    const dom = document.createElement('div');
+    document.body.appendChild(dom);
+    const view = new EditorView(
+      { mount: dom },
+      {
+        state: state,
+      }
+    );
+    newNode.attrs =
+      { active: true, crop: false, rotate: false };
+   
+    const newState = EditorState.create({ doc: schema.nodeFromJSON({"type":"doc","attrs":{"layout":null,"padding":null,"width":null,"counterFlags":null},"content":[{"type":"paragraph","attrs":{"align":null,"color":null,"id":null,"indent":null,"lineSpacing":null,"paddingBottom":null,"paddingTop":null},"content":[{"type":"image","attrs":{"align":null,"alt":"","crop":false,"height":null,"rotate":false,"src":"https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400","title":"","width":null,"fitToParent":0}}]}]}), plugins:[new MultimediaPlugin()] });
+    
+    view.updateState(newState);
+
+    const spyresolveImage = jest.spyOn(resolveImageMod, 'default');
+    spyresolveImage.mockResolvedValue({
+      complete: true,
+      height: 200,
+      naturalHeight: 10,
+      naturalWidth: 10,
+      src: "https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400",
+      width: 150,
+    });
+    
+jest.mock('./ui/ImageNodeView', () => ({
+  myFunction: jest.fn().mockReturnValue(true),
+}));
+    // const spyImgNodView = jest.spyOn(ImgNodView, 'isActive');
+    // spyImgNodView.mockReturnValue(true);
+
+    const foc={
+      focused: true,
+      readOnly:false,
+      // Image Proxy
+      canProxyImageSrc: (src: string) => true,
+      getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+    
+      // Image Upload
+      canUploadImage: () => true,
+      uploadImage: jest.fn().mockResolvedValue( {
+        height: 200,
+        id: "Test-1",
+        src: "",
+        width: 150,
+      }),
+    
+      // Comments
+      canComment: () => true,
+      createCommentThreadID: () => "Test-ID",
+    
+      // External HTML
+      canLoadHTML: () => true,
+      loadHTML: jest.fn().mockResolvedValue("baz"),
+    
+    }
+const editFoc={...editor.view,...foc}
+    const ImageNdView = new ImageNodeView(newNode,editFoc as any, () => 10, []);
+    
+  });
+
+
+});
+
+
+

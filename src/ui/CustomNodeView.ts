@@ -26,7 +26,7 @@ const SELECTED_NODE_CLASS_NAME = 'ProseMirror-selectednode';
 const mountedViews = new Set<CustomNodeView>();
 const pendingViews = new Set<CustomNodeView>();
 
-function onMutation(_mutations, observer: MutationObserver): void {
+export function onMutation(_mutations, observer: MutationObserver): void {
   const root = document.body;
   if (!root) {
     return;
@@ -59,7 +59,7 @@ function onMutation(_mutations, observer: MutationObserver): void {
 
 // Workaround to get in-selection views selected.
 // See https://discuss.prosemirror.net/t/copy-selection-issue-with-the-image-node/1673/2;
-function onSelection(_entries: [], observer: SelectionObserver): void {
+export function onSelection(_entries: [], observer: SelectionObserver): void {
   if (!window.getSelection) {
     console.warn('window.getSelection() is not supported');
     observer.disconnect();
