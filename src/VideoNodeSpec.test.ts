@@ -19,6 +19,7 @@ const node = {
 describe('VideoNodeSpec', () => {
   it('dom should have matching node attributes', () => {
     const outputspec = VideoNodeSpec.toDOM(node as any);
+    expect(outputspec).toEqual(["iframe", { "align": null, "allow": "autoplay", "allowFullScreen": true, "alt": "", "crop": null, "frameBorder": "0", "height": 113, "id": "", "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": "", "width": 200 }]);
   });
 
   it('parse dom attributes', () => {
@@ -55,6 +56,7 @@ describe('VideoNodeSpec', () => {
     attrs.src = dom.getAttribute('src');
     attrs.width = dom.getAttribute('width');
     const getAttrs = VideoNodeSpec.parseDOM[0].getAttrs(dom);
+    expect(getAttrs).toEqual({ "align": "right", "alt": null, "crop": null, "height": 113, "id": null, "marginLeft": null, "marginTop": null, "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": null, "width": 200 });
   });
 
 
@@ -93,6 +95,7 @@ describe('VideoNodeSpec', () => {
     attrs.width = dom.getAttribute('width');
 
     const getAttrs = VideoNodeSpec.parseDOM[0].getAttrs(dom);
+    expect(getAttrs).toEqual({ "align": "left", "alt": null, "crop": null, "height": 113, "id": null, "marginLeft": null, "marginTop": null, "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": null, "width": 200 });
   });
   it('parse dom attributes', () => {
     const dom = document.createElement('span');
@@ -129,6 +132,7 @@ describe('VideoNodeSpec', () => {
     attrs.width = dom.getAttribute('width');
 
     const getAttrs = VideoNodeSpec.parseDOM[0].getAttrs(dom);
+    expect(getAttrs).toEqual({ "align": "block", "alt": null, "crop": null, "height": 113, "id": null, "marginLeft": null, "marginTop": null, "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": null, "width": 200 });
   });
 
   it('parse dom attributes', () => {
@@ -166,6 +170,7 @@ describe('VideoNodeSpec', () => {
     attrs.width = dom.getAttribute('width');
 
     const getAttrs = VideoNodeSpec.parseDOM[0].getAttrs(dom);
+    expect(getAttrs).toEqual({ "align": "right", "alt": null, "crop": null, "height": 113, "id": null, "marginLeft": null, "marginTop": null, "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": null, "width": 200 });
   });
 });
 
