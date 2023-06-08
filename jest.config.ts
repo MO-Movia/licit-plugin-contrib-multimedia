@@ -44,8 +44,7 @@ export default {
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: undefined,
-  coverageThreshold: {global: {branches: 80, functions: 80, lines: 80}},
+  coverageThreshold: {global:{branches:80,functions:80,lines:80,},},
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
@@ -106,14 +105,16 @@ export default {
   // Use this configuration option to add custom reporters to Jest
   reporters: [
     'default',
-    [
-      'jest-junit',
-      {
-        outputDirectory: 'coverage',
-        outputName: 'TESTS.xml',
-      },
-    ],
-  ],
+      [
+        'jest-junit',
+        {
+          outputDirectory: 'coverage',
+          outputName: 'TESTS.xml'
+        }
+      ]
+    ]
+    ,
+
   // Automatically reset mock state between every test
   // resetMocks: false,
 
