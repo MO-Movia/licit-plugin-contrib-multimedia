@@ -92,6 +92,7 @@ module.exports = {
     MutationRecord: false,
     URL: false,
     React:false,
+    HTMLImageElement: true
   },
   overrides: [
     {
