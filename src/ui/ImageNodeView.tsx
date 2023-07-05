@@ -57,6 +57,36 @@ type ImageState = {
   originalSize: OriginalSize,
 }
 
+const IMG_CACHE: {[url:string]: string | Promise<string>} = {};
+
+/**
+ * Memo image to only re-render as absolutely necessary
+ *  */
+const IMAGE_MEMO = React.memo(
+  (props: {src: string, align: string, height: number, width: number}) => (
+    <React.Fragment>
+  <img
+    alt=""
+    className="molm-czi-image-view-body-img"
+    data-align={props.align}
+    height={props.height}
+    src={props.src}
+    width={props.width} />
+    </React.Fragment>
+), (a, b) =>
+  {
+    const check =  a === b ||
+  (
+    a.align === b.align &&
+    a.height === b.height &&
+    a.width === b.width &&
+    a.src === b.src
+  );
+  console.log('Memo check: ', check, a, b);
+  return check;
+}
+);
+
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el): number {
   // Ideally, the image should bot be wider then its containing element.
@@ -85,13 +115,17 @@ async function resolveURL(
   runtime: EditorRuntime,
   src: string
 ): Promise<string> {
+  if (IMG_CACHE[src]) {
+    return IMG_CACHE[src];
+  }
   if (!runtime) {
     return src;
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
   if (src && getProxyImageSrc && canProxyImageSrc?.(src)) {
-    return getProxyImageSrc(src)
+    IMG_CACHE[src] = getProxyImageSrc(src)
       .catch(() => src);
+    return IMG_CACHE[src];
   }
   return src;
 }
@@ -251,13 +285,12 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
         title={errorTitle}
       >
         <span className="molm-czi-image-view-body-img-clip" style={clipStyle}>
-          <span style={imageStyle}>
-            <img
+          <span id={this._id} style={imageStyle}>
+          <img
               alt=""
               className="molm-czi-image-view-body-img"
               data-align={align}
               height={height}
-              id={`${this._id}-img`}
               src={src}
               width={width}
             />
@@ -328,8 +361,10 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
       return;
     }
 
-    this.setState({ originalSize: DEFAULT_ORIGINAL_SIZE });
     const src = this.props.node.attrs.src;
+    if (src === this.state.originalSize?.src) {
+      return; // already resolved
+    }
     const url = await resolveURL(
       this.props.editorView.runtime as EditorRuntime,
       src
@@ -369,8 +404,12 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
     // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
-    const origSelection = NodeSelection.create(tr.doc, selection.from - 1);
-    tr = tr.setSelection(origSelection);
+    try {
+      const origSelection = NodeSelection.create(tr.doc, selection.from);
+      tr = tr.setSelection(origSelection);
+    } catch (error) {
+      // Ignore if can't select
+    }
     editorView.dispatch(tr);
   };
 
