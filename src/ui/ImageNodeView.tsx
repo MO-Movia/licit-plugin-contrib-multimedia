@@ -59,34 +59,6 @@ type ImageState = {
 
 const IMG_CACHE: {[url:string]: string | Promise<string>} = {};
 
-/**
- * Memo image to only re-render as absolutely necessary
- *  */
-const IMAGE_MEMO = React.memo(
-  (props: {src: string, align: string, height: number, width: number}) => (
-    <React.Fragment>
-  <img
-    alt=""
-    className="molm-czi-image-view-body-img"
-    data-align={props.align}
-    height={props.height}
-    src={props.src}
-    width={props.width} />
-    </React.Fragment>
-), (a, b) =>
-  {
-    const check =  a === b ||
-  (
-    a.align === b.align &&
-    a.height === b.height &&
-    a.width === b.width &&
-    a.src === b.src
-  );
-  console.log('Memo check: ', check, a, b);
-  return check;
-}
-);
-
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el): number {
   // Ideally, the image should bot be wider then its containing element.
