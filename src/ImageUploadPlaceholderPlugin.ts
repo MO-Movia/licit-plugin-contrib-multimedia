@@ -32,7 +32,7 @@ function isImageFileType(file: File): boolean {
   return file && IMAGE_FILE_TYLES.has(file.type);
 }
 
-function findImageUploadPlaceholder(
+export function findImageUploadPlaceholder(
   placeholderPlugin: ImageUploadPlaceholderPlugin,
   state: EditorState,
   id: Record<string,unknown>

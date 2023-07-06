@@ -41,7 +41,7 @@ const ResizeDirection = {
   top_left: setSize,
 };
 
-class VideoResizeBoxControl extends React.PureComponent {
+export class VideoResizeBoxControl extends React.PureComponent {
   props: {
     boxID: string;
     config;

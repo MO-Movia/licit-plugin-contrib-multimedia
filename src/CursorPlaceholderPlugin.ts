@@ -60,6 +60,9 @@ export function specFinder(spec: Record<string, unknown>): boolean {
   return spec.id === PLACE_HOLDER_ID;
 }
 
+export function resetInstance() {
+  singletonInstance = null;
+}
 function findCursorPlaceholderPos(state: EditorState): number | null {
   if (!singletonInstance) {
     return null;
