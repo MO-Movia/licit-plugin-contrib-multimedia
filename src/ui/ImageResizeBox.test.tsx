@@ -4,9 +4,9 @@ import Adapter from '@cfaester/enzyme-adapter-react-18';
 import ImageResizeBox, { ImageResizeBoxControl } from './ImageResizeBox';
 import React from 'react';
 
-import { EditorState } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
-import { schema } from "prosemirror-schema-basic";
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { schema } from 'prosemirror-schema-basic';
 import { MultimediaPlugin } from '..';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -16,12 +16,12 @@ describe('Image Resize Box', () => {
     const ImageResizeProps = {
       height: 150,
       onResizeEnd: (w: 120, height: 200) => { },
-      src: "",
+      src: '',
       width: 180,
       fitToParent: false
-    }
+    };
     const wrapper = Enzyme.shallow(<ImageResizeBox {...ImageResizeProps} />);
-    let ImageResizeBoxIns = wrapper.instance();
+    const ImageResizeBoxIns = wrapper.instance();
     //  ImageResizeBoxIns.render();
     wrapper.find('img').simulate('click');
   });
@@ -29,19 +29,19 @@ describe('Image Resize Box', () => {
     const ImageResizeProps = {
       height: 150,
       onResizeEnd: (w: 120, height: 200) => { },
-      src: "",
+      src: '',
       width: 180,
       fitToParent: true
-    }
+    };
     const wrapper = Enzyme.shallow(<ImageResizeBox {...ImageResizeProps} />);
-    let ImageResizeBoxIns = wrapper.instance();
+    const ImageResizeBoxIns = wrapper.instance();
     //  ImageResizeBoxIns.render();
     wrapper.find('img').simulate('click');
   });
 });
 
 
-describe("Node attribute update", () => {
+describe('Node attribute update', () => {
   let editorView;
 
   beforeEach(() => {
@@ -55,7 +55,7 @@ describe("Node attribute update", () => {
       selection: editor.selection,
       plugins: [new MultimediaPlugin()],
     });
-    const domNode = document.createElement("div");
+    const domNode = document.createElement('div');
     editorView = new EditorView(domNode, {
       state,
       dispatchTransaction(transaction) {
@@ -68,7 +68,7 @@ describe("Node attribute update", () => {
     editorView.destroy();
   });
 
-  it("should update node attributes", () => {
+  it('should update node attributes', () => {
     const { tr } = editorView.state;
     const nodeType = schema.nodes.heading;
     const attrs = { active: true, crop: null, rotate: null };
@@ -103,20 +103,20 @@ describe('image resizebox control', () => {
     onResizeEnd: (w: 1, height: 1) => { },
     width: 10,
     fitToParent: true
-  })
+  });
 
   it('should be defined', () => {
     expect(imageresizeboxcontrol).toBeDefined();
-  })
+  });
 
   it('should handle componentWillUnmount ', () => {
     const spy = jest.spyOn(imageresizeboxcontrol, '_end');
     imageresizeboxcontrol.componentWillUnmount();
     expect(spy).toHaveBeenCalled();
-  })
+  });
 
   it('should handle render ', () => {
-    const mockElement = document.createElement('div')
+    const mockElement = document.createElement('div');
     mockElement.className = 'boxid';
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
@@ -127,7 +127,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -136,12 +136,12 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
-    expect(imageresizeboxcontrol.render()).toBeDefined()
-  })
+    }) as unknown as React.MouseEvent);
+    expect(imageresizeboxcontrol.render()).toBeDefined();
+  });
   it('should handle _syncSize ', () => {
-    const mockElement = document.createElement('div')
-    mockElement.className = 'boxid'
+    const mockElement = document.createElement('div');
+    mockElement.className = 'boxid';
 
 
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
@@ -153,7 +153,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -162,13 +162,13 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
-    expect(imageresizeboxcontrol._syncSize()).toBeUndefined()
-  })
+    }) as unknown as React.MouseEvent);
+    expect(imageresizeboxcontrol._syncSize()).toBeUndefined();
+  });
 
   it('should handle _syncSize branch coverage', () => {
-    const mockElement = document.createElement('div')
-    mockElement.className = 'boxid'
+    const mockElement = document.createElement('div');
+    mockElement.className = 'boxid';
 
 
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
@@ -180,7 +180,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -189,14 +189,14 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
+    }) as unknown as React.MouseEvent);
     imageresizeboxcontrol._active = false;
-    expect(imageresizeboxcontrol._syncSize()).toBeUndefined()
-  })
+    expect(imageresizeboxcontrol._syncSize()).toBeUndefined();
+  });
 
   it('should handle _start ', () => {
-    const mockElement = document.createElement('div')
-    mockElement.className = 'boxid'
+    const mockElement = document.createElement('div');
+    mockElement.className = 'boxid';
 
 
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
@@ -208,7 +208,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -217,7 +217,7 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
+    }) as unknown as React.MouseEvent);
     expect(imageresizeboxcontrol._start(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -226,11 +226,11 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)).toBeUndefined()
-  })
+    }) as unknown as React.MouseEvent)).toBeUndefined();
+  });
   it('should handle _onMouseMove   ', () => {
-    const mockElement = document.createElement('div')
-    mockElement.className = 'boxid'
+    const mockElement = document.createElement('div');
+    mockElement.className = 'boxid';
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
@@ -240,7 +240,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -249,7 +249,7 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
+    }) as unknown as React.MouseEvent);
     imageresizeboxcontrol._onMouseMove(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -258,14 +258,14 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }))
+    }));
     expect(imageresizeboxcontrol._x2).toBe(50);
     expect(imageresizeboxcontrol._y2).toBe(50);
-  })
+  });
 
   it('should handle _onMouseUp', () => {
-    const mockElement = document.createElement('div')
-    mockElement.className = 'boxid'
+    const mockElement = document.createElement('div');
+    mockElement.className = 'boxid';
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
@@ -275,7 +275,7 @@ describe('image resizebox control', () => {
       onResizeEnd: (w: 1, height: 1) => { },
       width: 10,
       fitToParent: true
-    }
+    };
     imageresizeboxcontrol._onMouseDown(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
@@ -284,7 +284,7 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }) as unknown as React.MouseEvent)
+    }) as unknown as React.MouseEvent);
     const spy1 = jest.spyOn(imageresizeboxcontrol, '_end');
     imageresizeboxcontrol._onMouseUp(new MouseEvent('click', {
       bubbles: true,
@@ -294,7 +294,7 @@ describe('image resizebox control', () => {
       clientX: 50,
       clientY: 50,
 
-    }))
+    }));
     expect(spy1).toHaveBeenCalled();
-  })
-})
+  });
+});

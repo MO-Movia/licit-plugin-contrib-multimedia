@@ -4,14 +4,14 @@ import {
     Slice,
     ResolvedPos,
     Node,
-    
+
     Node as PMNode,
   } from 'prosemirror-model';
   import { EditorState } from 'prosemirror-state';
   import { createEditor, doc, p } from 'jest-prosemirror';
 import {EditorFocused} from './CustomNodeView';
 import ImageNodeView from './ImageNodeView';
-import schema from "prosemirror-schema-basic";
+import schema from 'prosemirror-schema-basic';
 import ResizeObserver from './ResizeObserver';
 
 describe('ImageNodeView',()=>{
@@ -47,7 +47,7 @@ describe('ImageNodeView',()=>{
         schema:mockSchema,
         plugins: []
       });
-      const el = document.createElement('div')
+      const el = document.createElement('div');
       const mockEditorView = {
         state:editorState,
         dispatch: jest.fn(),
@@ -55,7 +55,7 @@ describe('ImageNodeView',()=>{
           top})=>{return {
             pos: 1,
             inside: 1,
-          }},
+          };},
         destroy: jest.fn(),
         dom:el
       };
@@ -72,7 +72,7 @@ describe('ImageNodeView',()=>{
           align:'left',
           fitToParent:'fit'
         }
-      }) as unknown as Node
+      }) as unknown as Node;
     const imagenodeview = new ImageNodeView( mockImageNode,editorfocused,()=>1,[]);
     imagenodeview.props = {
         decorations: [],
@@ -81,12 +81,12 @@ describe('ImageNodeView',()=>{
         node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
         selected: true,
         focused: true
-      }
+      };
     it('should be defined',()=>{
         expect(imagenodeview).toBeDefined();
-    })
+    });
 
-})
+});
 describe('Image view body',()=>{
     const mockSchema = new Schema({
         nodes: {
@@ -120,7 +120,7 @@ describe('Image view body',()=>{
         schema:mockSchema,
         plugins: []
       });
-      const el = document.createElement('div')
+      const el = document.createElement('div');
       const mockEditorView = {
         state:editorState,
         dispatch: jest.fn(),
@@ -128,7 +128,7 @@ describe('Image view body',()=>{
           top})=>{return {
             pos: 1,
             inside: 1,
-          }},
+          };},
         destroy: jest.fn(),
         dom:el
       };
@@ -145,7 +145,7 @@ describe('Image view body',()=>{
           align:'left',
           fitToParent:'fit'
         }
-      }) as unknown as Node
+      }) as unknown as Node;
     const imageviewbody = new ImageViewBody( mockImageNode,editorfocused);
     imageviewbody.props = {
         decorations: [],
@@ -154,17 +154,17 @@ describe('Image view body',()=>{
         node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
         selected: true,
         focused: true
-      }
-      imageviewbody._inlineEditor = {close:()=>{}}
+      };
+      imageviewbody._inlineEditor = {close:()=>{}};
     it('should be defined',()=>{
         expect(imageviewbody).toBeDefined();
-    })
+    });
 
     it('should handle componentWillUnmount',()=>{
         const spy = jest.spyOn(imageviewbody._inlineEditor,'close');
-        imageviewbody.componentWillUnmount()
+        imageviewbody.componentWillUnmount();
         expect(spy).toHaveBeenCalled();
-    })
+    });
     it('should handle componentDidUpdate',()=>{
 
         const spy = jest.spyOn(imageviewbody,'_resolveOriginalSize');
@@ -175,9 +175,9 @@ describe('Image view body',()=>{
             node: {attrs:{ src:'test'}} as unknown as Node,
             selected: true,
             focused: true
-          })
+          });
         expect(spy).toHaveBeenCalled();
-    })
+    });
     it('should handle render',()=>{
 
         const spy = jest.spyOn(imageviewbody,'_resolveOriginalSize');
@@ -198,12 +198,12 @@ describe('Image view body',()=>{
             decorations: [],
             editorView: editorfocused,
             getPos: () => 1,
-            node: {attrs:{ src:'test',align:"left", crop:{width:100001}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
+            node: {attrs:{ src:'test',align:'left', crop:{width:100001}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
             selected: true,
             focused: true
-          }
+          };
         expect(imageviewbody.render()).toBeDefined();
-    })
+    });
     it('should handle render',()=>{
 
         const spy = jest.spyOn(imageviewbody,'_resolveOriginalSize');
@@ -224,77 +224,77 @@ describe('Image view body',()=>{
             decorations: [],
             editorView: editorfocused,
             getPos: () => 1,
-            node: {attrs:{ src:'test',align:"left", crop:{width:100001,heigt:10,left:10,top:10}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
+            node: {attrs:{ src:'test',align:'left', crop:{width:100001,heigt:10,left:10,top:10}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
             selected: true,
             focused: true
-          }
+          };
         expect(imageviewbody.render()).toBeDefined();
-    })
+    });
 
     it('should handle isUnaltered when !crop and !rotate',()=>{
         expect(imageviewbody.isUnaltered(true,null,null)).toBeTruthy();
-    })
+    });
 
     it('should handle calcWidthAndHeight when !height',()=>{
         expect(imageviewbody.calcWidthAndHeight(10,null,5,2)).toStrictEqual({width:10,height:2});
-    })
+    });
     it('should handle calcWidthAndHeight when !height',()=>{
         expect(imageviewbody.calcWidthAndHeight(null,10,5,2)).toStrictEqual({width:50,height:10});
-    })
+    });
 
     it('should handle _renderInlineEditor',()=>{
        //const spy2 = jest.spyOn(imageviewbody._inlineEditor,'close');
-        const elem = document.createElement('div')
-        elem.innerHTML = ``
+        const elem = document.createElement('div');
+        elem.innerHTML = '';
         const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
 
-        
+
         expect(imageviewbody._renderInlineEditor()).toBeUndefined();
         spy.mockRestore();
-    })
+    });
     it('should handle _renderInlineEditor',()=>{
         //const spy2 = jest.spyOn(imageviewbody._inlineEditor,'close');
-         const elem = document.createElement('div')
-         elem.setAttribute('data-active','true')
+         const elem = document.createElement('div');
+         elem.setAttribute('data-active','true');
          const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
-         
+
          expect(imageviewbody._renderInlineEditor()).toBeUndefined();
-     })
+     });
      it('should handle _renderInlineEditor else statement',()=>{
         imageviewbody._inlineEditor = {update:()=>{}};
-         const elem = document.createElement('div')
-         elem.setAttribute('data-active','true')
+         const elem = document.createElement('div');
+         elem.setAttribute('data-active','true');
          const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
-         
+
          expect(imageviewbody._renderInlineEditor()).toBeUndefined();
-     })
+     });
      it('should handle _onResizeEnd ',()=>{
-        
+
         const mockSchema = new Schema({
             nodes: {
-              doc: { content: "block+" },
-              paragraph: { content: "inline*", group: "block" },
-              text: { group: "inline" },
+              doc: { content: 'block+' },
+              paragraph: { content: 'inline*', group: 'block' },
+              text: { group: 'inline' },
               image: { inline: true, attrs: { align:{default:null},
-              fitToParent:{default:null}}, group: "inline" }, // Define your custom node type
+              fitToParent:{default:null}}, group: 'inline' }, // Define your custom node type
             },
             marks: {},
-          });;
+          });
           //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
           const editorState = EditorState.create({
             doc: mockSchema.nodeFromJSON({
-                type: "doc",
+                type: 'doc',
                 content: [
                   {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "image",
+                            type: 'image',
                             attrs: {
-                              src: "/path/to/image.jpg",
+                              src: '/path/to/image.jpg',
                             },
                           },
-                
+
                     ],
                   },
                 ],
@@ -302,8 +302,8 @@ describe('Image view body',()=>{
               schema: mockSchema,
           });
           //const mockTr = editorState.tr.insertText("Hello world", 0, 5);
-          
-          const el = document.createElement('div')
+
+          const el = document.createElement('div');
           const mockEditorView = {
             state:editorState,
             dispatch: jest.fn(),
@@ -311,7 +311,7 @@ describe('Image view body',()=>{
               top})=>{return {
                 pos: 1,
                 inside: 1,
-              }},
+              };},
             destroy: jest.fn(),
             dom:el
           };
@@ -321,14 +321,14 @@ describe('Image view body',()=>{
             readOnly: true,
             ...mockEditorView
           } as unknown as EditorFocused;
-    
+
           const mockImageNode = Node.fromJSON(mockSchema,{
             type: 'image',
             attrs: {
               align:'left',
               fitToParent:'fit'
             }
-          }) as unknown as Node
+          }) as unknown as Node;
         const imageviewbody = new ImageViewBody( mockImageNode,editorfocused);
         imageviewbody.props = {
             decorations: [],
@@ -337,38 +337,38 @@ describe('Image view body',()=>{
             node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
             selected: true,
             focused: true
-          }
-          imageviewbody._inlineEditor = {close:()=>{}}
+          };
+          imageviewbody._inlineEditor = {close:()=>{}};
          expect(imageviewbody._onResizeEnd(10,20)).toBeUndefined();
-     })
+     });
 
      it('should handle _onChange  ',()=>{
-        
+
         const mockSchema = new Schema({
             nodes: {
-              doc: { content: "block+" },
-              paragraph: { content: "inline*", group: "block" },
-              text: { group: "inline" },
+              doc: { content: 'block+' },
+              paragraph: { content: 'inline*', group: 'block' },
+              text: { group: 'inline' },
               image: { inline: true, attrs: { align:{default:null},
-              fitToParent:{default:null}}, group: "inline" }, // Define your custom node type
+              fitToParent:{default:null}}, group: 'inline' }, // Define your custom node type
             },
             marks: {},
-          });;
+          });
           //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
           const editorState = EditorState.create({
             doc: mockSchema.nodeFromJSON({
-                type: "doc",
+                type: 'doc',
                 content: [
                   {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "image",
+                            type: 'image',
                             attrs: {
-                              src: "/path/to/image.jpg",
+                              src: '/path/to/image.jpg',
                             },
                           },
-                
+
                     ],
                   },
                 ],
@@ -376,8 +376,8 @@ describe('Image view body',()=>{
               schema: mockSchema,
           });
           //const mockTr = editorState.tr.insertText("Hello world", 0, 5);
-          
-          const el = document.createElement('div')
+
+          const el = document.createElement('div');
           const mockEditorView = {
             state:editorState,
             dispatch: jest.fn(),
@@ -385,7 +385,7 @@ describe('Image view body',()=>{
               top})=>{return {
                 pos: 1,
                 inside: 1,
-              }},
+              };},
             destroy: jest.fn(),
             dom:el
           };
@@ -395,14 +395,14 @@ describe('Image view body',()=>{
             readOnly: true,
             ...mockEditorView
           } as unknown as EditorFocused;
-    
+
           const mockImageNode = Node.fromJSON(mockSchema,{
             type: 'image',
             attrs: {
               align:'left',
               fitToParent:'fit'
             }
-          }) as unknown as Node
+          }) as unknown as Node;
         const imageviewbody = new ImageViewBody( mockImageNode,editorfocused);
         imageviewbody.props = {
             decorations: [],
@@ -411,24 +411,24 @@ describe('Image view body',()=>{
             node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
             selected: true,
             focused: true
-          }
-          imageviewbody._inlineEditor = {close:()=>{}}
+          };
+          imageviewbody._inlineEditor = {close:()=>{}};
          expect(imageviewbody._onChange({align:'left'})).toBeUndefined();
          imageviewbody._mounted = true;
          expect(imageviewbody._onChange({align:'left'})).toBeUndefined();
          expect(imageviewbody._onChange(null)).toBeUndefined();
-     })
+     });
 
      it('should handle _onBodyRef ',()=>{
         imageviewbody._body =document.createElement('div');
         const spy = jest.spyOn(ResizeObserver,'unobserve');
         imageviewbody._onBodyRef(null);
         expect(spy).toHaveBeenCalled();
-     })
+     });
 
      it('should handle _onBodyResize  ',()=>{
         imageviewbody._body =document.createElement('div');
-        
+
         const ivb = imageviewbody._onBodyResize({
             target: document.createElement('div'),
             contentRect:{
@@ -443,10 +443,10 @@ describe('Image view body',()=>{
               }
           });
         expect(ivb).toBeUndefined();
-     })
+     });
      it('should handle _onBodyResize  ',()=>{
         imageviewbody._body =document.createElement('div');
-        
+
         const ivb = imageviewbody._onBodyResize({
             target: document.createElement('div'),
             contentRect:{
@@ -461,10 +461,10 @@ describe('Image view body',()=>{
               }
           });
         expect(ivb).toBeUndefined();
-     })
+     });
      it('should handle _onBodyResize branch coverage',()=>{
-        imageviewbody._body = null
-        
+        imageviewbody._body = null;
+
         const ivb = imageviewbody._onBodyResize({
             target: document.createElement('div'),
             contentRect:{
@@ -479,13 +479,13 @@ describe('Image view body',()=>{
               }
           });
         expect(ivb).toBeUndefined();
-     })
+     });
 
 
 
 
 
-})
+});
 // describe('isActive',()=>{
 //     it('should handle isActive',()=>{
 //         expect(isActive(null,{},null,{complete:'test'})).toBeTruthy();

@@ -51,7 +51,7 @@ const dummyEditorFocused: EditorFocused = {
     focus: jest.fn(),
     hasFocus: jest.fn(),
 
-} as unknown as EditorFocused
+} as unknown as EditorFocused;
 const dummyNodeWithImage = {
     type: {
         name: 'image',
@@ -86,7 +86,7 @@ const dummyNodeWithImage = {
 };
 
 describe('video node view ', () => {
-    it("should handle VideoNodeView", () => {
+    it('should handle VideoNodeView', () => {
         const props = {
             decorations: [],
             editorView: dummyEditorFocused as EditorFocused,
@@ -94,15 +94,15 @@ describe('video node view ', () => {
             node: Node,
             selected: true,
             focused: true
-        }
+        };
         const videonodeview = new VideoNodeView(dummyNodeWithImage as unknown as Node,
             dummyEditorFocused as EditorFocused,
             () => 1,
             []
-        )
+        );
         expect(videonodeview).toBeDefined();
-    })
-    it("should handle update", () => {
+    });
+    it('should handle update', () => {
         const props = {
             decorations: [],
             editorView: dummyEditorFocused as EditorFocused,
@@ -110,21 +110,21 @@ describe('video node view ', () => {
             node: Node,
             selected: true,
             focused: true
-        }
+        };
         const videonodeview = new VideoNodeView(dummyNodeWithImage as unknown as Node,
             dummyEditorFocused as EditorFocused,
             () => 1,
             []
-        )
+        );
         expect(videonodeview.update(dummyNodeWithImage as unknown as Node, [])).toBeTruthy();
-    })
+    });
 
-})
+});
 
 describe('Video view body', () => {
     const videoviewbody = new VideoViewBody(dummyNodeWithImage as unknown as Node,
         dummyEditorFocused as EditorFocused
-    )
+    );
     videoviewbody.props = {
         decorations: [],
         editorView: dummyEditorFocused as EditorFocused,
@@ -132,23 +132,23 @@ describe('Video view body', () => {
         node: dummyNodeWithImage as unknown as Node,
         selected: true,
         focused: true
-    }
+    };
     videoviewbody._inlineEditor = { close: () => true };
     it('should handle video view body', () => {
 
 
         expect(videoviewbody).toBeDefined();
-    })
+    });
 
     it('should handle componentDidMount', () => {
 
         expect(videoviewbody.componentDidMount()).toBeUndefined();
-    })
+    });
     it('should handle componentWillUnmount', () => {
         const spy = jest.spyOn(videoviewbody._inlineEditor, 'close');
-        videoviewbody.componentWillUnmount()
+        videoviewbody.componentWillUnmount();
         expect(spy).toHaveBeenCalled();
-    })
+    });
 
     it('should handle componentDidUpdate', () => {
         const dummyNodeWithImage1 = {
@@ -192,9 +192,9 @@ describe('Video view body', () => {
             node: dummyNodeWithImage1 as unknown as Node,
             selected: true,
             focused: true
-        })
+        });
         expect(spy).toHaveBeenCalled();
-    })
+    });
     it('should handle componentDidUpdate _mounted - true', () => {
         const dummyNodeWithImage1 = {
             type: {
@@ -237,9 +237,9 @@ describe('Video view body', () => {
             node: dummyNodeWithImage1 as unknown as Node,
             selected: true,
             focused: true
-        })
+        });
         expect(spy).toHaveBeenCalled();
-    })
+    });
     it('should handle getScaleSize', () => {
         const dummyNodeWithImage2 = {
             type: {
@@ -284,16 +284,16 @@ describe('Video view body', () => {
             node: dummyNodeWithImage2 as unknown as Node,
             selected: true,
             focused: true
-        }
+        };
 
         expect(videoviewbody.getScaleSize()).toStrictEqual({
-            "height": 24,
-            "loading": true,
-            "scale": 1,
-            "width": 10,
+            'height': 24,
+            'loading': true,
+            'scale': 1,
+            'width': 10,
         }
         );
-    })
+    });
     it('should handle getScaleSize with width and !height', () => {
         const dummyNodeWithImage2 = {
             type: {
@@ -356,15 +356,15 @@ describe('Video view body', () => {
             node: dummyNodeWithImage2 as unknown as Node,
             selected: true,
             focused: true
-        }
+        };
 
         expect(videoviewbody.getScaleSize()).toStrictEqual({
-            "height": 0,
-            "loading": false,
-            "scale": 1,
-            "width": 10,
+            'height': 0,
+            'loading': false,
+            'scale': 1,
+            'width': 10,
         });
-    })
+    });
     it('should handle getScaleSize with height and !width', () => {
         const dummyNodeWithImage2 = {
             type: {
@@ -427,16 +427,16 @@ describe('Video view body', () => {
             node: dummyNodeWithImage2 as unknown as Node,
             selected: true,
             focused: true
-        }
+        };
 
         expect(videoviewbody.getScaleSize()).toStrictEqual({
 
-            "height": 10,
-            "loading": false,
-            "scale": 1,
-            "width": 0,
+            'height': 10,
+            'loading': false,
+            'scale': 1,
+            'width': 0,
         });
-    })
+    });
     it('should handle getScaleSize with !height and !width', () => {
         const dummyNodeWithImage2 = {
             type: {
@@ -499,16 +499,16 @@ describe('Video view body', () => {
             node: dummyNodeWithImage2 as unknown as Node,
             selected: true,
             focused: true
-        }
+        };
 
         expect(videoviewbody.getScaleSize()).toStrictEqual({
 
-            "height": 10,
-            "loading": false,
-            "scale": 1,
-            "width": 10,
+            'height': 10,
+            'loading': false,
+            'scale': 1,
+            'width': 10,
         });
-    })
+    });
     it('should handle getScaleSize with width > maxSize.width && (!crop || crop.width > maxSize.width', () => {
         const dummyNodeWithImage2 = {
             type: {
@@ -571,16 +571,16 @@ describe('Video view body', () => {
             node: dummyNodeWithImage2 as unknown as Node,
             selected: true,
             focused: true
-        }
+        };
 
         expect(videoviewbody.getScaleSize()).toStrictEqual({
 
-            "height": 5,
-            "loading": false,
-            "scale": 1,
-            "width": 10,
+            'height': 5,
+            'loading': false,
+            'scale': 1,
+            'width': 10,
         });
-    })
+    });
 
     it('should handle getClipStyle', () => {
         const dummyNodeWithImage1 = {
@@ -625,23 +625,23 @@ describe('Video view body', () => {
                 width: 20,
                 height: 34,
                 complete: true
-            })
+            });
         expect(getclipstyle).toStrictEqual({
-            "clipStyle": {
-                "height": "33.33333333333333px",
-                "transform": "rotate(50rad)",
-                "width": "20px",
+            'clipStyle': {
+                'height': '33.33333333333333px',
+                'transform': 'rotate(50rad)',
+                'width': '20px',
             },
-            "imageStyle": {
-                "display": "inline-block",
-                "height": "20px",
-                "left": "46.666666666666664px",
-                "position": "relative",
-                "top": "60px",
-                "width": "10px",
+            'imageStyle': {
+                'display': 'inline-block',
+                'height': '20px',
+                'left': '46.666666666666664px',
+                'position': 'relative',
+                'top': '60px',
+                'width': '10px',
             },
         });
-    })
+    });
 
     it('should render', () => {
         const dummyNodeWithImage1 = {
@@ -679,7 +679,7 @@ describe('Video view body', () => {
 
 
         expect(videoviewbody.render()).toBeDefined();
-    })
+    });
 
     it('should handle _renderInlineEditor', () => {
         const dummyNodeWithImage1 = {
@@ -736,21 +736,21 @@ describe('Video view body', () => {
             node: dummyNodeWithImage1 as unknown as Node,
             selected: true,
             focused: true
-        }
-        const spy = jest.spyOn(videoviewbody, '_onChange').mockImplementation(() => { })
+        };
+        const spy = jest.spyOn(videoviewbody, '_onChange').mockImplementation(() => { });
         videoviewbody._inlineEditor = { close: () => true, update: (editorprops) => true };
 
 
         expect(videoviewbody._renderInlineEditor()).toBeUndefined();
-    })
+    });
 
     it('should handle _onBodyRef', () => {
       const mockReactInstance = document.createElement('div');
         expect(videoviewbody._onBodyRef(mockReactInstance as unknown as  React.ReactInstance)).toBeUndefined();
-    })
+    });
     it('should handle _onBodyRef when ref is undefined', () => {
           expect(videoviewbody._onBodyRef(undefined)).toBeUndefined();
-      })
+      });
       it('should handle _onBodyResize ', () => {
         const mockReactInstance = document.createElement('div');
         const resizeobserverentry = {
@@ -766,7 +766,7 @@ describe('Video view body', () => {
           };
          videoviewbody._body = document.createElement('div');
           expect(videoviewbody._onBodyResize(resizeobserverentry)).toBeUndefined();
-      })
+      });
       it('should handle _onBodyResize with this._body undefined ', () => {
         const mockReactInstance = document.createElement('div');
         const resizeobserverentry = {
@@ -782,7 +782,7 @@ describe('Video view body', () => {
           };
          videoviewbody._body = undefined;
           expect(videoviewbody._onBodyResize(resizeobserverentry)).toBeUndefined();
-      })
+      });
 
       it('should handle render',()=>{
 
@@ -804,12 +804,12 @@ describe('Video view body', () => {
             decorations: [],
             editorView: dummyEditorFocused as EditorFocused,
             getPos: () => 1,
-            node: {attrs:{ src:'test',align:"left", crop:{width:100001}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
+            node: {attrs:{ src:'test',align:'left', crop:{width:100001}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
             selected: true,
             focused: true
-          }
+          };
         expect(videoviewbody.render()).toBeDefined();
-    })
+    });
     it('should handle render',()=>{
 
         const spy = jest.spyOn(videoviewbody,'_resolveOriginalSize');
@@ -830,66 +830,66 @@ describe('Video view body', () => {
             decorations: [],
             editorView: dummyEditorFocused as EditorFocused,
             getPos: () => 1,
-            node: {attrs:{ src:'test',align:"left", crop:{width:100001,heigt:10,left:10,top:10}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
+            node: {attrs:{ src:'test',align:'left', crop:{width:100001,heigt:10,left:10,top:10}, rotate:'left',width:100001, height:10,fitToParent:true}} as unknown as Node,
             selected: true,
             focused: true
-          }
+          };
         expect(videoviewbody.render()).toBeDefined();
-    })
+    });
     it('should handle _renderInlineEditor',()=>{
         //const spy2 = jest.spyOn(imageviewbody._inlineEditor,'close');
-         const elem = document.createElement('div')
-         elem.innerHTML = ``
+         const elem = document.createElement('div');
+         elem.innerHTML = '';
          const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
- 
-         
+
+
          expect(videoviewbody._renderInlineEditor()).toBeUndefined();
          spy.mockRestore();
-     })
+     });
      it('should handle _renderInlineEditor',()=>{
          //const spy2 = jest.spyOn(imageviewbody._inlineEditor,'close');
-          const elem = document.createElement('div')
-          elem.setAttribute('data-active','true')
+          const elem = document.createElement('div');
+          elem.setAttribute('data-active','true');
           const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
-          
+
           expect(videoviewbody._renderInlineEditor()).toBeUndefined();
-      })
+      });
       it('should handle _renderInlineEditor else statement',()=>{
         videoviewbody._inlineEditor = {update:()=>{}};
-          const elem = document.createElement('div')
-          elem.setAttribute('data-active','true')
+          const elem = document.createElement('div');
+          elem.setAttribute('data-active','true');
           const spy = jest.spyOn(document,'getElementById').mockReturnValue(elem);
-          
+
           expect(videoviewbody._renderInlineEditor()).toBeUndefined();
-      })
+      });
 
       it('should handle _onResizeEnd ',()=>{
-        
+
         const mockSchema = new Schema({
             nodes: {
-              doc: { content: "block+" },
-              paragraph: { content: "inline*", group: "block" },
-              text: { group: "inline" },
+              doc: { content: 'block+' },
+              paragraph: { content: 'inline*', group: 'block' },
+              text: { group: 'inline' },
               image: { inline: true, attrs: { align:{default:null},
-              fitToParent:{default:null}}, group: "inline" }, // Define your custom node type
+              fitToParent:{default:null}}, group: 'inline' }, // Define your custom node type
             },
             marks: {},
-          });;
+          });
           //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
           const editorState = EditorState.create({
             doc: mockSchema.nodeFromJSON({
-                type: "doc",
+                type: 'doc',
                 content: [
                   {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "image",
+                            type: 'image',
                             attrs: {
-                              src: "/path/to/image.jpg",
+                              src: '/path/to/image.jpg',
                             },
                           },
-                
+
                     ],
                   },
                 ],
@@ -897,8 +897,8 @@ describe('Video view body', () => {
               schema: mockSchema,
           });
           //const mockTr = editorState.tr.insertText("Hello world", 0, 5);
-          
-          const el = document.createElement('div')
+
+          const el = document.createElement('div');
           const mockEditorView = {
             state:editorState,
             dispatch: jest.fn(),
@@ -906,7 +906,7 @@ describe('Video view body', () => {
               top})=>{return {
                 pos: 1,
                 inside: 1,
-              }},
+              };},
             destroy: jest.fn(),
             dom:el
           };
@@ -916,14 +916,14 @@ describe('Video view body', () => {
             readOnly: true,
             ...mockEditorView
           } as unknown as EditorFocused;
-    
+
           const mockImageNode = Node.fromJSON(mockSchema,{
             type: 'image',
             attrs: {
               align:'left',
               fitToParent:'fit'
             }
-          }) as unknown as Node
+          }) as unknown as Node;
         const videoviewbody = new VideoViewBody( mockImageNode,editorfocused);
         videoviewbody.props = {
             decorations: [],
@@ -932,38 +932,38 @@ describe('Video view body', () => {
             node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
             selected: true,
             focused: true
-          }
-          videoviewbody._inlineEditor = {close:()=>{}}
+          };
+          videoviewbody._inlineEditor = {close:()=>{}};
          expect(videoviewbody._onResizeEnd(10,20)).toBeUndefined();
-     })
+     });
 
      it('should handle _onChange  ',()=>{
-        
+
         const mockSchema = new Schema({
             nodes: {
-              doc: { content: "block+" },
-              paragraph: { content: "inline*", group: "block" },
-              text: { group: "inline" },
+              doc: { content: 'block+' },
+              paragraph: { content: 'inline*', group: 'block' },
+              text: { group: 'inline' },
               image: { inline: true, attrs: { align:{default:null},
-              fitToParent:{default:null}}, group: "inline" }, // Define your custom node type
+              fitToParent:{default:null}}, group: 'inline' }, // Define your custom node type
             },
             marks: {},
-          });;
+          });
           //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
           const editorState = EditorState.create({
             doc: mockSchema.nodeFromJSON({
-                type: "doc",
+                type: 'doc',
                 content: [
                   {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "image",
+                            type: 'image',
                             attrs: {
-                              src: "/path/to/image.jpg",
+                              src: '/path/to/image.jpg',
                             },
                           },
-                
+
                     ],
                   },
                 ],
@@ -971,8 +971,8 @@ describe('Video view body', () => {
               schema: mockSchema,
           });
           //const mockTr = editorState.tr.insertText("Hello world", 0, 5);
-          
-          const el = document.createElement('div')
+
+          const el = document.createElement('div');
           const mockEditorView = {
             state:editorState,
             dispatch: jest.fn(),
@@ -980,7 +980,7 @@ describe('Video view body', () => {
               top})=>{return {
                 pos: 1,
                 inside: 1,
-              }},
+              };},
             destroy: jest.fn(),
             dom:el
           };
@@ -990,14 +990,14 @@ describe('Video view body', () => {
             readOnly: true,
             ...mockEditorView
           } as unknown as EditorFocused;
-    
+
           const mockImageNode = Node.fromJSON(mockSchema,{
             type: 'image',
             attrs: {
               align:'left',
               fitToParent:'fit'
             }
-          }) as unknown as Node
+          }) as unknown as Node;
         const videoviewbody = new VideoViewBody( mockImageNode,editorfocused);
         videoviewbody.props = {
             decorations: [],
@@ -1006,14 +1006,14 @@ describe('Video view body', () => {
             node: {attrs:{ align:'left',fitToParent:'fit'}} as unknown as Node,
             selected: true,
             focused: true
-          }
-          videoviewbody._inlineEditor = {close:()=>{}}
+          };
+          videoviewbody._inlineEditor = {close:()=>{}};
          expect(videoviewbody._onChange({align:'left'})).toBeUndefined();
          videoviewbody._mounted = true;
          expect(videoviewbody._onChange({align:'left'})).toBeUndefined();
          expect(videoviewbody._onChange(null)).toBeUndefined();
-     })
+     });
 
 
 
-})
+});

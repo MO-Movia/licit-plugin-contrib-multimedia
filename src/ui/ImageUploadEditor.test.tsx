@@ -10,24 +10,24 @@ const ImageUploadEditorProps = {
   runtime: {
     // Image Proxy
     canProxyImageSrc: (src: string) => true,
-    getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+    getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
     // Image Upload
     canUploadImage: () => true,
     uploadImage: jest.fn().mockResolvedValue({
       height: 200,
-      id: "Test-1",
-      src: "",
+      id: 'Test-1',
+      src: '',
       width: 150,
     }),
 
     // Comments
     canComment: () => true,
-    createCommentThreadID: () => "Test-ID",
+    createCommentThreadID: () => 'Test-ID',
 
     // External HTML
     canLoadHTML: () => true,
-    loadHTML: jest.fn().mockResolvedValue("baz"),
+    loadHTML: jest.fn().mockResolvedValue('baz'),
 
   },
   close: () => { }
@@ -38,7 +38,7 @@ describe('Image Upload Editor', () => {
   it('should render Image Upload Editor', () => {
 
     const wrapper = Enzyme.shallow(<ImageUploadEditor {...ImageUploadEditorProps} />);
-    let ImageUploadEditorIns = wrapper.instance();
+    const ImageUploadEditorIns = wrapper.instance();
     ImageUploadEditorIns.componentWillUnmount();
     const file = new File(['hello world'], 'test.txt', { type: 'text/plain' });
     wrapper.find('input').simulate('change', { target: { files: [file] } });
@@ -51,24 +51,24 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
         canUploadImage: () => true,
         uploadImage: jest.fn().mockResolvedValue({
           height: 200,
-          id: "Test-1",
-          src: "",
+          id: 'Test-1',
+          src: '',
           width: 150,
         }),
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -82,24 +82,24 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
         canUploadImage: () => true,
         uploadImage: jest.fn().mockResolvedValue({
           height: 200,
-          id: "Test-1",
-          src: "",
+          id: 'Test-1',
+          src: '',
           width: 150,
         }),
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -110,7 +110,7 @@ describe('Image Upload Editor', () => {
       id: '',
       pending: false,
 
-    }
+    };
     expect(imageuploadeditor.render()).toBeDefined();
 
   });
@@ -119,24 +119,24 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
         canUploadImage: () => true,
         uploadImage: jest.fn().mockResolvedValue({
           height: 200,
-          id: "Test-1",
-          src: "",
+          id: 'Test-1',
+          src: '',
           width: 150,
         }),
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -157,24 +157,24 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
         canUploadImage: () => true,
         uploadImage: jest.fn().mockResolvedValue({
           height: 200,
-          id: "Test-1",
-          src: "",
+          id: 'Test-1',
+          src: '',
           width: 150,
         }),
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -193,18 +193,18 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
 
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -221,18 +221,18 @@ describe('Image Upload Editor', () => {
       runtime: {
         // Image Proxy
         canProxyImageSrc: (src: string) => true,
-        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve("http:image.png")),
+        getProxyImageSrc: jest.fn().mockReturnValue(Promise.resolve('http:image.png')),
 
         // Image Upload
 
 
         // Comments
         canComment: () => true,
-        createCommentThreadID: () => "Test-ID",
+        createCommentThreadID: () => 'Test-ID',
 
         // External HTML
         canLoadHTML: () => true,
-        loadHTML: jest.fn().mockResolvedValue("baz"),
+        loadHTML: jest.fn().mockResolvedValue('baz'),
 
       },
       close: () => { }
@@ -257,4 +257,4 @@ describe('image upload editor', () => {
 
   });
 
-})
+});

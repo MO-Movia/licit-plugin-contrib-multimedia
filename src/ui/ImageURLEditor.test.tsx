@@ -11,7 +11,7 @@ describe('Image URL Editor', () => {
   const ImageEditorProps = {
     close: () => { },
     initialValue: {}
-  }
+  };
   const imageurleditor = new ImageURLEditor(ImageEditorProps);
   it('should be defined', () => {
     expect(imageurleditor).toBeDefined();
@@ -19,21 +19,21 @@ describe('Image URL Editor', () => {
   });
 
   it('should handle componentWillUnmount', () => {
-    imageurleditor.componentWillUnmount()
+    imageurleditor.componentWillUnmount();
     expect(imageurleditor._unmounted).toBeTruthy();
 
   });
 
   it('should handle render', () => {
     //imageurleditor.componentWillUnmount()
-    imageurleditor.state = { src: '', validValue: { src: '' } }
+    imageurleditor.state = { src: '', validValue: { src: '' } };
     expect(imageurleditor.render()).toBeDefined();
 
   });
 
   it('should handle render branch coverage', () => {
     //imageurleditor.componentWillUnmount()
-    imageurleditor.state = { src: '', validValue: null }
+    imageurleditor.state = { src: '', validValue: null };
     expect(imageurleditor.render()).toBeDefined();
 
   });
@@ -82,7 +82,7 @@ describe('Image URL Editor', () => {
   const ImageEditorProps1 = {
     close: () => { },
     initialValue:null
-  }
+  };
   const imageurleditor1 = new ImageURLEditor(ImageEditorProps1);
   it('should be defined', () => {
     expect(imageurleditor1.state).toBeDefined();

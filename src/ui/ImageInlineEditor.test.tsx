@@ -32,7 +32,7 @@ describe('ImageInlineEditor', () => {
   };
 
 
-  const props = { onSelect: (val) => { }, value: imageInlineEditorValue, editorView: view1 }
+  const props = { onSelect: (val) => { }, value: imageInlineEditorValue, editorView: view1 };
   const wrapper = shallow(<ImageInlineEditor {...props} />);
   //const imageinlineeditor = new ImageInlineEditor(props)  ;
 
@@ -68,7 +68,7 @@ describe('ImageInlineEditor', () => {
   it('should render', () => {
     const imageinlineeditor = new ImageInlineEditor((val) => { }, imageInlineEditorValue);
     expect(imageinlineeditor).toBeDefined();
-  })
+  });
   it('should render', () => {
     const imageinlineeditor = new ImageInlineEditor((val) => { }, imageInlineEditorValue);
     imageinlineeditor.props = {
@@ -80,15 +80,15 @@ describe('ImageInlineEditor', () => {
     };
 
     expect(imageinlineeditor.render()).toBeDefined();
-  })
+  });
 
   it('should handle parseLabel when input ""', () => {
     const imageinlineeditor = new ImageInlineEditor((val) => { }, imageInlineEditorValue);
     expect(imageinlineeditor.parseLabel('')).toStrictEqual({
-      "icon": null,
-      "title": null,
+      'icon': null,
+      'title': null,
     });
-  })
+  });
 
   it('should handle _onClick ', () => {
     const imageinlineeditor = new ImageInlineEditor((val) => { }, imageInlineEditorValue);
@@ -99,8 +99,8 @@ describe('ImageInlineEditor', () => {
       },
       editorView: view1
     };
- const spy = jest.spyOn(imageinlineeditor.props,'onSelect')
-    imageinlineeditor._onClick ('align_test')
+ const spy = jest.spyOn(imageinlineeditor.props,'onSelect');
+    imageinlineeditor._onClick ('align_test');
     expect(spy).lastReturnedWith('align_test');
-  })
-})
+  });
+});

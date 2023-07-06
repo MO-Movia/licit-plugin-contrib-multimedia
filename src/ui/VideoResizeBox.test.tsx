@@ -11,11 +11,11 @@ describe('Video Resize Box', () => {
         const VideoResizeProps = {
             height: 150,
             onResizeEnd: (w: 120, height: 200) => { },
-            src: "",
+            src: '',
             width: 180
-        }
+        };
         const wrapper = Enzyme.shallow(<VideoResizeBox {...VideoResizeProps} />);
-        let VideoResizeBoxIns = wrapper.instance();
+        const VideoResizeBoxIns = wrapper.instance();
         //  VideoResizeBoxIns.render();
 
     });
@@ -24,23 +24,23 @@ describe('Video Resize Box control', () => {
     const videoresizeboxcontrol = new VideoResizeBoxControl({
         height: 150,
         onResizeEnd: (w: 120, height: 200) => { },
-        src: "",
+        src: '',
         width: 180
-    })
+    });
     it('should be defined', () => {
        expect(videoresizeboxcontrol).toBeDefined();
-      
+
     });
 
     it('should handle componentWillUnmount', () => {
         const spy = jest.spyOn(videoresizeboxcontrol,'_end');
-        videoresizeboxcontrol.componentWillUnmount()
+        videoresizeboxcontrol.componentWillUnmount();
         expect(spy).toHaveBeenCalled();
-       
+
      });
 
      it('should handle render ',()=>{
-        const mockElement = document.createElement('div')
+        const mockElement = document.createElement('div');
         mockElement.className = 'boxid';
 
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
@@ -51,8 +51,8 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10,
-        
-        }
+
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -60,15 +60,15 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
-        expect(videoresizeboxcontrol.render()).toBeDefined()
-      })
+
+        }) as unknown as React.MouseEvent);
+        expect(videoresizeboxcontrol.render()).toBeDefined();
+      });
       it('should handle _syncSize ',()=>{
-        const mockElement = document.createElement('div')
-        mockElement.className = 'boxid'
-    
-    
+        const mockElement = document.createElement('div');
+        mockElement.className = 'boxid';
+
+
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
         videoresizeboxcontrol.props = {
           boxID: 'boxid',
@@ -77,7 +77,7 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10,
-        }
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -85,15 +85,15 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
-        expect(videoresizeboxcontrol._syncSize()).toBeUndefined()
-      })
+
+        }) as unknown as React.MouseEvent);
+        expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
+      });
       it('should handle _syncSize branch coverage',()=>{
-        const mockElement = document.createElement('div')
-        mockElement.className = 'boxid'
-    
-    
+        const mockElement = document.createElement('div');
+        mockElement.className = 'boxid';
+
+
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
         videoresizeboxcontrol.props = {
           boxID: 'boxid',
@@ -102,7 +102,7 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10,
-        }
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -110,15 +110,15 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
-        expect(videoresizeboxcontrol._syncSize()).toBeUndefined()
-      })
+
+        }) as unknown as React.MouseEvent);
+        expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
+      });
       it('should handle _syncSize when !this._active',()=>{
-        const mockElement = document.createElement('div')
-        mockElement.className = 'boxid'
-    
-    
+        const mockElement = document.createElement('div');
+        mockElement.className = 'boxid';
+
+
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
         videoresizeboxcontrol.props = {
           boxID: 'boxid',
@@ -127,7 +127,7 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10,
-        }
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -135,14 +135,14 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
+
+        }) as unknown as React.MouseEvent);
         videoresizeboxcontrol._active = false;
-        expect(videoresizeboxcontrol._syncSize()).toBeUndefined()
-      })
+        expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
+      });
       it('should handle _onMouseMove   ',()=>{
-        const mockElement = document.createElement('div')
-        mockElement.className = 'boxid'
+        const mockElement = document.createElement('div');
+        mockElement.className = 'boxid';
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
         videoresizeboxcontrol.props = {
           boxID: 'boxid',
@@ -151,7 +151,7 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10
-        }
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -159,8 +159,8 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
+
+        }) as unknown as React.MouseEvent);
         videoresizeboxcontrol._onMouseMove(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -168,15 +168,15 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }))
+
+        }));
         expect( videoresizeboxcontrol._x2).toBe(50);
         expect( videoresizeboxcontrol._y2).toBe(50);
-      })
-    
+      });
+
       it('should handle _onMouseUp',()=>{
-        const mockElement = document.createElement('div')
-        mockElement.className = 'boxid'
+        const mockElement = document.createElement('div');
+        mockElement.className = 'boxid';
         jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
         videoresizeboxcontrol.props = {
           boxID: 'boxid',
@@ -185,8 +185,8 @@ describe('Video Resize Box control', () => {
           height: 10,
           onResizeEnd: (w: 1, height: 1) => {},
           width: 10
-        
-        }
+
+        };
         videoresizeboxcontrol._onMouseDown(new MouseEvent('click', {
           bubbles: true,
           cancelable: true,
@@ -194,8 +194,8 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
+
+        }) as unknown as React.MouseEvent);
         const spy1 = jest.spyOn(videoresizeboxcontrol,'_end');
         videoresizeboxcontrol._onMouseUp(new MouseEvent('click', {
           bubbles: true,
@@ -204,16 +204,16 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }))
+
+        }));
         expect(spy1).toHaveBeenCalled();
-      })
+      });
 
       it('should handle _start',()=>{
 
         const spy = jest.spyOn(videoresizeboxcontrol, '_end');
 
-        const mockElement = document.createElement('div')
+        const mockElement = document.createElement('div');
         videoresizeboxcontrol._el =mockElement;
 
         videoresizeboxcontrol.props = {
@@ -232,8 +232,8 @@ describe('Video Resize Box control', () => {
           screenY: 100,
           clientX: 50,
           clientY: 50,
-         
-        }) as unknown as React.MouseEvent)
+
+        }) as unknown as React.MouseEvent);
         expect(spy).toHaveBeenCalled();
-      })
+      });
 });
