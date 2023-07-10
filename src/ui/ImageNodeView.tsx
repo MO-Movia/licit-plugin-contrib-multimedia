@@ -11,6 +11,7 @@ import ImageResizeBox, { MIN_SIZE } from './ImageResizeBox';
 import {
   createPopUp,
   atAnchorBottomCenter,
+  PopUpHandle,
 } from '@modusoperandi/licit-ui-commands';
 import ResizeObserver from './ResizeObserver';
 import resolveImage from './resolveImage';
@@ -103,11 +104,11 @@ async function resolveURL(
 }
 
 export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState> {
-  props: NodeViewProps;
+  props!: NodeViewProps;
 
-  _body = null;
+  _body?: HTMLElement | React.ReactInstance;
   _id = uuid();
-  _inlineEditor = null;
+  _inlineEditor?: PopUpHandle;
   _mounted = false;
 
   state = {
@@ -127,8 +128,8 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
 
   componentWillUnmount(): void {
     this._mounted = false;
-    this._inlineEditor?.close();
-    this._inlineEditor = null;
+    this._inlineEditor?.close(undefined);
+    this._inlineEditor = undefined;
   }
 
   componentDidUpdate(prevProps: NodeViewProps): void {
@@ -302,7 +303,7 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
     if (!el || el.getAttribute('data-active') !== 'true') {
-      this._inlineEditor?.close?.();
+      this._inlineEditor?.close?.(undefined);
       return;
     }
 
@@ -385,7 +386,7 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
     editorView.dispatch(tr);
   };
 
-  _onChange = (value: { align: string }): void => {
+  _onChange = (value?: { align: string }): void => {
     if (!this._mounted) {
       return;
     }
@@ -409,7 +410,7 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
     editorView.dispatch(tr);
   };
 
-  _onBodyRef = (ref: React.ReactInstance): void => {
+  _onBodyRef = (ref?: React.ReactInstance): void => {
     if (ref) {
       this._body = ref;
       // Mounting

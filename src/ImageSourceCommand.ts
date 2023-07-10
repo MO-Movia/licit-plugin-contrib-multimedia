@@ -10,7 +10,7 @@ import {
   showCursorPlaceholder,
 } from './CursorPlaceholderPlugin';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { PopUpHandle, createPopUp } from '@modusoperandi/licit-ui-commands';
 
 import type { ImageLike } from './Types';
 
@@ -37,14 +37,14 @@ export function insertImage(tr: Transform, schema: Schema, src: string): Transfo
     title: '',
   };
 
-  const node = image.create(attrs, null, null);
+  const node = image.create(attrs, null);
   const frag = Fragment.from(node);
   tr = tr.insert(from, frag);
   return tr;
 }
 
 class ImageSourceCommand extends UICommand {
-  _popUp = null;
+  _popUp?: PopUpHandle;
 
   getEditor(): typeof React.Component {
     throw new Error('Not implemented');
@@ -54,20 +54,13 @@ class ImageSourceCommand extends UICommand {
     return this.__isEnabled(state, view);
   };
 
-
-  isPopUp(popup) {
-    if (popup) {
-      return true;
-    }
-    else { return false; }
-  }
   waitForUserInput = (
     state: EditorState,
     dispatch: (tr: Transform) => void,
     view: EditorView,
     _event?: React.SyntheticEvent
   ): Promise<unknown> => {
-    if (this.isPopUp(this._popUp)) {
+    if (this._popUp) {
       return Promise.resolve(undefined);
     }
 
@@ -81,7 +74,7 @@ class ImageSourceCommand extends UICommand {
         modal: true,
         onClose: (val) => {
           if (this._popUp) {
-            this._popUp = null;
+            this._popUp = undefined;
             resolve(val);
           }
         },
@@ -105,7 +98,7 @@ class ImageSourceCommand extends UICommand {
         tr = insertImage(tr, schema, src) as Transaction;
       }
       dispatch(tr);
-      view && view.focus();
+      view?.focus();
     }
 
     return false;

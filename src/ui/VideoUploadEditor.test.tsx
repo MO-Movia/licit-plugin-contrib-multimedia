@@ -1,6 +1,6 @@
 
 
-import Enzyme, { shallow } from 'enzyme';
+import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
 import VideoUploadEditor from './VideoUploadEditor';
@@ -9,8 +9,8 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const VideoUploadEditorProps = {
   runtime: { // Video Proxy
-    canProxyVideoSrc: (src: string) => true,
-    getProxyVideoSrc: (src: string) => 'http://video.mp4',
+    canProxyVideoSrc: (_src: string) => true,
+    getProxyVideoSrc: (_src: string) => 'http://video.mp4',
     getVideoSrc: jest.fn().mockReturnValue(Promise.resolve('http://video.mp4')),
 
     // Video Upload
@@ -22,12 +22,12 @@ const VideoUploadEditorProps = {
       width: 150,
     }),
   },
-  close: () => { }
+  close: () => undefined
 };
 const VideoUploadEdrProps = {
   runtime: { // Video Proxy
-    canProxyVideoSrc: (src: string) => false,
-    getProxyVideoSrc: (src: string) => 'http://video.mp4',
+    canProxyVideoSrc: (_src: string) => false,
+    getProxyVideoSrc: (_src: string) => 'http://video.mp4',
     getVideoSrc: jest.fn().mockReturnValue(Promise.resolve('http://video.mp4')),
 
     // Video Upload
@@ -36,7 +36,7 @@ const VideoUploadEdrProps = {
 
     }),
   },
-  close: () => { }
+  close: () => undefined
 };
 const testCases=[VideoUploadEditorProps,VideoUploadEdrProps];
 describe('Video Upload Editor', () => {
@@ -48,24 +48,8 @@ describe('Video Upload Editor', () => {
 
       const wrapper = Enzyme.shallow(<VideoUploadEditor {...testProps} />);
       const file = new File([''], 'test.mp4', { type: 'video/mp4' });
-      // // create a mock FormData object and append the video file
-      // const formData = new FormData();
-      // formData.append('video', file);
-
-      // // mock the XHR API
-      // const xhrMock = {
-      //   open: jest.fn(),
-      //   send: jest.fn(),
-      //   setRequestHeader: jest.fn(),
-      //   readyState: 4,
-      //   status: 200,
-      //   response: JSON.stringify({ success: true })
-      // };
-      // window.XMLHttpRequest = jest.fn(() => xhrMock);
-
 
       wrapper.find('input').simulate('change', { target: { files: [file] } });
-
     });
 });
 
@@ -73,8 +57,8 @@ describe('Video Upload Editor', () => {
 describe('Video Upload Editor', () => {
   const VideoUploadEditorProps = {
     runtime: { // Video Proxy
-      canProxyVideoSrc: (src: string) => true,
-      getProxyVideoSrc: (src: string) => 'http://video.mp4',
+      canProxyVideoSrc: (_src: string) => true,
+      getProxyVideoSrc: (_src: string) => 'http://video.mp4',
       getVideoSrc: jest.fn().mockReturnValue(Promise.resolve('http://video.mp4')),
 
       // Video Upload
@@ -86,7 +70,7 @@ describe('Video Upload Editor', () => {
         width: 150,
       }),
     },
-    close: () => { }
+    close: () => undefined
   };
 
  const videouploadeditor = new VideoUploadEditor(VideoUploadEditorProps);
@@ -94,6 +78,7 @@ describe('Video Upload Editor', () => {
     it('should render Video Upload Editor', () => {
 
      expect(videouploadeditor).toBeDefined();
+     expect(() => videouploadeditor._cancel()).not.toThrow();
 
     });
     it('should handle componentWillUnmount', () => {
@@ -124,7 +109,7 @@ describe('Video Upload Editor', () => {
 
      it('should handle _upload ', async() => {
       videouploadeditor.props = {
-      close: () => { }};
+      close: () => undefined};
 
       const file = new File([], 'test.mp4');
       const instance = await videouploadeditor._upload(file);
@@ -135,8 +120,8 @@ describe('Video Upload Editor', () => {
      });
      it('should handle _upload ', async() => {
       videouploadeditor.props = {  runtime: { // Video Proxy
-        canProxyVideoSrc: (src: string) => true,
-        getProxyVideoSrc: (src: string) => 'http://video.mp4',
+        canProxyVideoSrc: (_src: string) => true,
+        getProxyVideoSrc: (_src: string) => 'http://video.mp4',
         getVideoSrc: jest.fn().mockReturnValue(Promise.resolve('http://video.mp4')),
 
         // Video Upload
@@ -148,7 +133,7 @@ describe('Video Upload Editor', () => {
           width: 0,
         }),
       },
-      close: () => { }};
+      close: () => undefined};
 
       const file = new File([], 'test.mp4');
       const instance = await videouploadeditor._upload(file);
@@ -157,6 +142,5 @@ describe('Video Upload Editor', () => {
       expect(instance).toBeUndefined();
 
      });
-
 });
 

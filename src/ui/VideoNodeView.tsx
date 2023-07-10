@@ -65,9 +65,7 @@ function getMaxResizeWidth(el): number {
     node = node.parentElement;
   }
   if (
-    node &&
-    node.offsetParent &&
-    node.offsetParent.offsetWidth &&
+    node?.offsetParent?.offsetWidth &&
     node.offsetParent.offsetWidth > 0
   ) {
     const { offsetParent } = node;
@@ -109,7 +107,7 @@ export class VideoViewBody extends React.PureComponent {
 
   componentWillUnmount(): void {
     this._mounted = false;
-    this._inlineEditor && this._inlineEditor.close();
+    this._inlineEditor?.close();
     this._inlineEditor = null;
   }
 

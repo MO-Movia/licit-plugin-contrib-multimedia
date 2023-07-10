@@ -184,10 +184,10 @@ class CustomNodeView implements NodeView {
     pendingViews.delete(this);
   }
 
-  __renderReactComponent(): void {
+  __renderReactComponent(callback?: () => void): void {
     const { editorView, getPos } = this.props;
 
-    if (editorView.state && editorView.state.selection) {
+    if (editorView.state?.selection) {
       const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
@@ -197,7 +197,7 @@ class CustomNodeView implements NodeView {
       this.props.focused = false;
     }
 
-    ReactDOM.render(this.renderReactComponent(), this.dom);
+    ReactDOM.render(this.renderReactComponent(), this.dom, callback);
   }
 }
 

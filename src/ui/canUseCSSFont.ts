@@ -1,16 +1,15 @@
-const cached = {};
+const cached: {[fonst: string]: boolean} = {};
 
 export default function canUseCSSFont(fontName: string): Promise<boolean> {
   const doc = document;
 
-  if (Object.prototype.hasOwnProperty.call(cached, fontName)) {
+  if (cached[fontName]) {
     return Promise.resolve(cached[fontName]);
   }
 
   if (
-    !doc.fonts ||
-    !doc.fonts.check ||
-    !doc.fonts.ready ||
+    !doc.fonts?.check ||
+    !doc.fonts.ready?.then ||
     !doc.fonts.status ||
     !doc.fonts.values
   ) {

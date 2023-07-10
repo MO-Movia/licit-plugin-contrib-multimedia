@@ -1,24 +1,33 @@
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from 'prosemirror-model';
 
 const CSS_ROTATE_PATTERN = /rotate\(([0-9.]+)rad\)/i;
 const EMPTY_CSS_VALUE = new Set(['0%', '0pt', '0px']);
 
-export function getAttrs(dom: HTMLElement) {
-  const {cssFloat, display, marginTop, marginLeft} = dom.style;
-  let {width, height} = dom.style;
-  let align = dom.getAttribute('data-align') || dom.getAttribute('align');
+function getAlignment(dom: HTMLElement) {
+  const align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
+  const { cssFloat, display } = dom.style;
   if (align) {
-    align = /(left|right|center)/.test(align) ? align : null;
+    return /(left|right|center)/.test(align) ? align : null;
   } else if (cssFloat === 'left' && !display) {
-    align = 'left';
+    return 'left';
   } else if (cssFloat === 'right' && !display) {
-    align = 'right';
+    return 'right';
   } else if (!cssFloat && display === 'block') {
-    align = 'block';
+    return 'block';
   }
+  return null;
+}
 
-  width = width || dom.getAttribute('width');
-  height = height || dom.getAttribute('height');
+export function getAttrs(dom: string | HTMLElement) {
+  if (typeof dom === 'string') {
+    return false;
+  }
+  const {marginTop, marginLeft} = dom.style;
+  let {width, height} = dom.style;
+  const align = getAlignment(dom);
+
+  width = width || (dom.getAttribute('width') ?? '');
+  height = height || (dom.getAttribute('height') ?? '');
 
   const attrfitToParent = dom.getAttribute('fitToParent');
   let fitToParent = 0;
@@ -42,31 +51,26 @@ export function getAttrs(dom: HTMLElement) {
       marginTop &&
       !EMPTY_CSS_VALUE.has(marginTop)
     ) {
-      crop = {
-        width: parseInt(ps.width, 10) || 0,
-        height: parseInt(ps.height, 10) || 0,
-        left: parseInt(marginLeft, 10) || 0,
-        top: parseInt(marginTop, 10) || 0,
-      };
+      crop = makeCrop(ps, marginLeft, marginTop);
     }
     if (ps.transform) {
       // example: `rotate(1.57rad) translateZ(0px)`;
-      const mm = ps.transform.match(CSS_ROTATE_PATTERN);
-      if (mm && mm[1]) {
-        rotate = parseFloat(mm[1]) || null;
+      const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
+      if (mm?.[1]) {
+        rotate = parseFloat(mm[1]);
       }
     }
   }
 
   return {
     align,
-    alt: dom.getAttribute('alt') || null,
+    alt: dom.getAttribute('alt'),
     crop,
-    height: parseInt(height, 10) || null,
+    height: parseInt(height, 10),
     rotate,
-    src: dom.getAttribute('src') || null,
-    title: dom.getAttribute('title') || null,
-    width: parseInt(width, 10) || null,
+    src: dom.getAttribute('src'),
+    title: dom.getAttribute('title'),
+    width: parseInt(width, 10),
     fitToParent: fitToParent,
   };
 }
@@ -94,3 +98,12 @@ const ImageNodeSpec: NodeSpec = {
 };
 
 export default ImageNodeSpec;
+function makeCrop(ps: CSSStyleDeclaration, marginLeft: string, marginTop: string) {
+  return {
+    width: parseInt(ps.width, 10) || 0,
+    height: parseInt(ps.height, 10) || 0,
+    left: parseInt(marginLeft, 10) || 0,
+    top: parseInt(marginTop, 10) || 0,
+  };
+}
+
