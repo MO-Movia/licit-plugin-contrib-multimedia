@@ -86,7 +86,7 @@
     "react-test-renderer": "^18.2.0",
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^3.3.1",
-    "stylelint": "^14.14.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard": "^29.0.0",
     "stylelint-prettier": "^2.0.0",
     "terser-webpack-plugin": "^5.3.6",
