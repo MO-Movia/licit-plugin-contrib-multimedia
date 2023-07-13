@@ -7,7 +7,7 @@ import {v1 as uuid} from 'uuid';
 
 import './czi-image-resize-box.css';
 
-export type Props = {
+export type VideoResizeProps = {
   height: number;
   onResizeEnd: (w: number, height: number) => void;
   src: string;
@@ -30,6 +30,8 @@ function setSize(el: HTMLElement, width: number, height: number): void {
   el.style.height = Math.round(height) + 'px';
 }
 
+export type ResizeHadleDirection = 'top' | 'top_right' | 'right' | 'bottom_right' | 'bottom' | 'bottom_left' | 'left' | 'top_left';
+
 const ResizeDirection = {
   top: setHeight,
   top_right: setSize,
@@ -41,20 +43,19 @@ const ResizeDirection = {
   top_left: setSize,
 };
 
-class VideoResizeBoxControl extends React.PureComponent {
-  props: {
+export class VideoResizeBoxControl extends React.PureComponent {
+  props!: {
     boxID: string;
-    config;
-    direction: string;
+    direction: ResizeHadleDirection;
     height: number;
     onResizeEnd: (w: number, height: number) => void;
     width: number;
   };
 
   _active = false;
-  _el = null;
+  _el?: HTMLElement;
   _h = '';
-  _rafID = 0;
+  _rafID? = 0;
   _w = '';
   _x1 = 0;
   _x2 = 0;
@@ -141,10 +142,10 @@ class VideoResizeBoxControl extends React.PureComponent {
     el.style.width = this._w;
     el.style.height = this._h;
     el.className = 'molm-czi-image-resize-box';
-    this._el = null;
+    this._el = undefined;
 
     this._rafID && cancelAnimationFrame(this._rafID);
-    this._rafID = null;
+    this._rafID = undefined;
   }
 
   _onMouseDown = (e: React.MouseEvent): void => {
@@ -178,7 +179,7 @@ class VideoResizeBoxControl extends React.PureComponent {
 }
 
 class VideoResizeBox extends React.PureComponent {
-  props: Props;
+  props!: VideoResizeProps;
 
   _id = uuid();
 
@@ -196,8 +197,7 @@ class VideoResizeBox extends React.PureComponent {
       return (
         <VideoResizeBoxControl
           boxID={boxID}
-          config={ResizeDirection[key]}
-          direction={key}
+          direction={key as ResizeHadleDirection}
           height={height}
           key={key}
           onResizeEnd={onResizeEnd}

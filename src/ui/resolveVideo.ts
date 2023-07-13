@@ -1,4 +1,5 @@
 import isOffline from './isOffline';
+import url from 'url';
 import {VideoEditorState} from './VideoEditor';
 
 export type VideoResult = {
@@ -9,8 +10,8 @@ export type VideoResult = {
   width: number;
 };
 
-const cache = {};
-const queue = [];
+const cache: {[src:string]: VideoResult} = {};
+const queue: { config: VideoEditorState | undefined; resolve: (value: VideoResult | PromiseLike<VideoResult>) => void; reject: (reason?: VideoResult | PromiseLike<VideoResult>) => void; }[] = [];
 
 export default function resolveVideo(
   config?: VideoEditorState
@@ -30,16 +31,16 @@ function processQueue() {
 }
 
 function processPromise(
-  config: VideoEditorState,
+  config: VideoEditorState | undefined,
   resolve: (value: VideoResult | PromiseLike<VideoResult>) => void,
   _reject: (value: VideoResult | PromiseLike<VideoResult>) => void
 ): void {
   const result: VideoResult = {
     complete: true,
-    height: config.height,
-    id: config.id || '',
-    src: config.src || '',
-    width: config.width,
+    height: config?.height ?? 100,
+    id: config?.id ?? '',
+    src: config?.src ?? '',
+    width: config?.width ?? 100,
   };
 
   if (isOffline()) {
@@ -47,7 +48,7 @@ function processPromise(
     return;
   }
 
-  const srcStr = config.src || '';
+  const srcStr = config?.src ?? '';
   if (!srcStr) {
     resolve(result);
     return;
@@ -57,7 +58,7 @@ function processPromise(
     return;
   }
 
-  const parsedURL = new URL(srcStr);
+  const parsedURL = url.parse(srcStr);
   // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
   const protocol = parsedURL.protocol;
