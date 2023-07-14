@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import {
   preventEventDefault,
   CustomButton,
@@ -25,38 +24,12 @@ class VideoEditor extends React.PureComponent<
   VideoEditorProps,
   VideoEditorState
 > {
-  _img = null;
-  _unmounted = false;
 
-  // [FS] IRAD-1005 2020-07-07
-  // Upgrade outdated packages.
-  // To take care of the property type declaration.
-  static propsTypes = {
-    initialValue: PropTypes.object,
-    close: function (props: VideoEditorProps, propName: string): Error {
-      const fn = props[propName];
-      if (
-        !fn.prototype ||
-        (typeof fn.prototype.constructor !== 'function' &&
-          fn.prototype.constructor.length !== 1)
-      ) {
-        return new Error(
-          propName + 'must be a function with 1 arg of type ImageLike'
-        );
-      }
-      return null;
-    },
-  };
-
-  state = {
+  state: VideoEditorState = {
     ...(this.props.initialValue || {}),
     validValue: null,
     src: 'https://www.youtube.com/embed/',
   };
-
-  componentWillUnmount(): void {
-    this._unmounted = true;
-  }
 
   render(): React.ReactNode {
     const {src, width, height} = this.state;
@@ -130,7 +103,7 @@ class VideoEditor extends React.PureComponent<
     const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${yId}&format=json`;
     let width = 300;
     let height = 200;
-    const self: VideoEditor = this as VideoEditor;
+    const setValues = this._setStateValues;
 
     axios
       .get(url)
@@ -138,14 +111,11 @@ class VideoEditor extends React.PureComponent<
         (response) => {
           height = response.data.height;
           width = response.data.width;
-          self._setStateValues(src, width, height, true);
+          setValues(src, width, height, true);
         },
-        (_error) => {
-          self._setStateValues(src, width, height, true);
-        }
       )
       .catch((_rejected) => {
-        self._setStateValues(src, width, height, true);
+        setValues(src, width, height, true);
       });
   };
 

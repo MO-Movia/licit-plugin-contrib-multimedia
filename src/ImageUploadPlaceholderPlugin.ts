@@ -38,11 +38,11 @@ export function findImageUploadPlaceholder(
   id: Record<string,unknown>
 ): Decoration {
   const decos = placeholderPlugin.getState(state);
-  const found = decos.find(null, null, (spec) => spec.id === id);
-  return found.length ? found[0].from : null;
+  const found = decos?.find(null, null, (spec) => spec.id === id);
+  return found?.length ? found[0].from : null;
 }
 
-function defer(fn) {
+function defer(fn: () => void) {
   return () => {
     setTimeout(fn, 0);
   };
@@ -55,27 +55,20 @@ export function uploadImageFiles(
 ): boolean {
   const { runtime, state, readOnly, disabled } = view;
   const { schema, plugins } = state;
-  if (readOnly || disabled || !runtime || !runtime.canUploadImage) {
-    return false;
-  }
-
-  const imageType = schema.nodes[IMAGE];
-  if (!imageType) {
-    return false;
-  }
-
+  const imageType = schema?.nodes?.[IMAGE];
   const { uploadImage, canUploadImage } = runtime;
-  if (!uploadImage || !canUploadImage) {
-    return false;
-  }
-
   const imageFiles = Array.from(files).filter(isImageFileType);
-  if (!imageFiles.length) {
-    return false;
-  }
-
   const placeholderPlugin = plugins.find(isImageUploadPlaceholderPlugin);
-  if (!placeholderPlugin) {
+  if (
+    readOnly ||
+    disabled ||
+    !runtime?.canUploadImage ||
+    !imageType ||
+    !uploadImage ||
+    !canUploadImage ||
+    !imageFiles.length ||
+    !placeholderPlugin
+    ) {
     return false;
   }
 
@@ -161,7 +154,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
           set = set.map(tr.mapping, tr.doc);
           // See if the transaction adds or removes any placeholders
           const action = tr.getMeta(this);
-          if (action && action.add) {
+          if (action?.add) {
             const el = document.createElement('div');
             el.title = TITLE;
             el.className = 'molm-czi-image-upload-placeholder';
@@ -172,7 +165,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
             });
 
             set = set.add(tr.doc, [deco]);
-          } else if (action && action.remove) {
+          } else if (action?.remove) {
             const finder = (spec) => spec.id == action.remove.id;
             set = set.remove(set.find(null, null, finder));
           }

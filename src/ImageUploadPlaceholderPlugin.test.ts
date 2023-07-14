@@ -1,22 +1,11 @@
-import ImageUploadPlaceholderPlugin, { customEditorView, uploadImageFiles,findImageUploadPlaceholder } from './ImageUploadPlaceholderPlugin';
-import {
-  Schema,
-  Slice,
-  ResolvedPos,
-  Node,
-
-  Node as PMNode,
-} from 'prosemirror-model';
-import { Decoration, DecorationSet } from 'prosemirror-view';
+import ImageUploadPlaceholderPlugin, { customEditorView, findImageUploadPlaceholder, uploadImageFiles } from './ImageUploadPlaceholderPlugin';
+import { Schema } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { createEditor, doc, p } from 'jest-prosemirror';
 
-import { TextSelection } from 'prosemirror-state';
-import { EditorView, DirectEditorProps } from 'prosemirror-view';
-import { MultimediaPlugin } from '.';
-import { NodeSpec } from './Types';
+import { EditorView } from 'prosemirror-view';
+import { MultimediaPlugin } from './index';
 import { schema } from 'prosemirror-test-builder';
-import { number } from 'prop-types';
 
 
 describe('image upload place holder plugin', () => {
@@ -37,7 +26,7 @@ describe('image upload place holder plugin', () => {
       state,
     });
     const cusEdtView = {
-      ...view1 as EditorView, runtime: {},
+      ...view1, runtime: {},
       readOnly: true,
       disabled: true
     };
@@ -47,54 +36,62 @@ describe('image upload place holder plugin', () => {
 
 
   });
-  //  it('should handle uploadImageFiles',()=>{
-  //   const imageNodeSpec = {
-  //     inline: false,
-  //     attrs: {
-  //       src: {},
-  //       alt: { default: null },
-  //     },
-  //     group: "block",
-  //     draggable: true,
-  //     parseDOM: [
-  //       {
-  //         tag: "img[src]",
-  //         getAttrs: (dom) => ({
-  //           src: dom.getAttribute("src"),
-  //           alt: dom.getAttribute("alt"),
-  //         }),
-  //       },
-  //     ],
-  //     toDOM: (node) => ["img", { src: node.attrs.src, alt: node.attrs.alt }],
-  //   };
-  //   const mySchema = new Schema({
-  //     nodes: {
-  //       // Include the new image node type in the schema
-  //       doc: schema.spec.nodes.doc,
-  //       paragraph: schema.spec.nodes.paragraph,
-  //       image: imageNodeSpec,
-  //     },
-  //     marks: schema.spec.marks,
-  //   });
-  //   const state: EditorState = EditorState.create({
-  //       schema: mySchema,
-  //       selection: editor.selection,
-  //       plugins: [new MultimediaPlugin()],
-  //     });
-  //     const view1 = new EditorView(document.querySelector('#editor'), {
-  //       state,
-  //     });
-  //     const cusEdtView = {
-  //       ...view1 as EditorView, runtime: {},
-  //       readOnly: true,
-  //       disabled: true
-  //     };
-  //     const view: customEditorView = cusEdtView as customEditorView;
-  //     const filex: File = new File([], 'NEW FILE');
-  //   expect(uploadImageFiles(view,[filex],{x:1,y:2})).toBeDefined();
-
-
-  // })
+  it('should handle uploadImageFiles', () => {
+    const mockSchema = new Schema({
+      nodes: {
+        doc: { content: 'image' },
+        text: {},
+        image: {
+          inline: true,
+          attrs: {
+            src: { default: '' },
+            alt: { default: null }
+          },
+          group: 'inline',
+          draggable: true,
+          parseDOM: [{
+            tag: 'img[src]',
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
+              return {
+                src: dom.getAttribute('src'),
+                alt: dom.getAttribute('alt')
+              };
+            }
+          }],
+          toDOM(node) {
+            return ['img', { src: node.attrs.src, alt: node.attrs.alt || '' }];
+          }
+        }
+      }
+    });
+    const state: EditorState = EditorState.create({
+      schema: mockSchema,
+      selection: editor.selection,
+      plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()],
+    });
+    const view1 = new EditorView(document.querySelector('#editor'), {
+      state,
+    });
+    const cusEdtView = {
+      ...view1,
+      readOnly: false,
+      disabled: false,
+      runtime: {
+        uploadImage: () => Promise.resolve(true),
+        canUploadImage: () => true,
+      },
+      posAtCoords: () => undefined,
+    };
+    const view: customEditorView = cusEdtView as unknown as customEditorView;
+    const filex: File = new File([], 'NEW FILE', { type: 'image/png'});
+    jest.useFakeTimers();
+    expect(uploadImageFiles(view, [filex, filex], { x: 1, y: 2 })).toBeDefined();
+    jest.runAllTimers();
+    // expect defered task not to fail
+  });
   it('should handle uploadImageFiles', () => {
 
     const mockSchema = new Schema({
@@ -111,7 +108,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -124,7 +124,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -133,12 +133,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -148,7 +147,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -158,7 +157,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeDefined();
 
 
-  })
+  });
 
 
 
@@ -177,7 +176,7 @@ describe('image upload place holder plugin', () => {
         italic: {}
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -186,12 +185,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -201,7 +199,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -211,7 +209,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeFalsy();
 
 
-  })
+  });
 
   it('should handle uploadImageFiles if files does not contain image filetype', () => {
 
@@ -229,7 +227,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -242,7 +243,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -251,12 +252,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -266,7 +266,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.txt', { type: 'image/txt' }),
       new File(['file2 content'], 'file2.txt', { type: 'image/txt' })
@@ -276,7 +276,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeFalsy();
 
 
-  })
+  });
 
   it('should handle uploadImageFiles if plugins does not contain imageUploadPlaceholderPlugin', () => {
 
@@ -294,7 +294,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -307,7 +310,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin()]
@@ -316,12 +319,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -331,7 +333,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -341,7 +343,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeFalsy();
 
 
-  })
+  });
 
   it('should handle uploadImageFiles if poseAtCoords is null', () => {
 
@@ -359,7 +361,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -372,7 +377,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -381,8 +386,7 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => null,
+      posAtCoords: () => null,
       destroy: jest.fn(),
     };
     const customeditorView = {
@@ -391,7 +395,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -401,7 +405,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeFalsy();
 
 
-  })
+  });
 
   it('should handle uploadImageFiles if coords is null', () => {
 
@@ -419,7 +423,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -432,7 +439,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -441,12 +448,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -456,7 +462,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -466,7 +472,7 @@ describe('image upload place holder plugin', () => {
     expect(uploadImageFiles(customeditorView, mockFiles, undefined as unknown as { x: number; y: number; })).toBeDefined();
 
 
-  })
+  });
 
   it('should handle uploadImageFiles', () => {
 
@@ -484,7 +490,10 @@ describe('image upload place holder plugin', () => {
           draggable: true,
           parseDOM: [{
             tag: 'img[src]',
-            getAttrs(dom) {
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
               return {
                 src: dom.getAttribute('src'),
                 alt: dom.getAttribute('alt')
@@ -497,7 +506,7 @@ describe('image upload place holder plugin', () => {
         }
       }
     });
-    //const content = DOMParser.fromSchema(schema).parse(document.createElement('div').appendChild(document.createElement('img')));
+
     const editorState = EditorState.create({
       schema: mockSchema,
       plugins: [new MultimediaPlugin(), new ImageUploadPlaceholderPlugin()]
@@ -506,12 +515,11 @@ describe('image upload place holder plugin', () => {
     const mockEditorView = {
       state: editorState,
       dispatch: jest.fn(),
-      posAtCoords: ({ left,
-        top }) => {
+      posAtCoords: () => {
         return {
           pos: 1,
           inside: 1,
-        }
+        };
       },
       destroy: jest.fn(),
     };
@@ -521,7 +529,7 @@ describe('image upload place holder plugin', () => {
       disabled: false,
 
       ...mockEditorView
-    } as unknown as customEditorView
+    } as unknown as customEditorView;
     const mockFiles = [
       new File(['file1 content'], 'file1.jpeg', { type: 'image/jpeg' }),
       new File(['file2 content'], 'file2.gif', { type: 'image/gif' }),
@@ -529,12 +537,56 @@ describe('image upload place holder plugin', () => {
     ];
 
     expect(uploadImageFiles(customeditorView, mockFiles, { x: 1, y: 2 })).toBeDefined();
+  });
 
+  it('should not find Image Upload Placeholder', () => {
+    const placeholder = {
+      getState: () => undefined,
+    } as unknown as ImageUploadPlaceholderPlugin;
+    expect(findImageUploadPlaceholder(placeholder, {} as EditorState,
+      {} as Record<string, unknown>)).toBeFalsy();
+  });
 
-  })
+  it('should handle apply', () => {
+    const mockSchema = new Schema({
+      nodes: {
+        doc: { content: 'image' },
+        text: {},
+        image: {
+          inline: true,
+          attrs: {
+            src: { default: '' },
+            alt: { default: null }
+          },
+          group: 'inline',
+          draggable: true,
+          parseDOM: [{
+            tag: 'img[src]',
+            getAttrs(dom: string | HTMLElement) {
+              if (typeof dom === 'string') {
+                return false;
+              }
+              return {
+                src: dom.getAttribute('src'),
+                alt: dom.getAttribute('alt')
+              };
+            }
+          }],
+          toDOM(node) {
+            return ['img', { src: node.attrs.src, alt: node.attrs.alt || '' }];
+          }
+        }
+      }
+    });
 
+    const plugin = new ImageUploadPlaceholderPlugin();
+    const editorState = EditorState.create({
+      schema: mockSchema,
+      plugins: [new MultimediaPlugin(), plugin]
+    });
+    expect(() => editorState.apply(editorState.tr.insert(0, p()))).not.toThrow();
+    expect(() => editorState.apply(editorState.tr.setMeta(plugin, { add: { pos: 0 } }))).not.toThrow();
+    expect(() => editorState.apply(editorState.tr.setMeta(plugin, { remove: { id: 0 } }))).not.toThrow();
+  });
 
-
-
-
-})
+});

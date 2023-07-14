@@ -101,7 +101,7 @@ class VideoSourceCommand extends UICommand {
         tr = insertIFrame(tr, schema, config) as Transaction;
       }
       dispatch(tr);
-      view && view.focus();
+      view?.focus();
     }
 
     return false;

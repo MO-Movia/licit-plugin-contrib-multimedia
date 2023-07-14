@@ -12,17 +12,6 @@ export type VideoLike = {
   width: number;
 };
 
-export type NodeSpec = {
-  attrs?: { [key: string]: unknown },
-  content?: string,
-  draggable?: boolean,
-  group?: string,
-  inline?: boolean,
-  name?: string,
-  parseDOM?: Array<unknown>,
-  toDOM?: (node) => Array<unknown>,
-};
-
 export type EditorVideoRuntime = {
   // Video Proxy
   canProxyVideoSrc?: (src: string) => boolean;

@@ -22,6 +22,9 @@ describe('VideoNodeSpec', () => {
     expect(outputspec).toEqual(["iframe", { "align": null, "allow": "autoplay", "allowFullScreen": true, "alt": "", "crop": null, "frameBorder": "0", "height": 113, "id": "", "rotate": null, "src": "https://www.youtube.com/embed/ru60J99ojJw", "title": "", "width": 200 }]);
   });
 
+  it('should not parse string attributes', () => {
+    expect(getAttrs('html stuff')).toBeFalsy();
+  });
   it('parse dom attributes', () => {
     const dom = document.createElement('span');
 

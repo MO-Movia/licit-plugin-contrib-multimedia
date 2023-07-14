@@ -6,21 +6,15 @@ import { VideoEditorState } from './ui/VideoEditor';
 import VideoSourceCommand, { insertIFrame } from './VideoSourceCommand';
 import ImageUploadCommand from './ImageUploadCommand';
 import VideoUploadCommand from './VideoUploadCommand';
-import { VideoEditorProps } from './ui/VideoEditor';
-import ImageUploadPlaceholderPlugin from './ImageUploadPlaceholderPlugin';
-import canUseCSSFont from './ui/canUseCSSFont';
 import isOffline from './ui/isOffline';
 import ImageNodeView from './ui/ImageNodeView';
 import { EditorView } from 'prosemirror-view';
 import VideoFromURLCommand from './VideoFromURLCommand';
 import SelectionObserver from './ui/SelectionObserver';
 import uuid from './ui/uuid';
-import {
-  Schema,
-} from 'prosemirror-model';
-import CustomNodeView from './ui/CustomNodeView';
+import CustomNodeView, { EditorFocused } from './ui/CustomNodeView';
 import ImageFromURLCommand from './ImageFromURLCommand';
-import { EditorRuntime } from './Types';
+import { EditorRuntime, ImageLike } from './Types';
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -31,11 +25,12 @@ class TestPlugin extends Plugin {
 }
 
 describe('MultimediaPlugin', () => {
- 
+
   const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {
     plugins: [plugin],
   });
+  const view = editor.view as unknown as EditorView;
 
   const schema = plugin.getEffectiveSchema(editor.schema);
   const state: EditorState = EditorState.create({
@@ -45,19 +40,14 @@ describe('MultimediaPlugin', () => {
     plugins: [new MultimediaPlugin()],
   });
 
-  const selection = TextSelection.create((editor.view as any).state.doc, 0, 0);
-  const tr = (editor.view as any).state.tr.setSelection(selection);
-  (editor.view as any).updateState(
-    (editor.view as any).state.reconfigure({ plugins: [plugin, new TestPlugin()] })
+  const selection = TextSelection.create(view.state.doc, 0, 0);
+  const tr = view.state.tr.setSelection(selection);
+  view.updateState(
+    view.state.reconfigure({ plugins: [plugin, new TestPlugin()] })
   );
 
-  (editor.view as any).dispatch(tr);
+  view.dispatch(tr);
 
-  const newstate1: EditorState = EditorState.create({
-    schema: schema,
-    selection: selection,
-    plugins: [new MultimediaPlugin()],
-  });
   const attrs = {
     id: '',
     align: null,
@@ -77,28 +67,18 @@ describe('MultimediaPlugin', () => {
     height: attrs.height,
     validValue: true,
   };
-  const properties: VideoEditorProps = {
-    initialValue: {},
-    close: (val?) => { },
-  };
 
-  const newState = newstate1.apply(
-    insertIFrame(newstate1.tr, schema, veState) as Transaction
-  );
-
-  const imageUploadPlaceholderPlugin = new ImageUploadPlaceholderPlugin();
-  const fontSupported = canUseCSSFont('Material Icons');
   isOffline();
   new VideoSourceCommand().executeWithUserInput(
     state,
-    (editor.view as any).dispatch as (tr: Transform) => void,
-    editor.view as any,
+    view.dispatch as (tr: Transform) => void,
+    view,
     veState
   );
 
   new VideoSourceCommand().__isEnabled(
     state,
-    editor.view as any,
+    view,
   );
 
 
@@ -140,12 +120,12 @@ describe('MultimediaPlugin', () => {
       insertIFrame(state.tr, schema, veState) as Transaction
     );
 
-    new VideoSourceCommand().executeWithUserInput(
+    expect(() => new VideoSourceCommand().executeWithUserInput(
       state,
-      (editor.view as any).dispatch as (tr: Transform) => void,
-      editor.view  as any,
+      view.dispatch,
+      view,
       veState
-    );
+    )).toThrow();
 
     const json = state.doc.toJSON();
     const videoJSON = newState.doc.toJSON();
@@ -169,7 +149,7 @@ describe('MultimediaPlugin', () => {
     });
     new VideoSourceCommand().__isEnabled(
       statetest,
-      editor.view as any,
+      view,
     );
   });
 
@@ -182,7 +162,7 @@ describe('MultimediaPlugin', () => {
     });
     new VideoSourceCommand().isEnabled(
       statetest,
-      editor.view as any,
+      view,
     );
   });
 
@@ -193,12 +173,7 @@ describe('MultimediaPlugin', () => {
         console.log('key');
       }
     });
-    const cusEdtView = {
-      ...view as EditorView, runtime: { canUploadImage: () => true },
-      readOnly: false,
-      disabled: false
-    };
-   // const trans = new ImageUploadCommand();
+    const trans = new ImageUploadCommand();
     const editorruntime: EditorRuntime = {
       // Image Proxy
       canProxyImageSrc: () => {
@@ -206,8 +181,8 @@ describe('MultimediaPlugin', () => {
       },
       // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
-      canUploadImage: () => false,
-      uploadImage: (obj: Blob) => Promise.reject(),
+      canUploadImage: undefined,
+      uploadImage: undefined,
       // Comments
       canComment: () => true,
       createCommentThreadID: () => 'string',
@@ -215,8 +190,12 @@ describe('MultimediaPlugin', () => {
       canLoadHTML: () => true,
       //loadHTML: () => Promise<string>,
     };
-   // trans.runtime = editorruntime;
-  //  expect(trans.isEnabled(state, view)).toBeFalsy();
+    view['runtime'] = editorruntime;
+    expect(trans.isEnabled(state, view)).toBeFalsy();
+    editorruntime.uploadImage = () => Promise.resolve({} as ImageLike);
+    expect(trans.isEnabled(state, view)).toBeFalsy();
+    editorruntime.canUploadImage = () => false;
+    expect(trans.isEnabled(state, view)).toBeFalsy();
   });
 
   it('Image Upload Command', () => {
@@ -228,7 +207,7 @@ describe('MultimediaPlugin', () => {
       // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
       canUploadImage: () => false,
-      uploadImage: (obj: Blob) => Promise.reject(),
+      uploadImage: () => Promise.reject(),
       // Comments
       canComment: () => false,
       createCommentThreadID: () => 'string',
@@ -237,14 +216,13 @@ describe('MultimediaPlugin', () => {
       //loadHTML: () => Promise<string>,
     };
     const trans = new ImageUploadCommand();
-    trans.runtime = editorruntime;
 
     const state = EditorState.create({
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
     const dom = document.createElement('div');
-  
+
     const editorView = new EditorView(
       {mount: dom},
       {
@@ -252,7 +230,7 @@ describe('MultimediaPlugin', () => {
       }
     );
     editorView['runtime'] = editorruntime;
-    trans.isEnabled(state, editorView)
+    trans.isEnabled(state, editorView);
     trans.getEditor();
   });
 
@@ -265,7 +243,7 @@ describe('MultimediaPlugin', () => {
       // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
       canUploadImage: () => true,
-      uploadImage: (obj: Blob) => Promise.reject(),
+      uploadImage: () => Promise.reject(),
       // Comments
       canComment: () => false,
       createCommentThreadID: () => 'string',
@@ -274,14 +252,13 @@ describe('MultimediaPlugin', () => {
       //loadHTML: () => Promise<string>,
     };
     const trans = new ImageUploadCommand();
-    trans.runtime = editorruntime;
 
     const state = EditorState.create({
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
     const dom = document.createElement('div');
-  
+
     const editorView = new EditorView(
       {mount: dom},
       {
@@ -289,7 +266,7 @@ describe('MultimediaPlugin', () => {
       }
     );
     editorView['runtime'] = editorruntime;
-    trans.isEnabled(state, editorView)
+    trans.isEnabled(state, editorView);
   });
 
   it('getEditor', () => {
@@ -299,31 +276,13 @@ describe('MultimediaPlugin', () => {
   });
 
   it('can Image Upload', () => {
-    const editorruntime: EditorRuntime = {
-      // Image Proxy
-      canProxyImageSrc: () => {
-        return true;
-      },
-      // getProxyImageSrc: () => Promise.reject(),
-      // Image Upload
-      canUploadImage: undefined,
-      uploadImage: (obj: Blob) => Promise.reject(false),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
-    };
     const trans = new ImageUploadCommand();
-    trans.runtime = editorruntime;
-    trans.runtime.canUploadImage = undefined;
     const state = EditorState.create({
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
     const dom = document.createElement('div');
-  
+
     const editorView = new EditorView(
       {mount: dom},
       {
@@ -331,37 +290,19 @@ describe('MultimediaPlugin', () => {
       }
     );
     editorView['runtime'] = null;
-    trans.isEnabled(state, null)
-    
+    trans.isEnabled(state, null);
+
   });
 
 
   it('can Image Upload', () => {
-    const editorruntime: EditorRuntime = {
-      // Image Proxy
-      canProxyImageSrc: () => {
-        return true;
-      },
-      // getProxyImageSrc: () => Promise.reject(),
-      // Image Upload
-      canUploadImage: undefined,
-      uploadImage: (obj: Blob) => Promise.reject(false),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
-    };
     const trans = new ImageUploadCommand();
-    trans.runtime = editorruntime;
-    trans.runtime.canUploadImage = undefined;
     const state = EditorState.create({
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
     const dom = document.createElement('div');
-  
+
     const editorView = new EditorView(
       {mount: dom},
       {
@@ -369,11 +310,11 @@ describe('MultimediaPlugin', () => {
       }
     );
     editorView['runtime'] = null;
-    trans.isEnabled(state, editorView)
-    
+    trans.isEnabled(state, editorView);
+
   });
 
-  
+
   it('bindImageView', () => {
     const view = new EditorView(document.querySelector('#editor'), {
       state,
@@ -395,7 +336,7 @@ describe('MultimediaPlugin', () => {
   });
 
   it('selectionObserver', () => {
-    const selection = new SelectionObserver(undefined as any);
+    const selection = new SelectionObserver(() => undefined);
     selection.disconnect();
     selection.takeRecords();
     selection._check();
@@ -410,6 +351,7 @@ describe('MultimediaPlugin', () => {
         state: state,
       }
     );
+    expect(view.state).toEqual(state);
   });
 
   it('icon render', () => {
@@ -421,12 +363,10 @@ describe('MultimediaPlugin', () => {
 
   it('uuid', () => {
     const id = uuid();
+    expect(id).toBeTruthy();
   });
 
   it('icon', () => {
-    const modSchema = new Schema({
-      nodes: schema.spec.nodes,
-    });
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
@@ -435,18 +375,21 @@ describe('MultimediaPlugin', () => {
         state: state,
       }
     );
+    const node = view.state.doc.nodeAt(0);
+    expect(node).toBeDefined();
 
-    const imagenodeview = new ImageNodeView((editor.view as any).state.doc.nodeAt(0)!, view as any, () => 0, null as any);
-    imagenodeview.update((editor.view as any).state.doc.nodeAt(0)!, null as any);
+    const imagenodeview = new ImageNodeView(node, view as unknown as EditorFocused, () => 0, []);
+    imagenodeview.update(node, []);
     imagenodeview.renderReactComponent();
     const demodom = document.createElement('div');
 
 
     imagenodeview._updateDOM(demodom);
-    expect(() => {
-      new CustomNodeView((editor.view as any).state.doc.nodeAt(0)!, view as any, 1 as any, null as any);
-    }).toThrow();
+    expect(() => new CustomNodeView(node, view as unknown as EditorFocused, () => 1, [])).toThrow();
   });
- 
+
+  it('should init buttons', () => {
+    expect(() => plugin.initButtonCommands()).not.toThrow();
+  });
 });
 

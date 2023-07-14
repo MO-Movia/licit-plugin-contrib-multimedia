@@ -8,8 +8,8 @@ export function getCropRotate(
   marginLeft: string,
   marginTop: string
 ): {
-  crop: {width: number; height: number; left: number; top: number};
-  rotate: number;
+  crop: {width: number; height: number; left: number; top: number} | null;
+  rotate: number | null;
 } {
   let crop = null;
   let rotate = null;
@@ -36,8 +36,8 @@ export function getCropRotate(
     }
     if (ps.transform) {
       // example: `rotate(1.57rad) translateZ(0px)`;
-      const mm = ps.transform.match(CSS_ROTATE_PATTERN);
-      if (mm && mm[1]) {
+      const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
+      if (mm?.[1]) {
         rotate = parseFloat(mm[1]) || null;
       }
     }
@@ -45,8 +45,8 @@ export function getCropRotate(
   return {crop, rotate};
 }
 
-export function getAlign(dom: HTMLElement, cssFloat: string, display: string): string {
-  let align = dom.getAttribute('data-align') || dom.getAttribute('align');
+export function getAlign(dom: HTMLElement, cssFloat: string, display: string): string | null{
+  let align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
   if (align) {
     align = /(left|right|center)/.test(align) ? align : null;
   } else if (cssFloat === 'left' && !display) {
@@ -60,7 +60,10 @@ export function getAlign(dom: HTMLElement, cssFloat: string, display: string): s
   return align;
 }
 
-export function getAttrs(dom: HTMLElement) {
+export function getAttrs(dom: string | HTMLElement) {
+  if (typeof dom === 'string') {
+    return false;
+  }
   const {cssFloat, display} = dom.style;
   let {marginTop, marginLeft} = dom.style;
   let {width, height} = dom.style;
@@ -75,20 +78,20 @@ export function getAttrs(dom: HTMLElement) {
 
   return {
     align,
-    alt: dom.getAttribute('alt') || null,
+    alt: dom.getAttribute('alt'),
     crop,
     height: parseInt(height, 10) || null,
     rotate,
-    src: dom.getAttribute('src') || null,
-    title: dom.getAttribute('title') || null,
+    src: dom.getAttribute('src'),
+    title: dom.getAttribute('title'),
     width: parseInt(width, 10) || null,
     marginLeft: parseInt(marginLeft, 10) || null,
     marginTop: parseInt(marginTop, 10) || null,
-    id: dom.getAttribute('id') || null,
+    id: dom.getAttribute('id'),
   };
 }
 
-// https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
+// https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
 const VideoNodeSpec: NodeSpec = {
   inline: true,
   attrs: {

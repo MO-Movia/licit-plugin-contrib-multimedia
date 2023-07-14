@@ -12,6 +12,7 @@ import {
   createPopUp,
   atAnchorBottomCenter,
 } from '@modusoperandi/licit-ui-commands';
+import { PopUpHandle } from '@modusoperandi/licit-ui-commands/dist/ui/PopUp';
 import ResizeObserver from './ResizeObserver';
 import resolveImage from './resolveImage';
 import uuid from './uuid';
@@ -42,6 +43,23 @@ const DEFAULT_ORIGINAL_SIZE = {
   width: 0,
 };
 
+type MaxSize = {
+  width: number,
+  height: number,
+  complete?: boolean,
+}
+
+type OriginalSize = MaxSize & {
+  src: string
+}
+
+type ImageState = {
+  maxSize: MaxSize,
+  originalSize: OriginalSize,
+}
+
+const IMG_CACHE: {[url:string]: string | Promise<string>} = {};
+
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el): number {
   // Ideally, the image should bot be wider then its containing element.
@@ -50,10 +68,7 @@ function getMaxResizeWidth(el): number {
     node = node.parentElement;
   }
   if (
-    node &&
-    node.offsetParent &&
-    node.offsetParent.offsetWidth &&
-    node.offsetParent.offsetWidth > 0
+    (node?.offsetParent?.offsetWidth || 0) > 0
   ) {
     const { offsetParent } = node;
     const style = el.ownerDocument.defaultView.getComputedStyle(offsetParent);
@@ -73,29 +88,27 @@ async function resolveURL(
   runtime: EditorRuntime,
   src: string
 ): Promise<string> {
+  if (IMG_CACHE[src]) {
+    return IMG_CACHE[src];
+  }
   if (!runtime) {
     return src;
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
-  if (src && canProxyImageSrc && getProxyImageSrc && canProxyImageSrc(src)) {
-    // const imageSrc = (await getProxyImageSrc(src).then(res => { return res; }).catch(_err => { return src; }));
-    return await getProxyImageSrc(src)
-      .then((res) => {
-        return res;
-      })
-      .catch((_err) => {
-        return src;
-      });
+  if (src && getProxyImageSrc && canProxyImageSrc?.(src)) {
+    IMG_CACHE[src] = getProxyImageSrc(src)
+      .catch(() => src);
+    return IMG_CACHE[src];
   }
   return src;
 }
 
-export class ImageViewBody extends React.PureComponent {
-  props: NodeViewProps;
+export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState> {
+  props!: NodeViewProps;
 
-  _body = null;
+  _body?: HTMLElement | React.ReactInstance;
   _id = uuid();
-  _inlineEditor = null;
+  _inlineEditor?: PopUpHandle;
   _mounted = false;
 
   state = {
@@ -115,8 +128,8 @@ export class ImageViewBody extends React.PureComponent {
 
   componentWillUnmount(): void {
     this._mounted = false;
-    this._inlineEditor && this._inlineEditor.close();
-    this._inlineEditor = null;
+    this._inlineEditor?.close(undefined);
+    this._inlineEditor = undefined;
   }
 
   componentDidUpdate(prevProps: NodeViewProps): void {
@@ -145,11 +158,6 @@ export class ImageViewBody extends React.PureComponent {
     const error = retVal.error;
 
     let { width, height } = attrs;
-
-    if (loading) {
-      width = width || IMAGE_PLACEHOLDER_SIZE;
-      height = height || IMAGE_PLACEHOLDER_SIZE;
-    }
 
     const dimensions = this.calcWidthAndHeight(
       width,
@@ -187,6 +195,8 @@ export class ImageViewBody extends React.PureComponent {
     ) : null;
 
     const imageStyle: React.CSSProperties = {
+      backgroundImage: loading ? EMPTY_SRC : undefined,
+      backgroundSize: 'cover',
       display: 'inline-block',
       height: height + 'px',
       left: '0',
@@ -248,13 +258,12 @@ export class ImageViewBody extends React.PureComponent {
         title={errorTitle}
       >
         <span className="molm-czi-image-view-body-img-clip" style={clipStyle}>
-          <span style={imageStyle}>
-            <img
+          <span id={this._id} style={imageStyle}>
+          <img
               alt=""
               className="molm-czi-image-view-body-img"
               data-align={align}
               height={height}
-              id={`${this._id}-img`}
               src={src}
               width={width}
             />
@@ -265,31 +274,28 @@ export class ImageViewBody extends React.PureComponent {
       </span>
     );
   }
-  assignVal(originalSize, focused, readOnly) {
+
+  assignVal(originalSize: OriginalSize, focused: boolean, readOnly: boolean) {
     // It's only active when the image's fully loaded.
     const loading = originalSize === DEFAULT_ORIGINAL_SIZE;
     const active = !loading && focused && !readOnly && originalSize.complete;
-    const src = originalSize.complete ? originalSize.src : EMPTY_SRC;
+    const src = originalSize.src;
     const aspectRatio = loading ? 1 : originalSize.width / originalSize.height;
     const error = !loading && !originalSize.complete;
     return { loading, active, src, aspectRatio, error };
   }
-  isUnaltered(active, crop, rotate) {
-    if (active && !crop && !rotate) {
-      return true;
-    } else {
-      return false;
-    }
+  isUnaltered(active: boolean, crop: null, rotate: null) {
+    return (active && !crop && !rotate);
   }
 
-  calcWidthAndHeight(width, height, aspectRatio, originalSize) {
+  calcWidthAndHeight(width: number, height: number, aspectRatio: number, originalSize: OriginalSize) {
     if (width && !height) {
       height = width / aspectRatio;
     } else if (height && !width) {
       width = height * aspectRatio;
     } else if (!width && !height) {
-      width = originalSize.width;
-      height = originalSize.height;
+      width = originalSize.width || IMAGE_PLACEHOLDER_SIZE;
+      height = originalSize.height || IMAGE_PLACEHOLDER_SIZE;
     }
     return { width, height };
   }
@@ -297,7 +303,7 @@ export class ImageViewBody extends React.PureComponent {
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
     if (!el || el.getAttribute('data-active') !== 'true') {
-      this._inlineEditor && this._inlineEditor.close();
+      this._inlineEditor?.close?.(undefined);
       return;
     }
 
@@ -328,19 +334,21 @@ export class ImageViewBody extends React.PureComponent {
       return;
     }
 
-    this.setState({ originalSize: DEFAULT_ORIGINAL_SIZE });
     const src = this.props.node.attrs.src;
+    if (src === this.state.originalSize?.src) {
+      return; // already resolved
+    }
     const url = await resolveURL(
       this.props.editorView.runtime as EditorRuntime,
       src
     );
     const originalSize = await resolveImage(url);
-    if (!this._mounted) {
+    if (
       // unmounted;
-      return;
-    }
-    if (this.props.node.attrs.src !== src) {
+      !this._mounted ||
       // src had changed.
+      this.props.node.attrs.src !== src
+      ) {
       return;
     }
     if (!originalSize.complete) {
@@ -348,6 +356,9 @@ export class ImageViewBody extends React.PureComponent {
       originalSize.height = MIN_SIZE;
     }
     this.setState({ originalSize });
+    if(!this.props.node.attrs.width && !this.props.node.attrs.height) {
+      this._onResizeEnd(originalSize.width, originalSize.height);
+    }
   };
 
   _onResizeEnd = (width: number, height: number): void => {
@@ -366,12 +377,16 @@ export class ImageViewBody extends React.PureComponent {
     // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
-    const origSelection = NodeSelection.create(tr.doc, selection.from);
-    tr = tr.setSelection(origSelection);
+    try {
+      const origSelection = NodeSelection.create(tr.doc, selection.from);
+      tr = tr.setSelection(origSelection);
+    } catch (error) {
+      // Ignore if can't select
+    }
     editorView.dispatch(tr);
   };
 
-  _onChange = (value: { align: string }): void => {
+  _onChange = (value?: { align: string }): void => {
     if (!this._mounted) {
       return;
     }
@@ -395,7 +410,7 @@ export class ImageViewBody extends React.PureComponent {
     editorView.dispatch(tr);
   };
 
-  _onBodyRef = (ref): void => {
+  _onBodyRef = (ref?: React.ReactInstance): void => {
     if (ref) {
       this._body = ref;
       // Mounting
