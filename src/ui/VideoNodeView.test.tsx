@@ -5,6 +5,7 @@ import { Schema, Node } from 'prosemirror-model';
 import {EditorFocused} from './CustomNodeView';
 import {MultimediaPlugin} from '../index';
 import {createEditor, doc, p} from 'jest-prosemirror';
+import { PopUpHandle } from '@modusoperandi/licit-ui-commands';
 // Mock data
 
 const plugin = new MultimediaPlugin();
@@ -99,7 +100,7 @@ describe('Video view body', () => {
     selected: true,
     focused: true,
   };
-  videoviewbody._inlineEditor = {close: () => true};
+  videoviewbody._inlineEditor = {close: () => null} as unknown as PopUpHandle;
   it('should handle video view body', () => {
     expect(videoviewbody).toBeDefined();
   });
@@ -108,6 +109,8 @@ describe('Video view body', () => {
     expect(videoviewbody.componentDidMount()).toBeUndefined();
   });
   it('should handle componentWillUnmount', () => {
+    expect(videoviewbody._inlineEditor?.close).toBeDefined();
+    if (!videoviewbody._inlineEditor) return;
     const spy = jest.spyOn(videoviewbody._inlineEditor, 'close');
     videoviewbody.componentWillUnmount();
     expect(spy).toHaveBeenCalled();
@@ -302,13 +305,13 @@ describe('Video view body', () => {
     videoviewbody.state = {
       maxSize: {
         width: 10,
-        height: null,
+        height: 0,
         complete: false,
       },
       originalSize: {
         src: '',
         complete: true,
-        height: null,
+        height: 0,
         width: 10,
       },
     };
@@ -378,7 +381,7 @@ describe('Video view body', () => {
 
     videoviewbody.state = {
       maxSize: {
-        width: null,
+        width: 0,
         height: 10,
         complete: false,
       },
@@ -386,7 +389,7 @@ describe('Video view body', () => {
         src: '',
         complete: true,
         height: 10,
-        width: null,
+        width: 0,
       },
     };
 
@@ -654,7 +657,7 @@ describe('Video view body', () => {
     ).toBeUndefined();
   });
   it('should handle _onBodyRef when ref is undefined', () => {
-    expect(videoviewbody._onBodyRef(undefined)).toBeUndefined();
+    expect(videoviewbody._onBodyRef()).toBeUndefined();
   });
   it('should handle _onBodyResize ', () => {
     const mockReactInstance = document.createElement('div');
@@ -778,7 +781,7 @@ describe('Video view body', () => {
     expect(spy).toBeCalled();
   });
   it('should handle _renderInlineEditor else statement', () => {
-    videoviewbody._inlineEditor = {update: () => undefined};
+    videoviewbody._inlineEditor = {update: () => undefined} as unknown as PopUpHandle;
     const elem = document.createElement('div');
     elem.setAttribute('data-active', 'true');
     const spy = jest.spyOn(document, 'getElementById').mockReturnValue(elem);
@@ -856,7 +859,7 @@ describe('Video view body', () => {
       selected: true,
       focused: true,
     };
-    videoviewbody._inlineEditor = {close: () => undefined};
+    videoviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
     expect(videoviewbody._onResizeEnd(10, 20)).toBeUndefined();
   });
 
@@ -930,10 +933,10 @@ describe('Video view body', () => {
       selected: true,
       focused: true,
     };
-    videoviewbody._inlineEditor = {close: () => undefined};
+    videoviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
     expect(videoviewbody._onChange({align: 'left'})).toBeUndefined();
     videoviewbody._mounted = true;
     expect(videoviewbody._onChange({align: 'left'})).toBeUndefined();
-    expect(videoviewbody._onChange(null)).toBeUndefined();
+    expect(videoviewbody._onChange(undefined)).toBeUndefined();
   });
 });

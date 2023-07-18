@@ -10,9 +10,10 @@ import {
   showCursorPlaceholder,
 } from './CursorPlaceholderPlugin';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { PopUpHandle, createPopUp } from '@modusoperandi/licit-ui-commands';
+import {  createPopUp } from '@modusoperandi/licit-ui-commands';
 
 import type { ImageLike } from './Types';
+import { PopUpHandle } from '@modusoperandi/licit-ui-commands/dist/ui/PopUp';
 
 const IMAGE = 'image';
 

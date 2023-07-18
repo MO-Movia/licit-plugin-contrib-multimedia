@@ -31,7 +31,7 @@ const plugin = new MultimediaPlugin();
 const editor = createEditor(doc(p('<cursor>')), {
   plugins: [plugin],
 });
-const view = editor.view as undefined as EditorView;
+const view = editor.view as unknown as EditorView;
 
 const ImageArgs = {
   height: 400,
@@ -128,7 +128,7 @@ describe('MultimediaPlugin', () => {
         title: '',
         width: 400,
       },
-    } as undefined as Node;
+    } as unknown as Node;
     expect(ImageNodeSpec.toDOM?.(node)).toEqual(['img', { 'align': null, 'alt': '', 'crop': null, 'height': 200, 'id': '', 'rotate': null, 'src': 'https://images.pexels.com/photos/132472/pexels-photo-132472.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=200&h=400', 'title': '', 'width': 400 }]);
   });
 });

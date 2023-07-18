@@ -28,7 +28,7 @@
     "ci:bom": "cyclonedx-bom -o dist/bom.xml"
   },
   "peerDependencies": {
-    "uuid": "9.0.0"   
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",

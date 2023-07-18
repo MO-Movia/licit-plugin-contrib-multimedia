@@ -150,12 +150,14 @@ describe('Image view body', () => {
       align: 'left',
       fitToParent: 'fit',
     },
-  }) as unknown as NodeViewProps;
+  }) as unknown as Node;
+
   const mockPopupHandle = {
     close: () => undefined,
     update: () => undefined,
-  } as PopUpHandle;
-  const imageviewbody = new ImageViewBody(mockImageNode);
+  } as unknown as PopUpHandle;
+
+  const imageviewbody = new ImageViewBody(mockImageNode, editorfocused);
   imageviewbody.props = {
     decorations: [],
     editorView: editorfocused,
@@ -164,7 +166,7 @@ describe('Image view body', () => {
     selected: true,
     focused: true,
   };
-  imageviewbody._inlineEditor = mockPopupHandle;
+  imageviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
   it('should be defined', () => {
     expect(imageviewbody).toBeDefined();
   });
