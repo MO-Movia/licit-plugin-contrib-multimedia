@@ -3,7 +3,7 @@ import {Schema, Node} from 'prosemirror-model';
 import {EditorState} from 'prosemirror-state';
 import {EditorFocused, NodeViewProps} from './CustomNodeView';
 import ResizeObserver from './ResizeObserver';
-import { PopUpHandle } from '@modusoperandi/licit-ui-commands/dist/ui/PopUp';
+import {PopUpHandle} from '@modusoperandi/licit-ui-commands';
 
 describe('ImageNodeView', () => {
   const mockSchema = new Schema({
@@ -150,12 +150,14 @@ describe('Image view body', () => {
       align: 'left',
       fitToParent: 'fit',
     },
-  }) as unknown as NodeViewProps;
+  }) as unknown as Node;
+
   const mockPopupHandle = {
     close: () => undefined,
     update: () => undefined,
   } as unknown as PopUpHandle;
-  const imageviewbody = new ImageViewBody(mockImageNode);
+
+  const imageviewbody = new ImageViewBody(mockImageNode, editorfocused);
   imageviewbody.props = {
     decorations: [],
     editorView: editorfocused,
@@ -164,7 +166,7 @@ describe('Image view body', () => {
     selected: true,
     focused: true,
   };
-  imageviewbody._inlineEditor = mockPopupHandle;
+  imageviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
   it('should be defined', () => {
     expect(imageviewbody).toBeDefined();
   });

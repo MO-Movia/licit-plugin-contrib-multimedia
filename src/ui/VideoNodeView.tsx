@@ -11,6 +11,7 @@ import Icon from './Icon';
 import ImageInlineEditor from './ImageInlineEditor';
 import VideoResizeBox, { MIN_SIZE } from './VideoResizeBox';
 import {
+  PopUpHandle,
   atAnchorBottomCenter,
   createPopUp,
 } from '@modusoperandi/licit-ui-commands';
@@ -85,9 +86,9 @@ function getMaxResizeWidth(el): number {
 export class VideoViewBody extends React.PureComponent {
   props: NodeViewProps;
 
-  _body = null;
+  _body?: React.ReactInstance;
   _id = uuid();
-  _inlineEditor = null;
+  _inlineEditor?: PopUpHandle;
   _mounted = false;
 
   state = {
@@ -107,7 +108,7 @@ export class VideoViewBody extends React.PureComponent {
 
   componentWillUnmount(): void {
     this._mounted = false;
-    this._inlineEditor?.close();
+    this._inlineEditor?.close(undefined);
     this._inlineEditor = null;
   }
 
@@ -285,7 +286,7 @@ export class VideoViewBody extends React.PureComponent {
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
     if (!el || el.getAttribute('data-active') !== 'true') {
-      this._inlineEditor && this._inlineEditor.close();
+      this._inlineEditor?.close(undefined);
       return;
     }
 
@@ -396,7 +397,7 @@ export class VideoViewBody extends React.PureComponent {
     editorView.dispatch(tr);
   };
 
-  _onBodyRef = (ref: React.ReactInstance): void => {
+  _onBodyRef = (ref?: React.ReactInstance): void => {
     if (ref) {
       this._body = ref;
       // Mounting

@@ -24,7 +24,7 @@ describe('VideoEditor', () => {
     const videoeditor = new VideoEditor(props);
     videoeditor.state = {
       id: 'id',
-      src: null,
+      src: '',
       width: 10,
       height: 10,
       validValue: true,
@@ -35,9 +35,9 @@ describe('VideoEditor', () => {
     const videoeditor = new VideoEditor(props);
     videoeditor.state = {
       id: 'id',
-      src: null,
-      width: null,
-      height: null,
+      src: '',
+      width: 1,
+      height: 1,
       validValue: true,
     };
     expect(videoeditor.render()).toBeDefined();

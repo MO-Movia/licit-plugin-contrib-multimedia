@@ -11,8 +11,8 @@ import ImageResizeBox, { MIN_SIZE } from './ImageResizeBox';
 import {
   createPopUp,
   atAnchorBottomCenter,
+  PopUpHandle,
 } from '@modusoperandi/licit-ui-commands';
-import { PopUpHandle } from '@modusoperandi/licit-ui-commands/dist/ui/PopUp';
 import ResizeObserver from './ResizeObserver';
 import resolveImage from './resolveImage';
 import uuid from './uuid';
