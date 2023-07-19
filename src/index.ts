@@ -61,7 +61,7 @@ export class MultimediaPlugin extends Plugin {
         {
           'Insert image by URL': new ImageFromURLCommand(),
           'Upload image from computer': new ImageUploadCommand(),
-          'Insert Video by URL': new VideoFromURLCommand(),
+          'Insert video by URL': new VideoFromURLCommand(),
           'Upload video from computer': new VideoUploadCommand(),
 
         },

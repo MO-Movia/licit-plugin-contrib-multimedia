@@ -38,8 +38,9 @@
 
 .molm-czi-image-view.align-center {
   clear: both;
+  display: block; 
   float: none;
-  margin: 20px 0;
+  margin: 0 0 20px 0;
 }
 
 .molm-czi-image-view.align-float-left {
