@@ -52,7 +52,7 @@ const ResizeDirection = {
   top_left: setSize,
 };
 
-class ImageResizeBoxControl extends React.PureComponent {
+ export class ImageResizeBoxControl extends React.PureComponent {
   props: {
     boxID: string;
     config;

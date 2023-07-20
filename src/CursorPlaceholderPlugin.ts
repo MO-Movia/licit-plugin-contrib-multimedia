@@ -6,7 +6,7 @@ import './ui/czi-cursor-placeholder.css';
 
 const PLACE_HOLDER_ID = { name: 'CursorPlaceholderPlugin' };
 
-let singletonInstance = null;
+let singletonInstance: CursorPlaceholderPlugin = null;
 
 // https://prosemirror.net/examples/upload/
 const SPEC = {
@@ -49,10 +49,9 @@ const SPEC = {
 class CursorPlaceholderPlugin extends Plugin {
   constructor() {
     super(SPEC);
-    if (singletonInstance) {
-      return singletonInstance;
+    if (!singletonInstance) {
+      singletonInstance = this as CursorPlaceholderPlugin;
     }
-    singletonInstance = this as CursorPlaceholderPlugin;
   }
 }
 
@@ -60,6 +59,9 @@ export function specFinder(spec: Record<string, unknown>): boolean {
   return spec.id === PLACE_HOLDER_ID;
 }
 
+export function resetInstance() {
+  singletonInstance = null;
+}
 function findCursorPlaceholderPos(state: EditorState): number | null {
   if (!singletonInstance) {
     return null;

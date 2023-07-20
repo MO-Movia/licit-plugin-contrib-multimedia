@@ -9,22 +9,18 @@ import { EditorRuntime } from './Types';
 import ImageUploadEditor from './ui/ImageUploadEditor';
 
 class ImageUploadCommand extends ImageSourceCommand {
-  runtime: EditorRuntime;
-  isEnabled = (state: EditorState, view: EditorView): boolean => {
+  isEnabled = (state: EditorState, view: EditorView | null): boolean => {
     if (!view) {
       return false;
     }
 
-    this.runtime = view['runtime'];
-    if (!this.runtime) {
+    const runtime: EditorRuntime = view['runtime'];
+    if (!runtime) {
       return false;
     }
 
-    const { canUploadImage, uploadImage } = this.runtime;
-    if (!canUploadImage || !uploadImage) {
-      return false;
-    }
-    if (!canUploadImage()) {
+    const { canUploadImage, uploadImage } = runtime;
+    if (!uploadImage || !canUploadImage?.()) {
       return false;
     }
 

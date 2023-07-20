@@ -5,7 +5,6 @@ import {Node, Schema} from 'prosemirror-model';
 import VideoNodeView from './ui/VideoNodeView';
 import {VIDEO} from './Constants';
 import VideoNodeSpec from './VideoNodeSpec';
-import OrderedMap from 'orderedmap';
 import VideoFromURLCommand from './VideoFromURLCommand';
 import {EditorFocused} from './ui/CustomNodeView';
 import VideoUploadCommand from './VideoUploadCommand';
@@ -38,14 +37,13 @@ export class MultimediaPlugin extends Plugin {
         nodeViews: {},
       },
     });
-    if (siVideoPlugin) {
-      return siVideoPlugin;
+    if (!siVideoPlugin) {
+      siVideoPlugin = this as MultimediaPlugin;
     }
-    siVideoPlugin = this as MultimediaPlugin;
   }
 
   getEffectiveSchema(schema: Schema): Schema {
-    const nodes = (schema.spec.nodes as OrderedMap).append({
+    const nodes = schema.spec.nodes.append({
       video: VideoNodeSpec,
       image: ImageNodeSpec
     });

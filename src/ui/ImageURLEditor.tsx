@@ -1,7 +1,6 @@
 
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { preventEventDefault, CustomButton } from '@modusoperandi/licit-ui-commands';
 import resolveImage from './resolveImage';
 
@@ -21,28 +20,7 @@ export type ImageEditorState = {
 };
 
 class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorState> {
-  _img = null;
   _unmounted = false;
-
-  // [FS] IRAD-1005 2020-07-07
-  // Upgrade outdated packages.
-  // To take care of the property type declaration.
-  static propsTypes = {
-    initialValue: PropTypes.object,
-    close: function (props, propName: string) {
-      const fn = props[propName];
-      if (
-        !fn.prototype ||
-        (typeof fn.prototype.constructor !== 'function' &&
-          fn.prototype.constructor.length !== 1)
-      ) {
-        return new Error(
-          propName + 'must be a function with 1 arg of type ImageLike'
-        );
-      }
-      return null;
-    },
-  };
 
   state = {
     ...(this.props.initialValue || {}),

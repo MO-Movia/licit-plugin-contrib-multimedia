@@ -1,15 +1,23 @@
 {
+  "ignore": ["**/*.test.ts", "**/*.test.tsx"],
+  "sourceMaps": true,
   "presets": [
     [
       "@babel/preset-env",
       {
         "targets": {
-          "node": true
+          "node": true,
+          "esmodules": true
         }
       }
     ],
-    "@babel/preset-react",
-    "@babel/preset-typescript"
+    [
+      "@babel/preset-typescript",
+      {
+        "dts": true
+      }
+    ],
+    "@babel/preset-react"
   ],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
