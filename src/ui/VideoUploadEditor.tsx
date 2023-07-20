@@ -72,7 +72,7 @@ class VideoUploadEditor extends React.PureComponent {
     const file =
       (event.target as HTMLInputElement).files &&
       0 < (event.target as HTMLInputElement).files.length &&
-      (event.target as HTMLInputElement).files.item(0);
+      (event.target as HTMLInputElement).files[0];
     if (file) {
       this._upload(file);
     }

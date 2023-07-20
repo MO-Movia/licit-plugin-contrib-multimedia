@@ -12,8 +12,12 @@ export type ImageResult = {
   width: number,
 };
 
-const cache = {};
-const queue = [];
+const cache: { [src: string]: ImageResult } = {};
+const queue: {
+  src: string;
+  resolve: (value: ImageResult | PromiseLike<ImageResult>) => void;
+  reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void;
+}[] = [];
 
 export default function resolveImage(src: string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
@@ -29,18 +33,11 @@ function processQueue() {
     processPromise(bag.src, bag.resolve, bag.reject);
   }
 }
-export function isImgInstance(img): boolean {
-  if (img instanceof HTMLElement) {
-    return true;
-  }
-  return false;
+export function isImgInstance(img: unknown): boolean {
+  return img instanceof HTMLElement;
 }
 
-export function isBody(body) {
-  return body ? true : false;
-}
-
-function resolveRes(srcStr,result,resolve){
+function resolveRes(srcStr: string, result: ImageResult, resolve: (value: ImageResult | PromiseLike<ImageResult>) => void) {
   if (!srcStr) {
     resolve(result);
   } else if (cache[srcStr]) {
@@ -51,8 +48,8 @@ function resolveRes(srcStr,result,resolve){
 
 function processPromise(
   src: string,
-  resolve,
-  _reject
+  resolve: (value: ImageResult | PromiseLike<ImageResult>) => void,
+  _reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void
 ): void {
   const result: ImageResult = {
     complete: false,
@@ -70,7 +67,7 @@ function processPromise(
 
   const srcStr = src || '';
 
-  resolveRes(srcStr,result,resolve);
+  resolveRes(srcStr, result, resolve);
 
   const parsedURL = url.parse(srcStr);
   // [FS] IRAD-1007 2020-07-13
@@ -81,7 +78,7 @@ function processPromise(
     return;
   }
 
-  let img;
+  let img: HTMLImageElement | null;
 
 
 
@@ -89,7 +86,7 @@ function processPromise(
     if (img) {
       if (isImgInstance(img)) {
         const pe = img.parentNode;
-        pe && pe.removeChild(img);
+        pe?.removeChild(img);
       }
       img.onload = null;
       img.onerror = null;
@@ -119,19 +116,11 @@ function processPromise(
     dispose();
   };
 
-  const { body } = document;
-  if (isBody(body)) {
-    img = document.createElement('img');
-    img.style.cssText =
-      'position:fixed;left:-10000000000px;width:auto;height:auto;';
-    img.onload = onLoad;
-    img.onerror = onError;
-    img.src = srcStr;
-    body.appendChild(img);
-  } else {
-    img = new Image();
-    img.onload = onLoad;
-    img.onerror = onError;
-    img.src = srcStr;
-  }
+  img = document.createElement('img');
+  img.style.cssText =
+    'position:fixed;left:-10000000000px;width:auto;height:auto;';
+  img.onload = onLoad;
+  img.onerror = onError;
+  img.src = srcStr;
+  document.body.appendChild(img);
 }

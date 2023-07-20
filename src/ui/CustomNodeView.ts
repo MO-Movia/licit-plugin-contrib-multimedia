@@ -26,7 +26,7 @@ const SELECTED_NODE_CLASS_NAME = 'ProseMirror-selectednode';
 const mountedViews = new Set<CustomNodeView>();
 const pendingViews = new Set<CustomNodeView>();
 
-function onMutation(_mutations, observer: MutationObserver): void {
+export function onMutation(_mutations, observer: MutationObserver): void {
   const root = document.body;
   if (!root) {
     return;
@@ -59,7 +59,7 @@ function onMutation(_mutations, observer: MutationObserver): void {
 
 // Workaround to get in-selection views selected.
 // See https://discuss.prosemirror.net/t/copy-selection-issue-with-the-image-node/1673/2;
-function onSelection(_entries: [], observer: SelectionObserver): void {
+export function onSelection(_entries: [], observer: SelectionObserver): void {
   if (!window.getSelection) {
     console.warn('window.getSelection() is not supported');
     observer.disconnect();
@@ -184,10 +184,10 @@ class CustomNodeView implements NodeView {
     pendingViews.delete(this);
   }
 
-  __renderReactComponent(): void {
+  __renderReactComponent(callback?: () => void): void {
     const { editorView, getPos } = this.props;
 
-    if (editorView.state && editorView.state.selection) {
+    if (editorView.state?.selection) {
       const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
@@ -197,7 +197,7 @@ class CustomNodeView implements NodeView {
       this.props.focused = false;
     }
 
-    ReactDOM.render(this.renderReactComponent(), this.dom);
+    ReactDOM.render(this.renderReactComponent(), this.dom, callback);
   }
 }
 
