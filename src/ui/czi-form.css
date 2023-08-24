@@ -87,3 +87,15 @@
 .closebtn:hover {
   color: black;
 }
+
+.insertbtn {
+  margin-left: 8px;
+  margin-right: 7px;
+  margin-top: 2px;
+  padding-left: 6px;
+}
+
+.cancelbtn {
+  padding-left: 6px;
+  margin-top: 2px;
+}
