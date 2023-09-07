@@ -81,13 +81,13 @@ class VideoEditor extends React.PureComponent<
             </div>
           </fieldset>
           <div className="molm-czi-form-buttons">
-            <CustomButton label="Cancel" onClick={this._cancel} className="cancelbtn"/>
+            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel}/>
             <CustomButton
               active={true}
+              className="insertbtn"
               disabled={false}
               label="Insert"
               onClick={this._insert}
-              className="insertbtn"
             />
           </div>
         </form>

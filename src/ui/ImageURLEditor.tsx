@@ -61,13 +61,13 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
             </em>
           </fieldset>
           <div className="molm-czi-form-buttons">
-            <CustomButton label="Cancel" onClick={this._cancel} className="cancelbtn"/>
+            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel}/>
             <CustomButton
               active={!!validValue}
+              className="insertbtn"
               disabled={!validValue}
               label="Insert"
               onClick={this._insert}
-              className="insertbtn"
             />
           </div>
         </form>
