@@ -10,8 +10,12 @@ export type VideoResult = {
   width: number;
 };
 
-const cache: {[src:string]: VideoResult} = {};
-const queue: { config: VideoEditorState | undefined; resolve: (value: VideoResult | PromiseLike<VideoResult>) => void; reject: (reason?: VideoResult | PromiseLike<VideoResult>) => void; }[] = [];
+const cache: {[src: string]: VideoResult} = {};
+const queue: {
+  config: VideoEditorState | undefined;
+  resolve: (value: VideoResult | PromiseLike<VideoResult>) => void;
+  reject: (reason?: VideoResult | PromiseLike<VideoResult>) => void;
+}[] = [];
 
 export default function resolveVideo(
   config?: VideoEditorState
@@ -53,7 +57,7 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = Object.assign({}, cache[srcStr]);
+    const cachedResult = {...cache[srcStr]};
     resolve(cachedResult);
     return;
   }
