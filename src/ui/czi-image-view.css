@@ -40,7 +40,7 @@
   clear: both;
   display: block; 
   float: none;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
 }
 
 .molm-czi-image-view.align-float-left {
@@ -70,25 +70,19 @@
 .molm-czi-image-view-body.loading::before {
   animation: czi-animation-blink normal 800ms infinite ease-in-out;
   background-color: #cdcdcd;
-  bottom: 0;
+  inset: 0;
   content: "";
   cursor: wait;
-  left: 0;
   position: absolute;
-  right: 0;
-  top: 0;
   z-index: 3;
 }
 
 .molm-czi-image-view-body.error::before {
   background-color: #fff;
-  bottom: 0;
+  inset: 0;
   content: "";
-  left: 0;
   outline: solid 1px #cdcdcd;
   position: absolute;
-  right: 0;
-  top: 0;
   z-index: 3;
 }
 
@@ -105,12 +99,9 @@
 .molm-czi-image-view-body.selected::after {
   /* simulated selection highlight */
   background-color: var(--czi-selection-highlight-color-dark);
-  bottom: 0;
+  inset: 0;
   content: "";
-  left: 0;
   position: absolute;
-  right: 0;
-  top: 0;
   z-index: 2;
 }
 

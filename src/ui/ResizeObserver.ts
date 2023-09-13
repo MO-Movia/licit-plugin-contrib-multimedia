@@ -43,7 +43,7 @@ function handleResizeObserverEntry(entry: ResizeObserverEntry): void {
   const node = entry.target;
   const callbacks = nodesObserving.get(node);
   const executeCallback = (cb) => cb(entry);
-  callbacks && callbacks.forEach(executeCallback);
+  callbacks?.forEach(executeCallback);
 }
 
 export function observe(
@@ -77,7 +77,7 @@ export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
     const callbacks = nodesObserving.has(el)
       ? nullthrows(nodesObserving.get(el)).filter((cb) => cb !== callback)
       : null;
-    if (callbacks && callbacks.length) {
+    if (callbacks?.length) {
       nodesObserving.set(el, callbacks);
     } else {
       nodesObserving.delete(el);
