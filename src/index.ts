@@ -14,8 +14,6 @@ import ImageUploadCommand from './ImageUploadCommand';
 import ImageNodeView from './ui/ImageNodeView';
 import ImageNodeSpec from './ImageNodeSpec';
 const IMAGE = 'image';
-// singleton instance of CitationPlugin
-let siVideoPlugin: MultimediaPlugin;
 
 // [FS] IRAD-1503 2021-07-02
 // Fix: Update the private plugin classes as a named export rather than the default
@@ -26,8 +24,8 @@ export class MultimediaPlugin extends Plugin {
       key: new PluginKey('MultimediaPlugin'),
       state: {
         init(_config, _state) {
-          siVideoPlugin.spec.props.nodeViews[VIDEO] = bindVideoView.bind(this);
-          siVideoPlugin.spec.props.nodeViews[IMAGE] = bindImageView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[VIDEO] = bindVideoView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[IMAGE] = bindImageView.bind(this);
         },
         apply(_tr, _set) {
           //do nothing
@@ -37,9 +35,6 @@ export class MultimediaPlugin extends Plugin {
         nodeViews: {},
       },
     });
-    if (!siVideoPlugin) {
-      siVideoPlugin = this as MultimediaPlugin;
-    }
   }
 
   getEffectiveSchema(schema: Schema): Schema {

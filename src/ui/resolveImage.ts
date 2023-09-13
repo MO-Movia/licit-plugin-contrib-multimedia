@@ -1,27 +1,26 @@
-
 import url from 'url';
 
 import isOffline from './isOffline';
 
 export type ImageResult = {
-  complete: boolean,
-  height: number,
-  naturalHeight: number,
-  naturalWidth: number,
-  src: string,
-  width: number,
+  complete: boolean;
+  height: number;
+  naturalHeight: number;
+  naturalWidth: number;
+  src: string;
+  width: number;
 };
 
-const cache: { [src: string]: ImageResult } = {};
+const cache: {[src: string]: ImageResult} = {};
 const queue: {
   src: string;
   resolve: (value: ImageResult | PromiseLike<ImageResult>) => void;
-  reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void;
+  reject: (reason?: {value: ImageResult | PromiseLike<ImageResult>}) => void;
 }[] = [];
 
 export default function resolveImage(src: string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
-    const bag = { src, resolve, reject };
+    const bag = {src, resolve, reject};
     queue.push(bag);
     processQueue();
   });
@@ -37,11 +36,15 @@ export function isImgInstance(img: unknown): boolean {
   return img instanceof HTMLElement;
 }
 
-function resolveRes(srcStr: string, result: ImageResult, resolve: (value: ImageResult | PromiseLike<ImageResult>) => void) {
+function resolveRes(
+  srcStr: string,
+  result: ImageResult,
+  resolve: (value: ImageResult | PromiseLike<ImageResult>) => void
+) {
   if (!srcStr) {
     resolve(result);
   } else if (cache[srcStr]) {
-    const cachedResult = Object.assign({}, cache[srcStr]);
+    const cachedResult = {...cache[srcStr]};
     resolve(cachedResult);
   }
 }
@@ -49,7 +52,7 @@ function resolveRes(srcStr: string, result: ImageResult, resolve: (value: ImageR
 function processPromise(
   src: string,
   resolve: (value: ImageResult | PromiseLike<ImageResult>) => void,
-  _reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void
+  _reject: (reason?: {value: ImageResult | PromiseLike<ImageResult>}) => void
 ): void {
   const result: ImageResult = {
     complete: false,
@@ -72,15 +75,13 @@ function processPromise(
   const parsedURL = url.parse(srcStr);
   // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
-  const { protocol } = parsedURL;
+  const {protocol} = parsedURL;
   if (!/(http:|https:|data:)/.test(protocol || window.location.protocol)) {
     resolve(result);
     return;
   }
 
   let img: HTMLImageElement | null;
-
-
 
   const dispose = () => {
     if (img) {
@@ -108,7 +109,7 @@ function processPromise(
     // [FS] IRAD-1006 2020-07-17
     // Fix: Inconsistent behavior on image load
     // Avoid image caching remove the below line
-    cache[srcStr] = { ...result };
+    cache[srcStr] = {...result};
   };
 
   const onError = () => {
