@@ -1,4 +1,4 @@
-import ImageNodeView, {ImageViewBody} from './ImageNodeView';
+import {ImageNodeView, ImageViewBody} from './ImageNodeView';
 import {Schema, Node} from 'prosemirror-model';
 import {EditorState} from 'prosemirror-state';
 import {EditorFocused, NodeViewProps} from './CustomNodeView';

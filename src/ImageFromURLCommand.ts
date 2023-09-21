@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 
-import ImageSourceCommand from './ImageSourceCommand';
-import ImageURLEditor from './ui/ImageURLEditor';
+import {ImageSourceCommand} from './ImageSourceCommand';
+import {ImageURLEditor} from './ui/ImageURLEditor';
 
-class ImageFromURLCommand extends ImageSourceCommand {
+export class ImageFromURLCommand extends ImageSourceCommand {
   getEditor(): typeof React.Component {
     return ImageURLEditor;
   }

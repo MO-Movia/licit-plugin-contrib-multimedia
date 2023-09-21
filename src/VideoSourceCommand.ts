@@ -47,7 +47,7 @@ export function insertIFrame(
   return tr;
 }
 
-class VideoSourceCommand extends UICommand {
+export class VideoSourceCommand extends UICommand {
   _popUp = null;
 
   getEditor(): typeof React.Component {
@@ -117,4 +117,3 @@ class VideoSourceCommand extends UICommand {
   };
 }
 
-export default VideoSourceCommand;

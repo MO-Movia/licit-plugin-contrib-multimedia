@@ -1,4 +1,4 @@
-import ImageUploadPlaceholderPlugin, { customEditorView, findImageUploadPlaceholder, uploadImageFiles } from './ImageUploadPlaceholderPlugin';
+import {ImageUploadPlaceholderPlugin, customEditorView, findImageUploadPlaceholder, uploadImageFiles } from './ImageUploadPlaceholderPlugin';
 import { Schema } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { createEditor, doc, p } from 'jest-prosemirror';

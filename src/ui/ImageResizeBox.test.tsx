@@ -1,7 +1,7 @@
 import {createEditor, doc, p} from 'jest-prosemirror';
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
-import ImageResizeBox, {ImageResizeBoxControl} from './ImageResizeBox';
+import {ImageResizeBox, ImageResizeBoxControl} from './ImageResizeBox';
 import React from 'react';
 
 import {EditorState} from 'prosemirror-state';

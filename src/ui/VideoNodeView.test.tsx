@@ -1,4 +1,4 @@
-import VideoNodeView, {VideoViewBody} from './VideoNodeView';
+import {VideoNodeView, VideoViewBody} from './VideoNodeView';
 import {EditorState} from 'prosemirror-state';
 import {schema} from 'prosemirror-schema-basic';
 import { Schema, Node } from 'prosemirror-model';

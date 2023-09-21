@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-import canUseCSSFont from './canUseCSSFont';
+import {canUseCSSFont} from './canUseCSSFont';
 
 import './czi-icon.css';
 
@@ -48,8 +48,12 @@ class SubscriptIcon extends React.PureComponent {
     );
   }
 }
+type Props = {
+  type: string;
+  title?: string;
+};
 
-class Icon extends React.PureComponent {
+export class Icon extends React.PureComponent {
   // Get the static Icon.
   static get(type: string, title?: string): React.ReactElement {
     const key = `${type || ''}-${title || ''}`;
@@ -58,10 +62,7 @@ class Icon extends React.PureComponent {
     return icon;
   }
 
-  props: {
-    type: string;
-    title?: string;
-  };
+  declare props:Props;
 
   render(): React.ReactElement {
     const { type, title } = this.props;
@@ -83,5 +84,3 @@ class Icon extends React.PureComponent {
     return <span className={className}>{children}</span>;
   }
 }
-
-export default Icon;

@@ -5,24 +5,26 @@ import { NodeSelection } from 'prosemirror-state';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import CustomNodeView from './CustomNodeView';
-import Icon from './Icon';
-import ImageResizeBox, { MIN_SIZE } from './ImageResizeBox';
+import {CustomNodeView} from './CustomNodeView';
+import {Icon} from './Icon';
+import {ImageResizeBox} from './ImageResizeBox';
+import {MIN_SIZE} from './ImageResizeBox';
+
 import {
   createPopUp,
   atAnchorBottomCenter,
   PopUpHandle,
 } from '@modusoperandi/licit-ui-commands';
 import ResizeObserver from './ResizeObserver';
-import resolveImage from './resolveImage';
-import uuid from './uuid';
+import {resolveImage} from './resolveImage';
+import {uuid} from './uuid';
 
 import './czi-image-view.css';
 
 import type { EditorRuntime } from '../Types';
 import type { NodeViewProps } from './CustomNodeView';
 import type { ResizeObserverEntry } from './ResizeObserver';
-import ImageInlineEditor from './ImageInlineEditor';
+import {ImageInlineEditor} from './ImageInlineEditor';
 import { FP_WIDTH } from '../Constants';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
@@ -104,7 +106,7 @@ async function resolveURL(
 }
 
 export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState> {
-  props!: NodeViewProps;
+  declare props: NodeViewProps;
 
   _body?: HTMLElement | React.ReactInstance;
   _id = uuid();
@@ -443,7 +445,7 @@ export class ImageViewBody extends React.PureComponent<NodeViewProps, ImageState
   };
 }
 
-class ImageNodeView extends CustomNodeView {
+export class ImageNodeView extends CustomNodeView {
   // @override
   createDOMElement(): HTMLElement {
     const el = document.createElement('span');
@@ -478,5 +480,3 @@ class ImageNodeView extends CustomNodeView {
     }
   }
 }
-
-export default ImageNodeView;

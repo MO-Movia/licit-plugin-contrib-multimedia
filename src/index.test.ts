@@ -3,16 +3,16 @@ import { EditorState, TextSelection, Transaction, Plugin, PluginKey } from 'pros
 import { Transform } from 'prosemirror-transform';
 import { MultimediaPlugin, bindImageView, bindVideoView } from './index';
 import { VideoEditorState } from './ui/VideoEditor';
-import VideoSourceCommand, { insertIFrame } from './VideoSourceCommand';
-import ImageUploadCommand from './ImageUploadCommand';
-import VideoUploadCommand from './VideoUploadCommand';
-import isOffline from './ui/isOffline';
-import ImageNodeView from './ui/ImageNodeView';
+import {VideoSourceCommand, insertIFrame } from './VideoSourceCommand';
+import {ImageUploadCommand} from './ImageUploadCommand';
+import {VideoUploadCommand} from './VideoUploadCommand';
+import {isOffline} from './ui/isOffline';
+import {ImageNodeView} from './ui/ImageNodeView';
 import { EditorView } from 'prosemirror-view';
-import VideoFromURLCommand from './VideoFromURLCommand';
-import SelectionObserver from './ui/SelectionObserver';
-import uuid from './ui/uuid';
-import CustomNodeView, { EditorFocused } from './ui/CustomNodeView';
+import {VideoFromURLCommand} from './VideoFromURLCommand';
+import {SelectionObserver} from './ui/SelectionObserver';
+import {uuid} from './ui/uuid';
+import {CustomNodeView, EditorFocused } from './ui/CustomNodeView';
 import ImageFromURLCommand from './ImageFromURLCommand';
 import { EditorRuntime, ImageLike } from './Types';
 

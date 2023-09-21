@@ -2,9 +2,9 @@
 import nullthrows from 'nullthrows';
 import { Plugin, PluginKey ,EditorState, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet,EditorView } from 'prosemirror-view';
-import uuid from './ui/uuid';
+import { uuid } from './ui/uuid';
 
-import './ui/czi-image-upload-placeholder.css';
+// import './ui/czi-image-upload-placeholder.css';
 const IMAGE = 'image';
 const IMAGE_FILE_TYLES = new Set([
   'image/jpeg',
@@ -139,7 +139,7 @@ export function uploadImageFiles(
 }
 
 // https://prosemirror.net/examples/upload/
-class ImageUploadPlaceholderPlugin extends Plugin {
+export class ImageUploadPlaceholderPlugin extends Plugin {
   constructor() {
     super({
       // [FS] IRAD-1005 2020-07-07
@@ -181,4 +181,3 @@ class ImageUploadPlaceholderPlugin extends Plugin {
   }
 }
 
-export default ImageUploadPlaceholderPlugin;

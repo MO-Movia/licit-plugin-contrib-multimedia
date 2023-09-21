@@ -7,9 +7,9 @@ import ReactDOM from 'react-dom';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
-import Icon from './Icon';
-import ImageInlineEditor from './ImageInlineEditor';
-import VideoResizeBox, { MIN_SIZE } from './VideoResizeBox';
+import {Icon} from './Icon';
+import {ImageInlineEditor} from './ImageInlineEditor';
+import {VideoResizeBox, MIN_SIZE } from './VideoResizeBox';
 import {
   PopUpHandle,
   atAnchorBottomCenter,
@@ -17,12 +17,12 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import { v1 as uuid } from 'uuid';
 import ResizeObserver from './ResizeObserver';
-import resolveVideo, { VideoResult } from './resolveVideo';
+import {resolveVideo,VideoResult } from './resolveVideo';
 
 import './czi-image-view.css';
 
 import type { ResizeObserverEntry } from './ResizeObserver';
-import CustomNodeView from './CustomNodeView';
+import {CustomNodeView} from './CustomNodeView';
 import type { NodeViewProps } from './CustomNodeView';
 import { VideoEditorState } from './VideoEditor';
 
@@ -84,7 +84,7 @@ function getMaxResizeWidth(el): number {
 }
 
 export class VideoViewBody extends React.PureComponent {
-  props: NodeViewProps;
+  declare props: NodeViewProps;
 
   _body?: React.ReactInstance;
   _id = uuid();
@@ -430,7 +430,7 @@ export class VideoViewBody extends React.PureComponent {
   };
 }
 
-class VideoNodeView extends CustomNodeView {
+export class VideoNodeView extends CustomNodeView {
   // @override
   createDOMElement(): HTMLElement {
     const el = document.createElement('span');
@@ -461,4 +461,3 @@ class VideoNodeView extends CustomNodeView {
   }
 }
 
-export default VideoNodeView;

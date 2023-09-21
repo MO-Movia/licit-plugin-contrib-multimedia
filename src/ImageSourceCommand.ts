@@ -44,7 +44,7 @@ export function insertImage(tr: Transform, schema: Schema, src: string): Transfo
   return tr;
 }
 
-class ImageSourceCommand extends UICommand {
+export class ImageSourceCommand extends UICommand {
   _popUp?: PopUpHandle;
 
   getEditor(): typeof React.Component {
@@ -115,4 +115,3 @@ class ImageSourceCommand extends UICommand {
   };
 }
 
-export default ImageSourceCommand;

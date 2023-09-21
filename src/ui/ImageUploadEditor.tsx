@@ -5,21 +5,21 @@ import {
   CustomButton,
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import LoadingIndicator from './LoadingIndicator';
-import uuid from './uuid';
+import {LoadingIndicator} from './LoadingIndicator';
+import {uuid} from './uuid';
 
 import './czi-form.css';
 import './czi-video-upload-editor.css';
 
 import type {EditorRuntime, ImageLike} from '../Types';
-
-class ImageUploadEditor extends React.PureComponent {
+type ImageUploadProps = {
+  runtime: EditorRuntime;
+    close: (val?: ImageLike) => void;
+}
+export class ImageUploadEditor extends React.PureComponent {
   _unmounted = false;
 
-  props: {
-    runtime: EditorRuntime;
-    close: (val?: ImageLike) => void;
-  };
+  declare props: ImageUploadProps;
 
   state = {
     error: null,
@@ -113,4 +113,3 @@ class ImageUploadEditor extends React.PureComponent {
   };
 }
 
-export default ImageUploadEditor;

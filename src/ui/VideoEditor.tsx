@@ -20,7 +20,7 @@ export type VideoEditorState = {
   validValue: boolean;
 };
 
-class VideoEditor extends React.PureComponent<
+export class VideoEditor extends React.PureComponent<
   VideoEditorProps,
   VideoEditorState
 > {
@@ -159,4 +159,4 @@ class VideoEditor extends React.PureComponent<
   };
 }
 
-export default VideoEditor;
+

@@ -1,9 +1,11 @@
 {
   "name": "@modusoperandi/licit-multimedia",
   "version": "0.0.12",
+  "type": "module",
   "subversion": "1",
   "description": "Multimedia plugin built with ProseMirror",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": ""

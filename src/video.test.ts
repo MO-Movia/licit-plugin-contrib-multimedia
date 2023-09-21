@@ -2,22 +2,22 @@ import {createEditor, doc, p} from 'jest-prosemirror';
 import {EditorState, Transaction} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {MultimediaPlugin} from './index';
-import VideoEditor, {
+import {VideoEditor,
   VideoEditorState,
   VideoEditorProps,
 } from './ui/VideoEditor';
-import VideoSourceCommand, {insertIFrame} from './VideoSourceCommand';
-import CursorPlaceholderPlugin, {
+import {VideoSourceCommand,insertIFrame} from './VideoSourceCommand';
+import {CursorPlaceholderPlugin,
   showCursorPlaceholder,
   hideCursorPlaceholder,
   specFinder,
   isPlugin,
   resetInstance,
 } from './CursorPlaceholderPlugin';
-import resolveVideo from './ui/resolveVideo';
+import {resolveVideo} from './ui/resolveVideo';
 import axios from 'axios';
-import VideoResizeBox from './ui/VideoResizeBox';
-import VideoNodeView, {VideoViewBody} from './ui/VideoNodeView';
+import {VideoResizeBox} from './ui/VideoResizeBox';
+import {VideoNodeView,VideoViewBody} from './ui/VideoNodeView';
 import {EditorView} from 'prosemirror-view';
 import {Node} from 'prosemirror-model';
 import {EditorFocused} from './ui/CustomNodeView';

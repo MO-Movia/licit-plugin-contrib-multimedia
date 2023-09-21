@@ -4,11 +4,11 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
-import ImageSourceCommand from './ImageSourceCommand';
+import { ImageSourceCommand } from './ImageSourceCommand';
 import { EditorRuntime } from './Types';
-import ImageUploadEditor from './ui/ImageUploadEditor';
+import { ImageUploadEditor} from './ui/ImageUploadEditor';
 
-class ImageUploadCommand extends ImageSourceCommand {
+export class ImageUploadCommand extends ImageSourceCommand {
   isEnabled = (state: EditorState, view: EditorView | null): boolean => {
     if (!view) {
       return false;
@@ -31,4 +31,4 @@ class ImageUploadCommand extends ImageSourceCommand {
     return ImageUploadEditor;
   }
 }
-export default ImageUploadCommand;
+

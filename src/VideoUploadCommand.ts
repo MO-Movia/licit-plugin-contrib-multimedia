@@ -2,11 +2,11 @@ import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
-import VideoSourceCommand from './VideoSourceCommand';
-import VideoUploadEditor from './ui/VideoUploadEditor';
+import { VideoSourceCommand } from './VideoSourceCommand';
+import { VideoUploadEditor } from './ui/VideoUploadEditor';
 import type {EditorVideoRuntime} from './Types';
 
-class VideoUploadCommand extends VideoSourceCommand {
+export class VideoUploadCommand extends VideoSourceCommand {
   runtime: EditorVideoRuntime;
   isEnabled = (state: EditorState, view?: EditorView): boolean => {
     if (!view) {
@@ -33,4 +33,3 @@ class VideoUploadCommand extends VideoSourceCommand {
     return VideoUploadEditor;
   }
 }
-export default VideoUploadCommand;

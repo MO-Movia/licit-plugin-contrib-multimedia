@@ -3,7 +3,7 @@
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
-import VideoUploadEditor from './VideoUploadEditor';
+import {VideoUploadEditor} from './VideoUploadEditor';
 
 Enzyme.configure({ adapter: new Adapter() });
 

@@ -1,7 +1,7 @@
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
-import VideoResizeBox, {ResizeHadleDirection, VideoResizeBoxControl} from './VideoResizeBox';
+import {VideoResizeBox,ResizeHadleDirection, VideoResizeBoxControl} from './VideoResizeBox';
 
 Enzyme.configure({adapter: new Adapter()});
 

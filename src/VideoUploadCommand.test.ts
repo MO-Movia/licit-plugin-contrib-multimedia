@@ -1,5 +1,5 @@
 
-import VideoUploadCommand from './VideoUploadCommand';
+import {VideoUploadCommand} from './VideoUploadCommand';
 import { EditorState } from 'prosemirror-state';
 import { schema } from 'prosemirror-schema-basic';
 import { EditorView } from 'prosemirror-view';

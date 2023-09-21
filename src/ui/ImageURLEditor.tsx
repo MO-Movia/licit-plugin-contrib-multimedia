@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { preventEventDefault, CustomButton } from '@modusoperandi/licit-ui-commands';
-import resolveImage from './resolveImage';
+import { resolveImage } from './resolveImage';
 
 import './czi-form.css';
 import './czi-video-url-editor.css';
@@ -19,7 +19,7 @@ export type ImageEditorState = {
   validValue: Record<string, unknown>;
 };
 
-class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorState> {
+export class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorState> {
   _unmounted = false;
 
   state = {
@@ -107,4 +107,3 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
   };
 }
 
-export default ImageURLEditor;
