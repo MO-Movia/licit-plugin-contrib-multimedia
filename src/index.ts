@@ -4,7 +4,7 @@ export * from'./CursorPlaceholderPlugin';
 export * from'./ImageNodeSpec';
 export * from'./ImageSourceCommand';
 export * from'./ImageUploadCommand';
-export * from'./ImageUploadPlaceholderPlugin'
+export * from'./ImageUploadPlaceholderPlugin';
 export * from'./Types';
 export * from'./VideoFromURLCommand';
 export * from'./VideoSourceCommand';
