@@ -157,7 +157,7 @@ describe('Image view body', () => {
     update: () => undefined,
   } as unknown as PopUpHandle;
 
-  const imageviewbody = new ImageViewBody(mockImageNode, editorfocused);
+  const imageviewbody = new ImageViewBody(mockImageNode as unknown as NodeViewProps, editorfocused);
   imageviewbody.props = {
     decorations: [],
     editorView: editorfocused,

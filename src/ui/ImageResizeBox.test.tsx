@@ -32,7 +32,7 @@ describe('Node attribute update', () => {
 
   beforeEach(() => {
     const plugin = new MultimediaPlugin();
-    const editor = createEditor(doc(p('<cursor>')), {
+    const editor = createEditor(doc(p()), {
       plugins: [plugin],
     });
     const state: EditorState = EditorState.create({
