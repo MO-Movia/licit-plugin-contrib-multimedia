@@ -24,7 +24,6 @@
     "ci:build": "npm run clean && npm run build:ts && npm run webpack && npm run build:babel && npm run build:css",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
-    "prepare": "npm run build:dist",
     "test": "jest --coverage",
     "debug": "node --debug-brk --inspect ./node_modules/.bin/jest -i",
     "ci:bom": "cyclonedx-bom -o dist/bom.xml"
