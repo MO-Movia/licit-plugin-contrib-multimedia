@@ -12,6 +12,7 @@ export type VideoResizeProps = {
   onResizeEnd: (w: number, height: number) => void;
   src: string;
   width: number;
+  resizeHidden: boolean;
 };
 
 export const MIN_SIZE = 20;
@@ -30,7 +31,15 @@ function setSize(el: HTMLElement, width: number, height: number): void {
   el.style.height = Math.round(height) + 'px';
 }
 
-export type ResizeHadleDirection = 'top' | 'top_right' | 'right' | 'bottom_right' | 'bottom' | 'bottom_left' | 'left' | 'top_left';
+export type ResizeHadleDirection =
+  | 'top'
+  | 'top_right'
+  | 'right'
+  | 'bottom_right'
+  | 'bottom'
+  | 'bottom_left'
+  | 'left'
+  | 'top_left';
 
 const ResizeDirection = {
   top: setHeight,
@@ -184,7 +193,7 @@ class VideoResizeBox extends React.PureComponent {
   _id = uuid();
 
   render(): React.ReactElement<VideoResizeBoxControl> {
-    const {onResizeEnd, width, height} = this.props;
+    const {onResizeEnd, width, height, resizeHidden} = this.props;
 
     const style = {
       height: height + 'px',
@@ -206,7 +215,13 @@ class VideoResizeBox extends React.PureComponent {
       );
     });
 
-    return (
+    return resizeHidden ? (
+      <span
+        className="molm-czi-image-resize-box"
+        id={boxID}
+        style={style}
+      ></span>
+    ) : (
       <span className="molm-czi-image-resize-box" id={boxID} style={style}>
         {controls}
       </span>

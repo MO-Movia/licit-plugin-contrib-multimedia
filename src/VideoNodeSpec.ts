@@ -1,4 +1,4 @@
-import { NodeSpec } from 'prosemirror-model';
+import {NodeSpec} from 'prosemirror-model';
 
 const CSS_ROTATE_PATTERN = /rotate\(([0-9.]+)rad\)/i;
 const EMPTY_CSS_VALUE = new Set(['0%', '0pt', '0px']);
@@ -45,7 +45,11 @@ export function getCropRotate(
   return {crop, rotate};
 }
 
-export function getAlign(dom: HTMLElement, cssFloat: string, display: string): string | null{
+export function getAlign(
+  dom: HTMLElement,
+  cssFloat: string,
+  display: string
+): string | null {
   let align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
   if (align) {
     align = /(left|right|center)/.test(align) ? align : null;
@@ -88,6 +92,7 @@ export function getAttrs(dom: string | HTMLElement) {
     marginLeft: parseInt(marginLeft, 10) || null,
     marginTop: parseInt(marginTop, 10) || null,
     id: dom.getAttribute('id'),
+    isAudio: dom.getAttribute('isAudio'),
   };
 }
 
@@ -104,6 +109,7 @@ const VideoNodeSpec: NodeSpec = {
     src: {default: null},
     title: {default: ''},
     width: {default: null},
+    isAudio: {default: false},
   },
   group: 'inline',
   draggable: true,

@@ -39,6 +39,7 @@ export function insertIFrame(
     width: config.width,
     height: config.height,
     frameBorder: 0,
+    isAudio: config.isAudio,
   };
 
   const node = video.create(attrs, null, null);
@@ -51,6 +52,10 @@ class VideoSourceCommand extends UICommand {
   _popUp = null;
 
   getEditor(): typeof React.Component {
+    throw new Error('Not implemented');
+  }
+
+  isAudio(): boolean {
     throw new Error('Not implemented');
   }
 
@@ -73,7 +78,7 @@ class VideoSourceCommand extends UICommand {
     }
 
     return new Promise((resolve) => {
-      const props = {runtime: view['runtime']};
+      const props = {runtime: view['runtime'], isAudio: this.isAudio()};
       this._popUp = createPopUp(this.getEditor(), props, {
         modal: true,
         onClose: (val) => {

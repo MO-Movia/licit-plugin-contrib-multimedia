@@ -8,6 +8,7 @@ export type VideoResult = {
   id: string;
   src: string;
   width: number;
+  isAudio: boolean;
 };
 
 const cache: {[src: string]: VideoResult} = {};
@@ -45,6 +46,7 @@ function processPromise(
     id: config?.id ?? '',
     src: config?.src ?? '',
     width: config?.width ?? 100,
+    isAudio: config.isAudio,
   };
 
   if (isOffline()) {

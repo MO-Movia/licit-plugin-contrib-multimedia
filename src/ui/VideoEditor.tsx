@@ -11,6 +11,7 @@ import axios from 'axios';
 export type VideoEditorProps = {
   initialValue;
   close: (val?) => void;
+  isAudio: boolean;
 };
 export type VideoEditorState = {
   id: string;
@@ -18,13 +19,13 @@ export type VideoEditorState = {
   width: number;
   height: number;
   validValue: boolean;
+  isAudio: boolean;
 };
 
 class VideoEditor extends React.PureComponent<
   VideoEditorProps,
   VideoEditorState
 > {
-
   state: VideoEditorState = {
     ...(this.props.initialValue || {}),
     validValue: null,
@@ -33,13 +34,16 @@ class VideoEditor extends React.PureComponent<
 
   render(): React.ReactNode {
     const {src, width, height} = this.state;
-
+    const placeholdertext =
+      'Paste URL of ' + (this.props.isAudio ? 'Audio' : 'Video') + '...';
+    const headertext =
+      'Insert ' + (this.props.isAudio ? 'Audio' : 'Video') + '...';
     return (
       <div className="molm-czi-image-url-editor">
         <form className="molm-czi-form" onSubmit={preventEventDefault}>
           <fieldset>
             <legend>
-              <b>Insert Video</b>
+              <b>{headertext}</b>
             </legend>
             <div className="molm-czi-image-url-editor-src-input-row"></div>
           </fieldset>
@@ -50,7 +54,7 @@ class VideoEditor extends React.PureComponent<
                 autoFocus={true}
                 className="molm-czi-image-url-editor-src-input"
                 onChange={this._onSrcChange}
-                placeholder="Paste URL of Video..."
+                placeholder={placeholdertext}
                 type="text"
                 value={src || ''}
               />
@@ -81,7 +85,11 @@ class VideoEditor extends React.PureComponent<
             </div>
           </fieldset>
           <div className="molm-czi-form-buttons">
-            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel}/>
+            <CustomButton
+              className="cancelbtn"
+              label="Cancel"
+              onClick={this._cancel}
+            />
             <CustomButton
               active={true}
               className="insertbtn"
@@ -94,11 +102,11 @@ class VideoEditor extends React.PureComponent<
       </div>
     );
   }
-  getsrc(e:React.ChangeEvent<HTMLInputElement>){
-   return  e.target.value;
+  getsrc(e: React.ChangeEvent<HTMLInputElement>) {
+    return e.target.value;
   }
 
- _onSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  _onSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const src = this.getsrc(e);
     const yId = this._getYouTubeId(src);
     const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${yId}&format=json`;
@@ -108,15 +116,13 @@ class VideoEditor extends React.PureComponent<
 
     axios
       .get(url)
-      .then(
-        (response) => {
-          height = response.data.height;
-          width = response.data.width;
-          setValues(src, width, height, true);
-        },
-      )
+      .then((response) => {
+        height = response.data.height;
+        width = response.data.width;
+        setValues(src, width, height, true, this.props.isAudio);
+      })
       .catch((_rejected) => {
-        setValues(src, width, height, true);
+        setValues(src, width, height, true, this.props.isAudio);
       });
   };
 
@@ -124,9 +130,10 @@ class VideoEditor extends React.PureComponent<
     src: string,
     width: number,
     height: number,
-    validValue: boolean
+    validValue: boolean,
+    isAudio: boolean
   ) => {
-    (this as VideoEditor).setState({src, width, height, validValue});
+    (this as VideoEditor).setState({src, width, height, validValue, isAudio});
   };
 
   _getYouTubeId = (url: string) => {

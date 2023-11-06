@@ -7,6 +7,10 @@ class VideoFromURLCommand extends VideoSourceCommand {
   getEditor(): typeof React.Component {
     return VideoEditor;
   }
+
+  isAudio(): boolean {
+    return false;
+  }
 }
 
 export default VideoFromURLCommand;

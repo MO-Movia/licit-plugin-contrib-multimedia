@@ -1,13 +1,13 @@
+import * as React from 'react';
+import {EditorAudioRuntime} from '../Types';
+// re-use this command for audio too
+import VideoSourceCommand from '../VideoSourceCommand';
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
-import * as React from 'react';
+import VideoUploadEditor from './VideoUploadEditor';
 
-import VideoSourceCommand from './VideoSourceCommand';
-import VideoUploadEditor from './ui/VideoUploadEditor';
-import type {EditorVideoRuntime} from './Types';
-
-class VideoUploadCommand extends VideoSourceCommand {
-  runtime: EditorVideoRuntime;
+class AudioUploadCommand extends VideoSourceCommand {
+  runtime: EditorAudioRuntime;
   isEnabled = (state: EditorState, view?: EditorView): boolean => {
     if (!view) {
       return false;
@@ -18,11 +18,11 @@ class VideoUploadCommand extends VideoSourceCommand {
       return false;
     }
 
-    const {canUploadVideo, uploadVideo} = this.runtime;
-    if (!canUploadVideo || !uploadVideo) {
+    const {canUploadAudio, uploadAudio} = this.runtime;
+    if (!canUploadAudio || !uploadAudio) {
       return false;
     }
-    if (!canUploadVideo()) {
+    if (!canUploadAudio()) {
       return false;
     }
 
@@ -34,7 +34,8 @@ class VideoUploadCommand extends VideoSourceCommand {
   }
 
   isAudio(): boolean {
-    return false;
+    return true;
   }
 }
-export default VideoUploadCommand;
+
+export default AudioUploadCommand;

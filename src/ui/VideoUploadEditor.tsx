@@ -11,14 +11,15 @@ import {v1 as uuid} from 'uuid';
 import './czi-form.css';
 import './czi-video-upload-editor.css';
 
-import type {EditorVideoRuntime, VideoLike} from '../Types';
+import type {EditorVideoRuntime, EditorAudioRuntime, VideoLike} from '../Types';
 
 class VideoUploadEditor extends React.PureComponent {
   _unmounted = false;
 
   props: {
-    runtime?: EditorVideoRuntime;
+    runtime?: EditorVideoRuntime | EditorAudioRuntime;
     close: (val?: VideoLike) => void;
+    isAudio: boolean;
   };
 
   state = {
@@ -34,8 +35,11 @@ class VideoUploadEditor extends React.PureComponent {
   render(): React.ReactElement {
     const {id, error, pending} = this.state;
     const className = cx('molm-czi-image-upload-editor', {pending, error});
-    let label: string | React.ReactElement = 'Choose a video file...';
-
+    let label: string | React.ReactElement =
+      'Choose an ' + (this.props.isAudio ? 'audio' : 'video') + ' file...';
+    const fileFormat = this.props.isAudio
+      ? 'audio/mp3, audio/wav, audio/ogg, audio/aac'
+      : 'video/mp4, video/webm, video/ogg';
     if (pending) {
       label = <LoadingIndicator />;
     } else if (error) {
@@ -50,7 +54,7 @@ class VideoUploadEditor extends React.PureComponent {
             <div className="molm-czi-image-upload-editor-body">
               <div className="molm-czi-image-upload-editor-label">{label}</div>
               <input
-                accept="video/mp4,video/x-m4v,video/*"
+                accept={fileFormat}
                 className="molm-czi-image-upload-editor-input"
                 disabled={pending}
                 id={id}
@@ -82,6 +86,7 @@ class VideoUploadEditor extends React.PureComponent {
     if (this._unmounted) {
       return;
     }
+    video.isAudio = this.props.isAudio;
     this.props.close(video);
   };
 
@@ -99,12 +104,23 @@ class VideoUploadEditor extends React.PureComponent {
   _upload = async (file: File): Promise<void> => {
     try {
       const runtime = this.props.runtime || {};
-      const {canUploadVideo, uploadVideo} = runtime;
-      if (!canUploadVideo || !uploadVideo || !canUploadVideo()) {
-        throw new Error('feature is not available');
-      }
+
       this.setState({pending: true, error: null});
-      const image = await uploadVideo(file);
+      let image: VideoLike;
+      if (this.props.isAudio) {
+        const {canUploadAudio, uploadAudio} = runtime as EditorAudioRuntime;
+        if (!canUploadAudio || !uploadAudio || !canUploadAudio()) {
+          throw new Error('feature is not available');
+        }
+        image = await uploadAudio(file);
+      } else {
+        const {canUploadVideo, uploadVideo} = runtime as EditorVideoRuntime;
+        if (!canUploadVideo || !uploadVideo || !canUploadVideo()) {
+          throw new Error('feature is not available');
+        }
+        image = await uploadVideo(file);
+      }
+
       if (image) {
         if (0 == image.height) {
           image.height = 100;

@@ -13,6 +13,8 @@ import ImageFromURLCommand from './ImageFromURLCommand';
 import ImageUploadCommand from './ImageUploadCommand';
 import ImageNodeView from './ui/ImageNodeView';
 import ImageNodeSpec from './ImageNodeSpec';
+import AudioUploadCommand from './ui/AudioUploadCommand';
+import AudioFromURLCommand from './ui/AudioFromURLCommand';
 const IMAGE = 'image';
 
 // [FS] IRAD-1503 2021-07-02
@@ -24,8 +26,10 @@ export class MultimediaPlugin extends Plugin {
       key: new PluginKey('MultimediaPlugin'),
       state: {
         init(_config, _state) {
-          (this as MultimediaPlugin).spec.props.nodeViews[VIDEO] = bindVideoView.bind(this);
-          (this as MultimediaPlugin).spec.props.nodeViews[IMAGE] = bindImageView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[VIDEO] =
+            bindVideoView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[IMAGE] =
+            bindImageView.bind(this);
         },
         apply(_tr, _set) {
           //do nothing
@@ -40,7 +44,7 @@ export class MultimediaPlugin extends Plugin {
   getEffectiveSchema(schema: Schema): Schema {
     const nodes = schema.spec.nodes.append({
       video: VideoNodeSpec,
-      image: ImageNodeSpec
+      image: ImageNodeSpec,
     });
     const marks = schema.spec.marks;
 
@@ -58,7 +62,8 @@ export class MultimediaPlugin extends Plugin {
           'Upload image from computer': new ImageUploadCommand(),
           'Insert video by URL': new VideoFromURLCommand(),
           'Upload video from computer': new VideoUploadCommand(),
-
+          'Insert audio by URL': new AudioFromURLCommand(),
+          'Upload audio from computer': new AudioUploadCommand(),
         },
       ],
     };
