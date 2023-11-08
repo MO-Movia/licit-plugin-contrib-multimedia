@@ -2,8 +2,8 @@ import cx from 'classnames';
 import nullthrows from 'nullthrows';
 import * as React from 'react';
 
-import {clamp} from '@modusoperandi/licit-ui-commands';
-import {v1 as uuid} from 'uuid';
+import { clamp } from '@modusoperandi/licit-ui-commands';
+import { v1 as uuid } from 'uuid';
 
 import './czi-image-resize-box.css';
 
@@ -12,7 +12,7 @@ export type VideoResizeProps = {
   onResizeEnd: (w: number, height: number) => void;
   src: string;
   width: number;
-  resizeHidden: boolean;
+  resizeAllowed: boolean;
 };
 
 export const MIN_SIZE = 20;
@@ -31,15 +31,7 @@ function setSize(el: HTMLElement, width: number, height: number): void {
   el.style.height = Math.round(height) + 'px';
 }
 
-export type ResizeHadleDirection =
-  | 'top'
-  | 'top_right'
-  | 'right'
-  | 'bottom_right'
-  | 'bottom'
-  | 'bottom_left'
-  | 'left'
-  | 'top_left';
+export type ResizeHadleDirection = 'top' | 'top_right' | 'right' | 'bottom_right' | 'bottom' | 'bottom_left' | 'left' | 'top_left';
 
 const ResizeDirection = {
   top: setHeight,
@@ -64,7 +56,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
   _active = false;
   _el?: HTMLElement;
   _h = '';
-  _rafID? = 0;
+  _rafID?= 0;
   _w = '';
   _x1 = 0;
   _x2 = 0;
@@ -78,7 +70,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
   }
 
   render(): React.ReactElement {
-    const {direction} = this.props;
+    const { direction } = this.props;
 
     const className = cx({
       'molm-czi-image-resize-box-control': true,
@@ -92,7 +84,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
     if (!this._active) {
       return;
     }
-    const {direction, width, height} = this.props;
+    const { direction, width, height } = this.props;
 
     const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
     const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
@@ -120,7 +112,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
 
     this._active = true;
 
-    const {boxID, direction, width, height} = this.props;
+    const { boxID, direction, width, height } = this.props;
     const el = nullthrows(document.getElementById(boxID));
     el.className += ' ' + direction;
 
@@ -178,7 +170,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
     this._x2 = e.clientX;
     this._y2 = e.clientY;
 
-    const {direction} = this.props;
+    const { direction } = this.props;
     const el = nullthrows(this._el);
     el.classList.remove(direction);
 
@@ -193,7 +185,7 @@ class VideoResizeBox extends React.PureComponent {
   _id = uuid();
 
   render(): React.ReactElement<VideoResizeBoxControl> {
-    const {onResizeEnd, width, height, resizeHidden} = this.props;
+    const { onResizeEnd, width, height, resizeAllowed } = this.props;
 
     const style = {
       height: height + 'px',
@@ -215,12 +207,9 @@ class VideoResizeBox extends React.PureComponent {
       );
     });
 
-    return resizeHidden ? (
-      <span
-        className="molm-czi-image-resize-box"
-        id={boxID}
-        style={style}
-      ></span>
+    return resizeAllowed ? (
+      <span className="molm-czi-image-resize-box" id={boxID} style={style}>
+      </span>
     ) : (
       <span className="molm-czi-image-resize-box" id={boxID} style={style}>
         {controls}

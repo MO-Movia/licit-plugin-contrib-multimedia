@@ -4,6 +4,7 @@ describe('VideoEditor', () => {
   const props = {
     initialValue: {},
     close: () => undefined,
+    isAudio: false
   };
 
   const videoeditor = new VideoEditor(props);
@@ -14,6 +15,7 @@ describe('VideoEditor', () => {
     const props = {
       initialValue: null,
       close: () => undefined,
+      isAudio: false
     };
 
     const videoeditor = new VideoEditor(props);
@@ -28,6 +30,7 @@ describe('VideoEditor', () => {
       width: 10,
       height: 10,
       validValue: true,
+      isAudio: false
     };
     expect(videoeditor.render()).toBeDefined();
   });
@@ -39,6 +42,7 @@ describe('VideoEditor', () => {
       width: 1,
       height: 1,
       validValue: true,
+      isAudio: false
     };
     expect(videoeditor.render()).toBeDefined();
   });

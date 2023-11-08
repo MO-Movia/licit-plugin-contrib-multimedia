@@ -1,9 +1,9 @@
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
-import VideoResizeBox, {ResizeHadleDirection, VideoResizeBoxControl} from './VideoResizeBox';
+import VideoResizeBox, { ResizeHadleDirection, VideoResizeBoxControl } from './VideoResizeBox';
 
-Enzyme.configure({adapter: new Adapter()});
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Video Resize Box', () => {
   it('should render Video Resize Box', () => {
@@ -12,6 +12,7 @@ describe('Video Resize Box', () => {
       onResizeEnd: () => undefined,
       src: '',
       width: 180,
+      resizeAllowed: true
     };
     const wrapper = Enzyme.shallow(<VideoResizeBox {...VideoResizeProps} />);
     const VideoResizeBoxIns = wrapper.instance();

@@ -33,7 +33,7 @@ class VideoEditor extends React.PureComponent<
   };
 
   render(): React.ReactNode {
-    const {src, width, height} = this.state;
+    const { src, width, height } = this.state;
     const placeholdertext =
       'Paste URL of ' + (this.props.isAudio ? 'Audio' : 'Video') + '...';
     const headertext =
@@ -60,7 +60,7 @@ class VideoEditor extends React.PureComponent<
               />
             </div>
           </fieldset>
-          <fieldset>
+          {!this.props.isAudio ? (<fieldset>
             <legend>Width</legend>
             <div className="molm-czi-image-url-editor-src-input-row">
               <input
@@ -71,8 +71,8 @@ class VideoEditor extends React.PureComponent<
                 value={width || ''}
               />
             </div>
-          </fieldset>
-          <fieldset>
+          </fieldset>) : null}
+          {!this.props.isAudio ? (<fieldset>
             <legend>Height</legend>
             <div className="molm-czi-image-url-editor-src-input-row">
               <input
@@ -83,13 +83,9 @@ class VideoEditor extends React.PureComponent<
                 value={height || ''}
               />
             </div>
-          </fieldset>
+          </fieldset>) : null}
           <div className="molm-czi-form-buttons">
-            <CustomButton
-              className="cancelbtn"
-              label="Cancel"
-              onClick={this._cancel}
-            />
+            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel} />
             <CustomButton
               active={true}
               className="insertbtn"
@@ -133,7 +129,7 @@ class VideoEditor extends React.PureComponent<
     validValue: boolean,
     isAudio: boolean
   ) => {
-    (this as VideoEditor).setState({src, width, height, validValue, isAudio});
+    (this as VideoEditor).setState({ src, width, height, validValue, isAudio });
   };
 
   _getYouTubeId = (url: string) => {

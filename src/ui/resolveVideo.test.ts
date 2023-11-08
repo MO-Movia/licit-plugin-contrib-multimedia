@@ -12,7 +12,8 @@ describe('resolveImage', () => {
             id: '',
             width: 0,
             height: 0,
-            validValue: false
+            validValue: false,
+            isAudio: false
         });
         expect(res.src).toBe(src);
     });
@@ -26,7 +27,8 @@ describe('resolveImage', () => {
             id: '',
             width: 0,
             height: 0,
-            validValue: false
+            validValue: false,
+            isAudio: false
         });
         expect(res.src).toBe(mockSrc);
     });
@@ -37,7 +39,8 @@ describe('resolveImage', () => {
             id: '',
             width: 0,
             height: 0,
-            validValue: false
+            validValue: false,
+            isAudio: false
         })).src).toBe(mockSrc);
     });
 });

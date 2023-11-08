@@ -1,6 +1,6 @@
 import isOffline from './isOffline';
 import url from 'url';
-import {VideoEditorState} from './VideoEditor';
+import { VideoEditorState } from './VideoEditor';
 
 export type VideoResult = {
   complete: boolean;
@@ -11,7 +11,7 @@ export type VideoResult = {
   isAudio: boolean;
 };
 
-const cache: {[src: string]: VideoResult} = {};
+const cache: { [src: string]: VideoResult } = {};
 const queue: {
   config: VideoEditorState | undefined;
   resolve: (value: VideoResult | PromiseLike<VideoResult>) => void;
@@ -22,7 +22,7 @@ export default function resolveVideo(
   config?: VideoEditorState
 ): Promise<VideoResult> {
   return new Promise((resolve, reject) => {
-    const bag = {config, resolve, reject};
+    const bag = { config, resolve, reject };
     queue.push(bag);
     processQueue();
   });
@@ -46,7 +46,7 @@ function processPromise(
     id: config?.id ?? '',
     src: config?.src ?? '',
     width: config?.width ?? 100,
-    isAudio: config.isAudio,
+    isAudio: config?.isAudio ?? false,
   };
 
   if (isOffline()) {
@@ -59,7 +59,7 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = {...cache[srcStr]};
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
     return;
   }
@@ -77,5 +77,5 @@ function processPromise(
   // [FS] IRAD-1006 2020-07-17
   // Fix: Inconsistent behavior on image load
   // Avoid image caching remove the below line
-  cache[srcStr] = {...result};
+  cache[srcStr] = { ...result };
 }

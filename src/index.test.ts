@@ -66,6 +66,7 @@ describe('MultimediaPlugin', () => {
     width: attrs.width,
     height: attrs.height,
     validValue: true,
+    isAudio: false
   };
 
   isOffline();
@@ -100,6 +101,7 @@ describe('MultimediaPlugin', () => {
       src: 'https://www.youtube.com/embed/ru60J99ojJw',
       title: '',
       width: 200,
+      isAudio: false
     };
 
     const veState: VideoEditorState = {
@@ -108,6 +110,7 @@ describe('MultimediaPlugin', () => {
       width: attrs.width,
       height: attrs.height,
       validValue: true,
+      isAudio: false
     };
 
     const state: EditorState = EditorState.create({
@@ -224,7 +227,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
@@ -260,7 +263,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
@@ -284,7 +287,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
@@ -304,7 +307,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }

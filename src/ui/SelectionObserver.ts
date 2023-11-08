@@ -13,7 +13,7 @@ type Callback = (
   observer: SelectionObserver
 ) => void;
 
-const EMPTY_SELECTION_VALUE = Object.freeze({from: 0, to: 0});
+const EMPTY_SELECTION_VALUE = Object.freeze({ from: 0, to: 0 });
 
 function getSelectionRange(): Range | undefined {
   if (!window.getSelection) {
@@ -23,7 +23,6 @@ function getSelectionRange(): Range | undefined {
 
   const selection = window.getSelection();
   if (!selection) {
-    console.warn('selection not found');
     return undefined;
   }
 
@@ -44,7 +43,7 @@ function resolveSelectionValue(el: Element): SelectionValue {
   if (!range) {
     return EMPTY_SELECTION_VALUE;
   }
-  const {startContainer, endContainer, startOffset, endOffset} = range;
+  const { startContainer, endContainer, startOffset, endOffset } = range;
   if (
     startContainer === el ||
     endContainer === el ||
@@ -64,7 +63,7 @@ export default class SelectionObserver {
   _observables: {
     target: Element;
     selection: SelectionValue;
-}[] = [];
+  }[] = [];
   _callback: Callback;
 
   constructor(callback: Callback) {
@@ -108,7 +107,7 @@ export default class SelectionObserver {
   _onClick = (): void => {
     const callback = this._callback;
     this._observables = this._observables.map((obj) => {
-      const {target} = obj;
+      const { target } = obj;
       return {
         target,
         selection: resolveSelectionValue(target),
@@ -121,7 +120,7 @@ export default class SelectionObserver {
     let changed = false;
     const callback = this._callback;
     this._observables = this._observables.map((obj) => {
-      const {target, selection} = obj;
+      const { target, selection } = obj;
       const $selection = resolveSelectionValue(target);
       if (selection === $selection) {
         return obj;

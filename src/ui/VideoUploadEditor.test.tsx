@@ -20,9 +20,11 @@ const VideoUploadEditorProps = {
       id: 'Test-1',
       src: '',
       width: 150,
+      isAudio: false
     }),
   },
-  close: () => undefined
+  close: () => undefined,
+  isAudio: false
 };
 const VideoUploadEdrProps = {
   runtime: { // Video Proxy
@@ -36,9 +38,10 @@ const VideoUploadEdrProps = {
 
     }),
   },
-  close: () => undefined
+  close: () => undefined,
+  isAudio: false
 };
-const testCases=[VideoUploadEditorProps,VideoUploadEdrProps];
+const testCases = [VideoUploadEditorProps, VideoUploadEdrProps];
 describe('Video Upload Editor', () => {
 
 
@@ -51,7 +54,7 @@ describe('Video Upload Editor', () => {
 
       wrapper.find('input').simulate('change', { target: { files: [file] } });
     });
-});
+  });
 
 });
 describe('Video Upload Editor', () => {
@@ -73,53 +76,57 @@ describe('Video Upload Editor', () => {
     close: () => undefined
   };
 
- const videouploadeditor = new VideoUploadEditor(VideoUploadEditorProps);
+  const videouploadeditor = new VideoUploadEditor(VideoUploadEditorProps);
 
-    it('should render Video Upload Editor', () => {
+  it('should render Video Upload Editor', () => {
 
-     expect(videouploadeditor).toBeDefined();
-     expect(() => videouploadeditor._cancel()).not.toThrow();
+    expect(videouploadeditor).toBeDefined();
+    expect(() => videouploadeditor._cancel()).not.toThrow();
 
-    });
-    it('should handle componentWillUnmount', () => {
-      videouploadeditor.componentWillUnmount();
-      expect(videouploadeditor._unmounted).toBeTruthy();
+  });
+  it('should handle componentWillUnmount', () => {
+    videouploadeditor.componentWillUnmount();
+    expect(videouploadeditor._unmounted).toBeTruthy();
 
-     });
-     it('should handle _onSuccess ', () => {
-      videouploadeditor._unmounted = true;
-      expect(videouploadeditor._onSuccess( {
-        height: 10,
-        id: '',
-        src: '',
-        width: 10
+  });
+  it('should handle _onSuccess ', () => {
+    videouploadeditor._unmounted = true;
+    expect(videouploadeditor._onSuccess({
+      height: 10,
+      id: '',
+      src: '',
+      width: 10,
+      isAudio: false
     })).toBeUndefined();
 
-     });
-     it('should handle _onError  ', () => {
-      videouploadeditor._unmounted = true;
-      expect(videouploadeditor._onError({
-        name: '',
-        message: '',
-        stack: ''
+  });
+  it('should handle _onError  ', () => {
+    videouploadeditor._unmounted = true;
+    expect(videouploadeditor._onError({
+      name: '',
+      message: '',
+      stack: ''
     }
     )).toBeUndefined();
 
-     });
+  });
 
-     it('should handle _upload ', async() => {
-      videouploadeditor.props = {
-      close: () => undefined};
+  it('should handle _upload ', async () => {
+    videouploadeditor.props = {
+      close: () => undefined,
+      isAudio: false
+    };
 
-      const file = new File([], 'test.mp4');
-      const instance = await videouploadeditor._upload(file);
+    const file = new File([], 'test.mp4');
+    const instance = await videouploadeditor._upload(file);
 
 
-      expect(instance).toBeUndefined();
+    expect(instance).toBeUndefined();
 
-     });
-     it('should handle _upload ', async() => {
-      videouploadeditor.props = {  runtime: { // Video Proxy
+  });
+  it('should handle _upload ', async () => {
+    videouploadeditor.props = {
+      runtime: { // Video Proxy
         canProxyVideoSrc: (_src: string) => true,
         getProxyVideoSrc: (_src: string) => 'http://video.mp4',
         getVideoSrc: jest.fn().mockReturnValue(Promise.resolve('http://video.mp4')),
@@ -133,14 +140,16 @@ describe('Video Upload Editor', () => {
           width: 0,
         }),
       },
-      close: () => undefined};
+      close: () => undefined,
+      isAudio: false
+    };
 
-      const file = new File([], 'test.mp4');
-      const instance = await videouploadeditor._upload(file);
+    const file = new File([], 'test.mp4');
+    const instance = await videouploadeditor._upload(file);
 
 
-      expect(instance).toBeUndefined();
+    expect(instance).toBeUndefined();
 
-     });
+  });
 });
 
