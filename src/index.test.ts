@@ -2,19 +2,19 @@ import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Transaction, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { MultimediaPlugin, bindImageView, bindVideoView } from './index';
-import { VideoEditorState } from './ui/VideoEditor';
-import VideoSourceCommand, { insertIFrame } from './VideoSourceCommand';
-import ImageUploadCommand from './ImageUploadCommand';
-import VideoUploadCommand from './VideoUploadCommand';
+import { AVEditorState } from './ui/audio-video/AVEditor';
+import AVSourceCommand, { insertIFrame } from './audio-video/AVSourceCommand';
+import ImageUploadCommand from './image/ImageUploadCommand';
+import AVUploadCommand from './audio-video/AVUploadCommand';
 import isOffline from './ui/isOffline';
-import ImageNodeView from './ui/ImageNodeView';
+import ImageNodeView from './ui/image/ImageNodeView';
 import { EditorView } from 'prosemirror-view';
-import VideoFromURLCommand from './VideoFromURLCommand';
+import AVFromURLCommand from './audio-video/AVFromURLCommand';
 import SelectionObserver from './ui/SelectionObserver';
 import uuid from './ui/uuid';
 import CustomNodeView, { EditorFocused } from './ui/CustomNodeView';
-import ImageFromURLCommand from './ImageFromURLCommand';
-import { EditorRuntime, ImageLike } from './Types';
+import ImageFromURLCommand from './image/ImageFromURLCommand';
+import { EditorImageRuntime, ImageProps } from './Types';
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -60,7 +60,7 @@ describe('MultimediaPlugin', () => {
     width: 200,
   };
 
-  const veState: VideoEditorState = {
+  const veState: AVEditorState = {
     id: attrs.id,
     src: attrs.src,
     width: attrs.width,
@@ -70,14 +70,14 @@ describe('MultimediaPlugin', () => {
   };
 
   isOffline();
-  new VideoSourceCommand().executeWithUserInput(
+  new AVSourceCommand().executeWithUserInput(
     state,
     view.dispatch as (tr: Transform) => void,
     view,
     veState
   );
 
-  new VideoSourceCommand().__isEnabled(
+  new AVSourceCommand().__isEnabled(
     state,
     view,
   );
@@ -104,7 +104,7 @@ describe('MultimediaPlugin', () => {
       isAudio: false
     };
 
-    const veState: VideoEditorState = {
+    const veState: AVEditorState = {
       id: attrs.id,
       src: attrs.src,
       width: attrs.width,
@@ -123,7 +123,7 @@ describe('MultimediaPlugin', () => {
       insertIFrame(state.tr, schema, veState) as Transaction
     );
 
-    expect(() => new VideoSourceCommand().executeWithUserInput(
+    expect(() => new AVSourceCommand().executeWithUserInput(
       state,
       view.dispatch,
       view,
@@ -150,7 +150,7 @@ describe('MultimediaPlugin', () => {
       selection: undefined,
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().__isEnabled(
+    new AVSourceCommand().__isEnabled(
       statetest,
       view,
     );
@@ -163,7 +163,7 @@ describe('MultimediaPlugin', () => {
       selection: undefined,
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().isEnabled(
+    new AVSourceCommand().isEnabled(
       statetest,
       view,
     );
@@ -177,46 +177,32 @@ describe('MultimediaPlugin', () => {
       }
     });
     const trans = new ImageUploadCommand();
-    const editorruntime: EditorRuntime = {
+    const editorruntime: EditorImageRuntime = {
       // Image Proxy
       canProxyImageSrc: () => {
         return true;
       },
-      // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
       canUploadImage: undefined,
       uploadImage: undefined,
-      // Comments
-      canComment: () => true,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
     };
     view['runtime'] = editorruntime;
     expect(trans.isEnabled(state, view)).toBeFalsy();
-    editorruntime.uploadImage = () => Promise.resolve({} as ImageLike);
+    editorruntime.uploadImage = () => Promise.resolve({} as ImageProps);
     expect(trans.isEnabled(state, view)).toBeFalsy();
     editorruntime.canUploadImage = () => false;
     expect(trans.isEnabled(state, view)).toBeFalsy();
   });
 
   it('Image Upload Command', () => {
-    const editorruntime: EditorRuntime = {
+    const editorruntime: EditorImageRuntime = {
       // Image Proxy
       canProxyImageSrc: () => {
         return true;
       },
-      // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
       canUploadImage: () => false,
       uploadImage: () => Promise.reject(),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
     };
     const trans = new ImageUploadCommand();
 
@@ -238,21 +224,14 @@ describe('MultimediaPlugin', () => {
   });
 
   it('isEnabled', () => {
-    const editorruntime: EditorRuntime = {
+    const editorruntime: EditorImageRuntime = {
       // Image Proxy
       canProxyImageSrc: () => {
         return true;
       },
-      // getProxyImageSrc: () => Promise.reject(),
       // Image Upload
       canUploadImage: () => true,
       uploadImage: () => Promise.reject(),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
     };
     const trans = new ImageUploadCommand();
 
@@ -274,7 +253,7 @@ describe('MultimediaPlugin', () => {
 
   it('getEditor', () => {
 
-    const trans = new VideoUploadCommand();
+    const trans = new AVUploadCommand(false);
     trans.getEditor();
   });
 
@@ -360,7 +339,7 @@ describe('MultimediaPlugin', () => {
   it('icon render', () => {
     const trans = new ImageFromURLCommand();
     trans.getEditor();
-    const trans1 = new VideoFromURLCommand();
+    const trans1 = new AVFromURLCommand(false);
     trans1.getEditor();
   });
 

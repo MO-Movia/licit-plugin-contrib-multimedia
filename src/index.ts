@@ -2,19 +2,17 @@
 import {Plugin, PluginKey} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {Node, Schema} from 'prosemirror-model';
-import VideoNodeView from './ui/VideoNodeView';
+import AVNodeView from './ui/audio-video/AVNodeView';
 import {VIDEO} from './Constants';
-import VideoNodeSpec from './VideoNodeSpec';
-import VideoFromURLCommand from './VideoFromURLCommand';
+import AVNodeSpec from './audio-video/AVNodeSpec';
+import AVFromURLCommand from './audio-video/AVFromURLCommand';
 import {EditorFocused} from './ui/CustomNodeView';
-import VideoUploadCommand from './VideoUploadCommand';
-import ImageFromURLCommand from './ImageFromURLCommand';
+import AVUploadCommand from './audio-video/AVUploadCommand';
+import ImageFromURLCommand from './image/ImageFromURLCommand';
 
-import ImageUploadCommand from './ImageUploadCommand';
-import ImageNodeView from './ui/ImageNodeView';
-import ImageNodeSpec from './ImageNodeSpec';
-import AudioUploadCommand from './ui/AudioUploadCommand';
-import AudioFromURLCommand from './ui/AudioFromURLCommand';
+import ImageUploadCommand from './image/ImageUploadCommand';
+import ImageNodeView from './ui/image/ImageNodeView';
+import ImageNodeSpec from './image/ImageNodeSpec';
 const IMAGE = 'image';
 
 // [FS] IRAD-1503 2021-07-02
@@ -43,7 +41,7 @@ export class MultimediaPlugin extends Plugin {
 
   getEffectiveSchema(schema: Schema): Schema {
     const nodes = schema.spec.nodes.append({
-      video: VideoNodeSpec,
+      video: AVNodeSpec,
       image: ImageNodeSpec,
     });
     const marks = schema.spec.marks;
@@ -60,10 +58,10 @@ export class MultimediaPlugin extends Plugin {
         {
           'Insert image by URL': new ImageFromURLCommand(),
           'Upload image from computer': new ImageUploadCommand(),
-          'Insert video by URL': new VideoFromURLCommand(),
-          'Upload video from computer': new VideoUploadCommand(),
-          'Insert audio by URL': new AudioFromURLCommand(),
-          'Upload audio from computer': new AudioUploadCommand(),
+          'Insert video by URL': new AVFromURLCommand(false),
+          'Upload video from computer': new AVUploadCommand(false),
+          'Insert audio by URL': new AVFromURLCommand(true),
+          'Upload audio from computer': new AVUploadCommand(true),
         },
       ],
     };
@@ -78,7 +76,7 @@ export function bindVideoView(
   return new VideoViewExt(node, view, curPos);
 }
 
-class VideoViewExt extends VideoNodeView {
+class VideoViewExt extends AVNodeView {
   constructor(node: Node, view: EditorView, getCurPos) {
     super(node, view as EditorFocused, getCurPos, null);
   }
