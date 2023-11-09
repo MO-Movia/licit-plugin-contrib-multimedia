@@ -113,6 +113,11 @@ class ImageSourceCommand extends UICommand {
     }
     return true;
   };
+
+  cancel(): void {
+    return null;
+  }
+
 }
 
 export default ImageSourceCommand;
