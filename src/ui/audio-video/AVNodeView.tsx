@@ -278,10 +278,10 @@ export class VideoViewBody extends React.PureComponent {
               className="molm-czi-image-view-body-img"
               data-align={align}
               frameBorder={0}
-              height={isAudio ? undefined: height}
+              height={isAudio ? "50px": height}
               id={`${this._id}-img`}
               src={src}
-              width={isAudio ? undefined: width}
+              width={isAudio ? "275px": width}
             />
             {errorView}
           </span>
