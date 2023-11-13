@@ -236,7 +236,7 @@ export class VideoViewBody extends React.PureComponent {
         <VideoResizeBox
           height={height}
           onResizeEnd={this._onResizeEnd}
-          resizeAllowed={isAudio}
+          resizeAllowed={!isAudio}
           src={src}
           width={width}
         />
@@ -250,6 +250,13 @@ export class VideoViewBody extends React.PureComponent {
       rotate,
       maxSize
     );
+
+    if (isAudio) {
+      clipStyle.height = undefined;
+      clipStyle.width = undefined;
+      imageStyle.height = undefined;
+      imageStyle.width = undefined;
+    }
 
     const errorView = error ? Icon.get('error') : null;
     const errorTitle = error

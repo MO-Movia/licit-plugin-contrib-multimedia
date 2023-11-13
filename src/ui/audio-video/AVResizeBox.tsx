@@ -187,10 +187,10 @@ class VideoResizeBox extends React.PureComponent {
   render(): React.ReactElement<VideoResizeBoxControl> {
     const { onResizeEnd, width, height, resizeAllowed } = this.props;
 
-    const style = {
+    const style = resizeAllowed ? {
       height: height + 'px',
       width: width + 'px',
-    };
+    } : {};
 
     const boxID = this._id;
 
@@ -199,10 +199,10 @@ class VideoResizeBox extends React.PureComponent {
         <VideoResizeBoxControl
           boxID={boxID}
           direction={key as ResizeHadleDirection}
-          height={height}
+          height={resizeAllowed ? height: undefined}
           key={key}
           onResizeEnd={onResizeEnd}
-          width={width}
+          width={resizeAllowed ? width: undefined}
         />
       );
     });

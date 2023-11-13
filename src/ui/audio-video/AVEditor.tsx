@@ -29,7 +29,7 @@ class AVEditor extends React.PureComponent<
   state: AVEditorState = {
     ...(this.props.initialValue || {}),
     validValue: null,
-    src: 'https://www.youtube.com/embed/',
+    src: (this.props.isAudio ? '' : 'https://www.youtube.com/embed/'),
   };
 
   render(): React.ReactNode {
