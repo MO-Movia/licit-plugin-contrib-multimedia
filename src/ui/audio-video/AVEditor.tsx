@@ -104,10 +104,10 @@ class AVEditor extends React.PureComponent<
 
   _onSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const src = this.getsrc(e);
-    const yId = this._getYouTubeId(src);
-    const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${yId}&format=json`;
-    let width = 300;
-    let height = 200;
+    const yId = this.props.isAudio ? '' : this._getYouTubeId(src);
+    const url = this.props.isAudio ? src : `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${yId}&format=json`;
+    let width = this.props.isAudio ? 275: 300;
+    let height = this.props.isAudio ? 50: 200;
     const setValues = this._setStateValues;
 
     axios
