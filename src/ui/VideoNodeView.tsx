@@ -1,30 +1,30 @@
 import cx from 'classnames';
-import { Node } from 'prosemirror-model';
-import { Decoration } from 'prosemirror-view';
-import { NodeSelection } from 'prosemirror-state';
-import * as React from 'react';
+import {Node} from 'prosemirror-model';
+import {Decoration} from 'prosemirror-view';
+import {NodeSelection} from 'prosemirror-state';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
 import {Icon} from './Icon';
 import {ImageInlineEditor} from './ImageInlineEditor';
-import {VideoResizeBox, MIN_SIZE } from './VideoResizeBox';
+import {VideoResizeBox, MIN_SIZE} from './VideoResizeBox';
 import {
   PopUpHandle,
   atAnchorBottomCenter,
   createPopUp,
 } from '@modusoperandi/licit-ui-commands';
-import { v1 as uuid } from 'uuid';
+import {v1 as uuid} from 'uuid';
 import ResizeObserver from './ResizeObserver';
-import {resolveVideo,VideoResult } from './resolveVideo';
+import {resolveVideo, VideoResult} from './resolveVideo';
 
 import './czi-image-view.css';
 
-import type { ResizeObserverEntry } from './ResizeObserver';
+import type {ResizeObserverEntry} from './ResizeObserver';
 import {CustomNodeView} from './CustomNodeView';
-import type { NodeViewProps } from './CustomNodeView';
-import { VideoEditorState } from './VideoEditor';
+import type {NodeViewProps} from './CustomNodeView';
+import {VideoEditorState} from './VideoEditor';
 
 const EMPTY_SRC =
   'data:image/gif;base64,' +
@@ -65,11 +65,8 @@ function getMaxResizeWidth(el): number {
   while (node && !node.offsetParent) {
     node = node.parentElement;
   }
-  if (
-    node?.offsetParent?.offsetWidth &&
-    node.offsetParent.offsetWidth > 0
-  ) {
-    const { offsetParent } = node;
+  if (node?.offsetParent?.offsetWidth && node.offsetParent.offsetWidth > 0) {
+    const {offsetParent} = node;
     const style = el.ownerDocument.defaultView.getComputedStyle(offsetParent);
     let width = offsetParent.clientWidth - IMAGE_MARGIN * 2;
     if (style.boxSizing === 'border-box') {
@@ -114,8 +111,8 @@ export class VideoViewBody extends React.PureComponent {
 
   componentDidUpdate(prevProps: NodeViewProps): void {
     const prevSrc = prevProps.node.attrs.src;
-    const { node } = this.props;
-    const { src } = node.attrs;
+    const {node} = this.props;
+    const {src} = node.attrs;
     if (prevSrc !== src) {
       // A new image is provided, resolve it.
       this._resolveOriginalSize();
@@ -129,16 +126,16 @@ export class VideoViewBody extends React.PureComponent {
     scale: number;
     loading: boolean;
   } {
-    const { originalSize, maxSize } = this.state;
-    const { node } = this.props;
-    const { attrs } = node;
-    const { crop } = attrs;
+    const {originalSize, maxSize} = this.state;
+    const {node} = this.props;
+    const {attrs} = node;
+    const {crop} = attrs;
 
     // It's only active when the image's fully loaded.
     const loading = originalSize === DEFAULT_ORIGINAL_SIZE;
     const aspectRatio = loading ? 1 : originalSize.width / originalSize.height;
 
-    let { width, height } = attrs;
+    let {width, height} = attrs;
 
     if (loading) {
       width = width || IMAGE_PLACEHOLDER_SIZE;
@@ -162,21 +159,21 @@ export class VideoViewBody extends React.PureComponent {
       height = width / aspectRatio;
       scale = maxSize.width / width;
     }
-    return { width, height, scale, loading };
+    return {width, height, scale, loading};
   }
 
   getClipStyle(
     width: number,
     height: number,
     scale: number,
-    crop: { width: number; height: number; left: number; top: number },
+    crop: {width: number; height: number; left: number; top: number},
     rotate: number,
     maxSize: {
       width: number;
       height: number;
       complete: boolean;
     }
-  ): { clipStyle: clipStyleType; imageStyle: videoStyleType } {
+  ): {clipStyle: clipStyleType; imageStyle: videoStyleType} {
     const imageStyle: videoStyleType = {
       display: 'inline-block',
       height: height + 'px',
@@ -188,7 +185,7 @@ export class VideoViewBody extends React.PureComponent {
 
     const clipStyle: clipStyleType = {};
     if (crop) {
-      const cropped = { ...crop };
+      const cropped = {...crop};
       if (scale !== 1) {
         scale = maxSize.width / cropped.width;
         cropped.width *= scale;
@@ -206,17 +203,17 @@ export class VideoViewBody extends React.PureComponent {
       clipStyle.transform = `rotate(${rotate}rad)`;
     }
 
-    return { clipStyle, imageStyle };
+    return {clipStyle, imageStyle};
   }
 
   render(): React.ReactElement {
-    const { originalSize, maxSize } = this.state;
-    const { editorView, node, selected, focused } = this.props;
-    const { readOnly } = editorView;
-    const { attrs } = node;
-    const { align, crop, rotate } = attrs;
+    const {originalSize, maxSize} = this.state;
+    const {editorView, node, selected, focused} = this.props;
+    const {readOnly} = editorView;
+    const {attrs} = node;
+    const {align, crop, rotate} = attrs;
 
-    const { width, height, scale, loading } = this.getScaleSize();
+    const {width, height, scale, loading} = this.getScaleSize();
 
     // It's only active when the image's fully loaded.
     const active = !loading && focused && !readOnly && originalSize.complete;
@@ -241,7 +238,7 @@ export class VideoViewBody extends React.PureComponent {
         />
       ) : null;
 
-    const { clipStyle, imageStyle } = this.getClipStyle(
+    const {clipStyle, imageStyle} = this.getClipStyle(
       width,
       height,
       scale,
@@ -290,7 +287,7 @@ export class VideoViewBody extends React.PureComponent {
       return;
     }
 
-    const { node } = this.props;
+    const {node} = this.props;
     const editorProps = {
       value: node.attrs,
       onSelect: this._onChange,
@@ -317,7 +314,7 @@ export class VideoViewBody extends React.PureComponent {
       return;
     }
 
-    this.setState({ originalSize: DEFAULT_ORIGINAL_SIZE });
+    this.setState({originalSize: DEFAULT_ORIGINAL_SIZE});
     const isRevokeNeeded = false;
     let originalSize: VideoResult;
     if (isRevokeNeeded) {
@@ -330,8 +327,7 @@ export class VideoViewBody extends React.PureComponent {
       const props = this.props.node.attrs as VideoEditorState;
       props.src = src;
       originalSize = await resolveVideo(props);
-    }
-    else {
+    } else {
       src = (this.props.node.attrs as VideoEditorState).src;
       originalSize = await resolveVideo(
         this.props.node.attrs as VideoEditorState
@@ -349,11 +345,11 @@ export class VideoViewBody extends React.PureComponent {
       originalSize.width = MIN_SIZE;
       originalSize.height = MIN_SIZE;
     }
-    this.setState({ originalSize });
+    this.setState({originalSize});
   };
 
   _onResizeEnd = (width: number, height: number): void => {
-    const { getPos, node, editorView } = this.props;
+    const {getPos, node, editorView} = this.props;
     const pos = getPos();
     const attrs = {
       ...node.attrs,
@@ -363,7 +359,7 @@ export class VideoViewBody extends React.PureComponent {
     };
 
     let tr = editorView.state.tr;
-    const { selection } = editorView.state;
+    const {selection} = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
     // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
@@ -373,13 +369,13 @@ export class VideoViewBody extends React.PureComponent {
     editorView.dispatch(tr);
   };
 
-  _onChange = (value?: { align?: string }): void => {
+  _onChange = (value?: {align?: string}): void => {
     if (!this._mounted) {
       return;
     }
 
     const align = value ? value.align : null;
-    const { getPos, node, editorView } = this.props;
+    const {getPos, node, editorView} = this.props;
     const pos = getPos();
     const attrs = {
       ...node.attrs,
@@ -387,7 +383,7 @@ export class VideoViewBody extends React.PureComponent {
     };
 
     let tr = editorView.state.tr;
-    const { selection } = editorView.state;
+    const {selection} = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
     // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
@@ -452,7 +448,7 @@ export class VideoNodeView extends CustomNodeView {
   }
 
   _updateDOM(el: HTMLElement): void {
-    const { align } = this.props.node.attrs;
+    const {align} = this.props.node.attrs;
     let className = 'molm-czi-image-view';
     if (align) {
       className += ' align-' + align;
@@ -460,4 +456,3 @@ export class VideoNodeView extends CustomNodeView {
     el.className = className;
   }
 }
-

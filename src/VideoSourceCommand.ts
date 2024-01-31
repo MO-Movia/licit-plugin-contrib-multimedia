@@ -2,7 +2,7 @@ import {Fragment, Schema} from 'prosemirror-model';
 import {EditorState, Transaction, TextSelection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
-import * as React from 'react';
+import React from 'react';
 import {
   hideCursorPlaceholder,
   showCursorPlaceholder,
@@ -120,5 +120,15 @@ export class VideoSourceCommand extends UICommand {
     return null;
   }
 
-}
+  renderLabel() {
+    return null;
+  }
 
+  isActive(): boolean {
+    return true;
+  }
+
+  executeCustom(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
+}

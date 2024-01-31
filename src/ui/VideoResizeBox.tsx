@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import nullthrows from 'nullthrows';
-import * as React from 'react';
+import React from 'react';
 
 import {clamp} from '@modusoperandi/licit-ui-commands';
 import {v1 as uuid} from 'uuid';
@@ -30,7 +30,15 @@ function setSize(el: HTMLElement, width: number, height: number): void {
   el.style.height = Math.round(height) + 'px';
 }
 
-export type ResizeHadleDirection = 'top' | 'top_right' | 'right' | 'bottom_right' | 'bottom' | 'bottom_left' | 'left' | 'top_left';
+export type ResizeHadleDirection =
+  | 'top'
+  | 'top_right'
+  | 'right'
+  | 'bottom_right'
+  | 'bottom'
+  | 'bottom_left'
+  | 'left'
+  | 'top_left';
 
 const ResizeDirection = {
   top: setHeight,
@@ -48,9 +56,9 @@ type VideoResizeBoxControlProps = {
   height: number;
   onResizeEnd: (w: number, height: number) => void;
   width: number;
-}
+};
 export class VideoResizeBoxControl extends React.PureComponent {
-  declare props:VideoResizeBoxControlProps;
+  declare props: VideoResizeBoxControlProps;
 
   _active = false;
   _el?: HTMLElement;
@@ -213,4 +221,3 @@ export class VideoResizeBox extends React.PureComponent {
     );
   }
 }
-

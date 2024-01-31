@@ -1,5 +1,5 @@
 import './czi-loading-indicator.css';
-import * as React from 'react';
+import React from 'react';
 
 // https://loading.io/css/
 export class LoadingIndicator extends React.PureComponent {
@@ -14,5 +14,3 @@ export class LoadingIndicator extends React.PureComponent {
     );
   }
 }
-
-

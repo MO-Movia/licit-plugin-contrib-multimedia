@@ -1,8 +1,8 @@
-import { Node } from 'prosemirror-model';
-import { Decoration, EditorView, NodeView } from 'prosemirror-view';
-import * as React from 'react';
+import {Node} from 'prosemirror-model';
+import {Decoration, EditorView, NodeView} from 'prosemirror-view';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { EditorVideoRuntime } from '../Types';
+import {EditorVideoRuntime} from '../Types';
 
 import {SelectionObserver} from './SelectionObserver';
 
@@ -185,10 +185,10 @@ export class CustomNodeView implements NodeView {
   }
 
   __renderReactComponent(callback?: () => void): void {
-    const { editorView, getPos } = this.props;
+    const {editorView, getPos} = this.props;
 
     if (editorView.state?.selection) {
-      const { from } = editorView.state.selection;
+      const {from} = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
       this.props.focused = editorView.focused && pos === from;

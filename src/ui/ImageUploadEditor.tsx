@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import * as React from 'react';
+import React from 'react';
 
 import {
   CustomButton,
@@ -14,8 +14,8 @@ import './czi-video-upload-editor.css';
 import type {EditorRuntime, ImageLike} from '../Types';
 type ImageUploadProps = {
   runtime: EditorRuntime;
-    close: (val?: ImageLike) => void;
-}
+  close: (val?: ImageLike) => void;
+};
 export class ImageUploadEditor extends React.PureComponent {
   _unmounted = false;
 
@@ -112,4 +112,3 @@ export class ImageUploadEditor extends React.PureComponent {
     this.props.close();
   };
 }
-

@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import * as React from 'react';
+import React from 'react';
 
 import {canUseCSSFont} from './canUseCSSFont';
 
@@ -62,23 +62,23 @@ export class Icon extends React.PureComponent {
     return icon;
   }
 
-  declare props:Props;
+  declare props: Props;
 
   render(): React.ReactElement {
-    const { type, title } = this.props;
+    const {type, title} = this.props;
     let className = '';
     let children: React.ReactElement | string;
     if (type == 'superscript') {
-      className = cx('molm-czi-icon', { [type]: true });
+      className = cx('molm-czi-icon', {[type]: true});
       children = <SuperscriptIcon />;
     } else if (type == 'subscript') {
-      className = cx('molm-czi-icon', { [type]: true });
+      className = cx('molm-czi-icon', {[type]: true});
       children = <SubscriptIcon />;
     } else if (!type || !VALID_CHARS.test(type)) {
       className = cx('czi-icon-unknown');
       children = title || type;
     } else {
-      className = cx('molm-czi-icon', { [type]: true });
+      className = cx('molm-czi-icon', {[type]: true});
       children = type;
     }
     return <span className={className}>{children}</span>;

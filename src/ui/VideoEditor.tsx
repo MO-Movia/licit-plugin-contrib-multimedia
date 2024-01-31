@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
   preventEventDefault,
   CustomButton,
@@ -24,7 +24,6 @@ export class VideoEditor extends React.PureComponent<
   VideoEditorProps,
   VideoEditorState
 > {
-
   state: VideoEditorState = {
     ...(this.props.initialValue || {}),
     validValue: null,
@@ -81,7 +80,11 @@ export class VideoEditor extends React.PureComponent<
             </div>
           </fieldset>
           <div className="molm-czi-form-buttons">
-            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel}/>
+            <CustomButton
+              className="cancelbtn"
+              label="Cancel"
+              onClick={this._cancel}
+            />
             <CustomButton
               active={true}
               className="insertbtn"
@@ -94,11 +97,11 @@ export class VideoEditor extends React.PureComponent<
       </div>
     );
   }
-  getsrc(e:React.ChangeEvent<HTMLInputElement>){
-   return  e.target.value;
+  getsrc(e: React.ChangeEvent<HTMLInputElement>) {
+    return e.target.value;
   }
 
- _onSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  _onSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const src = this.getsrc(e);
     const yId = this._getYouTubeId(src);
     const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${yId}&format=json`;
@@ -108,13 +111,11 @@ export class VideoEditor extends React.PureComponent<
 
     axios
       .get(url)
-      .then(
-        (response) => {
-          height = response.data.height;
-          width = response.data.width;
-          setValues(src, width, height, true);
-        },
-      )
+      .then((response) => {
+        height = response.data.height;
+        width = response.data.width;
+        setValues(src, width, height, true);
+      })
       .catch((_rejected) => {
         setValues(src, width, height, true);
       });
@@ -158,5 +159,3 @@ export class VideoEditor extends React.PureComponent<
     this.props.close(this.state);
   };
 }
-
-

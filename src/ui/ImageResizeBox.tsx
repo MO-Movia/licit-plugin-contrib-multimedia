@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import nullthrows from 'nullthrows';
-import * as React from 'react';
+import React from 'react';
 
 import {clamp} from '@modusoperandi/licit-ui-commands';
 import {uuid} from './uuid';
@@ -59,8 +59,8 @@ type ImageResizwBoxProps = {
   onResizeEnd: (w: number, height: number) => void;
   width: number;
   fitToParent: boolean;
-}
- export class ImageResizeBoxControl extends React.PureComponent {
+};
+export class ImageResizeBoxControl extends React.PureComponent {
   declare props: ImageResizwBoxProps;
 
   _active = false;
@@ -232,4 +232,3 @@ export class ImageResizeBox extends React.PureComponent {
     );
   }
 }
-

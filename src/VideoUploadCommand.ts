@@ -1,9 +1,9 @@
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
-import * as React from 'react';
+import React from 'react';
 
-import { VideoSourceCommand } from './VideoSourceCommand';
-import { VideoUploadEditor } from './ui/VideoUploadEditor';
+import {VideoSourceCommand} from './VideoSourceCommand';
+import {VideoUploadEditor} from './ui/VideoUploadEditor';
 import type {EditorVideoRuntime} from './Types';
 
 export class VideoUploadCommand extends VideoSourceCommand {
