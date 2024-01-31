@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import nullthrows from 'nullthrows';
-import * as React from 'react';
+import React from 'react';
 
 import {clamp} from '@modusoperandi/licit-ui-commands';
 import {v1 as uuid} from 'uuid';
@@ -30,7 +30,15 @@ function setSize(el: HTMLElement, width: number, height: number): void {
   el.style.height = Math.round(height) + 'px';
 }
 
-export type ResizeHadleDirection = 'top' | 'top_right' | 'right' | 'bottom_right' | 'bottom' | 'bottom_left' | 'left' | 'top_left';
+export type ResizeHadleDirection =
+  | 'top'
+  | 'top_right'
+  | 'right'
+  | 'bottom_right'
+  | 'bottom'
+  | 'bottom_left'
+  | 'left'
+  | 'top_left';
 
 const ResizeDirection = {
   top: setHeight,
@@ -42,15 +50,15 @@ const ResizeDirection = {
   left: setWidth,
   top_left: setSize,
 };
-
+type VideoResizeBoxControlProps = {
+  boxID: string;
+  direction: ResizeHadleDirection;
+  height: number;
+  onResizeEnd: (w: number, height: number) => void;
+  width: number;
+};
 export class VideoResizeBoxControl extends React.PureComponent {
-  props!: {
-    boxID: string;
-    direction: ResizeHadleDirection;
-    height: number;
-    onResizeEnd: (w: number, height: number) => void;
-    width: number;
-  };
+  declare props: VideoResizeBoxControlProps;
 
   _active = false;
   _el?: HTMLElement;
@@ -178,8 +186,8 @@ export class VideoResizeBoxControl extends React.PureComponent {
   };
 }
 
-class VideoResizeBox extends React.PureComponent {
-  props!: VideoResizeProps;
+export class VideoResizeBox extends React.PureComponent {
+  declare props: VideoResizeProps;
 
   _id = uuid();
 
@@ -213,5 +221,3 @@ class VideoResizeBox extends React.PureComponent {
     );
   }
 }
-
-export default VideoResizeBox;

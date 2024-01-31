@@ -1,8 +1,8 @@
 import './czi-loading-indicator.css';
-import * as React from 'react';
+import React from 'react';
 
 // https://loading.io/css/
-class LoadingIndicator extends React.PureComponent {
+export class LoadingIndicator extends React.PureComponent {
   render(): React.ReactElement<HTMLElement> {
     return (
       <div className="molm-czi-loading-indicator">
@@ -14,5 +14,3 @@ class LoadingIndicator extends React.PureComponent {
     );
   }
 }
-
-export default LoadingIndicator;

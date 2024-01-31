@@ -60,7 +60,7 @@ function resolveSelectionValue(el: Element): SelectionValue {
   return EMPTY_SELECTION_VALUE;
 }
 
-export default class SelectionObserver {
+export  class SelectionObserver {
   _observables: {
     target: Element;
     selection: SelectionValue;

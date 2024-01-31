@@ -1,4 +1,4 @@
-import isOffline from './isOffline';
+import { isOffline } from './isOffline';
 import url from 'url';
 import {VideoEditorState} from './VideoEditor';
 
@@ -17,7 +17,7 @@ const queue: {
   reject: (reason?: VideoResult | PromiseLike<VideoResult>) => void;
 }[] = [];
 
-export default function resolveVideo(
+export  function resolveVideo(
   config?: VideoEditorState
 ): Promise<VideoResult> {
   return new Promise((resolve, reject) => {

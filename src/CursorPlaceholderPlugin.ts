@@ -46,7 +46,7 @@ const SPEC = {
   },
 };
 
-class CursorPlaceholderPlugin extends Plugin {
+export class CursorPlaceholderPlugin extends Plugin {
   constructor() {
     super(SPEC);
     if (!singletonInstance) {
@@ -120,4 +120,3 @@ export function hideCursorPlaceholder(state: EditorState): Transform {
   return tr;
 }
 
-export default CursorPlaceholderPlugin;

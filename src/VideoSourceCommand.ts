@@ -2,7 +2,7 @@ import {Fragment, Schema} from 'prosemirror-model';
 import {EditorState, Transaction, TextSelection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
-import * as React from 'react';
+import React from 'react';
 import {
   hideCursorPlaceholder,
   showCursorPlaceholder,
@@ -47,7 +47,7 @@ export function insertIFrame(
   return tr;
 }
 
-class VideoSourceCommand extends UICommand {
+export class VideoSourceCommand extends UICommand {
   _popUp = null;
 
   getEditor(): typeof React.Component {
@@ -115,6 +115,20 @@ class VideoSourceCommand extends UICommand {
     }
     return true;
   };
-}
 
-export default VideoSourceCommand;
+  cancel(): void {
+    return null;
+  }
+
+  renderLabel() {
+    return null;
+  }
+
+  isActive(): boolean {
+    return true;
+  }
+
+  executeCustom(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
+}

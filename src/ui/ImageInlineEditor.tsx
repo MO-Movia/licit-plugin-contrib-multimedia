@@ -1,7 +1,7 @@
 import './czi-inline-editor.css';
 import {CustomButton} from '@modusoperandi/licit-ui-commands';
-import * as React from 'react';
-import Icon from './Icon';
+import React from 'react';
+import {Icon} from './Icon';
 import {EditorView} from 'prosemirror-view';
 export type PropValue = {
   value?: string;
@@ -66,13 +66,13 @@ export type ImageInlineEditorValue = {
   align?: string;
   src?;
 };
-
-class ImageInlineEditor extends React.PureComponent {
-  props: {
-    onSelect: (val: ImageInlineEditorValue) => void;
-    value: ImageInlineEditorValue;
-    editorView: EditorView;
-  };
+type ImageInlineProps = {
+  onSelect: (val: ImageInlineEditorValue) => void;
+  value: ImageInlineEditorValue;
+  editorView: EditorView;
+};
+export class ImageInlineEditor extends React.PureComponent {
+  declare props: ImageInlineProps;
   state = {
     expanded: false,
     srcc: null,
@@ -170,5 +170,3 @@ class ImageInlineEditor extends React.PureComponent {
     dispatch(tr);
   };
 }
-
-export default ImageInlineEditor;

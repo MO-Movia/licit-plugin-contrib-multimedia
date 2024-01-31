@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import nullthrows from 'nullthrows';
-import * as React from 'react';
+import React from 'react';
 
 import {clamp} from '@modusoperandi/licit-ui-commands';
-import uuid from './uuid';
+import {uuid} from './uuid';
 
 import './czi-image-resize-box.css';
 import {FP_WIDTH} from '../Constants';
@@ -51,17 +51,17 @@ const ResizeDirection = {
   left: setWidth,
   top_left: setSize,
 };
-
- export class ImageResizeBoxControl extends React.PureComponent {
-  props: {
-    boxID: string;
-    config;
-    direction: string;
-    height: number;
-    onResizeEnd: (w: number, height: number) => void;
-    width: number;
-    fitToParent: boolean;
-  };
+type ImageResizwBoxProps = {
+  boxID: string;
+  config;
+  direction: string;
+  height: number;
+  onResizeEnd: (w: number, height: number) => void;
+  width: number;
+  fitToParent: boolean;
+};
+export class ImageResizeBoxControl extends React.PureComponent {
+  declare props: ImageResizwBoxProps;
 
   _active = false;
   _el = null;
@@ -189,8 +189,8 @@ const ResizeDirection = {
   };
 }
 
-class ImageResizeBox extends React.PureComponent {
-  props: Props;
+export class ImageResizeBox extends React.PureComponent {
+  declare props: Props;
 
   _id = uuid();
 
@@ -232,5 +232,3 @@ class ImageResizeBox extends React.PureComponent {
     );
   }
 }
-
-export default ImageResizeBox;

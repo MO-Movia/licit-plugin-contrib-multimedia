@@ -1,5 +1,5 @@
 import {onSelection,onMutation} from  './CustomNodeView';
-import SelectionObserver from './SelectionObserver';
+import {SelectionObserver} from './SelectionObserver';
 
 describe('onSelection',()=>{
     it('should handle onselection',()=>{

@@ -1,6 +1,6 @@
 const cached: {[fonst: string]: boolean} = {};
 
-export default function canUseCSSFont(fontName: string): Promise<boolean> {
+export function canUseCSSFont(fontName: string): Promise<boolean> {
   const doc = document;
 
   if (cached[fontName]) {

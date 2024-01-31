@@ -92,7 +92,7 @@ export function getAttrs(dom: string | HTMLElement) {
 }
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
-const VideoNodeSpec: NodeSpec = {
+export const VideoNodeSpec: NodeSpec = {
   inline: true,
   attrs: {
     id: {default: null},
@@ -117,4 +117,3 @@ const VideoNodeSpec: NodeSpec = {
   },
 };
 
-export default VideoNodeSpec;
