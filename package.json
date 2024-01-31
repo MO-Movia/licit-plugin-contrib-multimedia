@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@cfaester/enzyme-adapter-react-18": "^0.7.0",
-    "@cyclonedx/bom": "^3.0.3",
+    "@cyclonedx/bom": "^4.0.3",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
