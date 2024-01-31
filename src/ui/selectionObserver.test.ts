@@ -1,4 +1,4 @@
-import SelectionObserver from './SelectionObserver';
+import {SelectionObserver} from './SelectionObserver';
 
 
 describe('selection observer', () => {

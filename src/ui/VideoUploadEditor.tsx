@@ -1,25 +1,25 @@
 import cx from 'classnames';
-import * as React from 'react';
+import React from 'react';
 
 import {
   CustomButton,
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import LoadingIndicator from './LoadingIndicator';
+import {LoadingIndicator} from './LoadingIndicator';
 import {v1 as uuid} from 'uuid';
 
 import './czi-form.css';
 import './czi-video-upload-editor.css';
 
 import type {EditorVideoRuntime, VideoLike} from '../Types';
-
-class VideoUploadEditor extends React.PureComponent {
+type VideoUploadEditorProps = {
+  runtime?: EditorVideoRuntime;
+  close: (val?: VideoLike) => void;
+};
+export class VideoUploadEditor extends React.PureComponent {
   _unmounted = false;
 
-  props: {
-    runtime?: EditorVideoRuntime;
-    close: (val?: VideoLike) => void;
-  };
+  declare props: VideoUploadEditorProps;
 
   state = {
     error: null,
@@ -123,5 +123,3 @@ class VideoUploadEditor extends React.PureComponent {
     this.props.close();
   };
 }
-
-export default VideoUploadEditor;

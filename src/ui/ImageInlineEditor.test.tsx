@@ -1,4 +1,4 @@
-import ImageInlineEditor from './ImageInlineEditor';
+import {ImageInlineEditor} from './ImageInlineEditor';
 import {
   EditorState,
 } from 'prosemirror-state';

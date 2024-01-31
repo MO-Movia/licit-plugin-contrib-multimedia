@@ -4,7 +4,7 @@ import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import {schema} from 'jest-prosemirror';
 import {MultimediaPlugin} from '../index';
-import Icon from './Icon';
+import {Icon} from './Icon';
 
 Enzyme.configure({adapter: new Adapter()});
 

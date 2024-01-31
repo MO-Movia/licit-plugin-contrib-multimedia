@@ -2,19 +2,20 @@ import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { MultimediaPlugin } from './index';
-import resolveImage, * as resolveImageMod from './ui/resolveImage';
-import ImageSourceCommand, { insertImage } from './ImageSourceCommand';
-import ImageNodeView from './ui/ImageNodeView';
+import {resolveImage} from './ui/resolveImage';
+import  * as resolveImageMod  from './ui/resolveImage';
+import {ImageSourceCommand, insertImage } from './ImageSourceCommand';
+import {ImageNodeView} from './ui/ImageNodeView';
 import { Schema, Node } from 'prosemirror-model';
 import { schema } from 'prosemirror-test-builder';
-import ImageUploadPlaceholderPlugin, {
+import {ImageUploadPlaceholderPlugin,
   uploadImageFiles,
   customEditorView,
 } from './ImageUploadPlaceholderPlugin';
-import ImageURLEditor, { ImageEditorState, ImageEditorProps } from './ui/ImageURLEditor';
-import ImageInlineEditor from './ui/ImageInlineEditor';
+import { ImageEditorState, ImageEditorProps, ImageURLEditor } from './ui/ImageURLEditor';
+import {ImageInlineEditor} from './ui/ImageInlineEditor';
 import { EditorView } from 'prosemirror-view';
-import ImageNodeSpec, { getAttrs } from './ImageNodeSpec';
+import {ImageNodeSpec,getAttrs} from './ImageNodeSpec';
 
 import React from 'react';
 import { EditorFocused } from './ui/CustomNodeView';
@@ -374,7 +375,7 @@ describe('Image Node View ', () => {
 
     view.updateState(newState);
 
-    const spyresolveImage = jest.spyOn(resolveImageMod, 'default');
+    const spyresolveImage = jest.spyOn(resolveImageMod, 'resolveImage');
     spyresolveImage.mockResolvedValue({
       complete: true,
       height: 200,

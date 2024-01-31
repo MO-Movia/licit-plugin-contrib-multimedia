@@ -1,4 +1,4 @@
-import ImageSourceCommand, { insertImage } from './ImageSourceCommand';
+import {ImageSourceCommand, insertImage } from './ImageSourceCommand';
 import { Transform } from 'prosemirror-transform';
 import { Schema } from 'prosemirror-model';
 describe('insert image', () => {

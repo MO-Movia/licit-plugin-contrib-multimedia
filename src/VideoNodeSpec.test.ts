@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import VideoNodeSpec,{getAlign,getAttrs,getCropRotate} from './VideoNodeSpec';
+import {VideoNodeSpec,getAlign,getAttrs,getCropRotate} from './VideoNodeSpec';
 
 const node = {
   attrs: {

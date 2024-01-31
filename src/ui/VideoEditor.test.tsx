@@ -1,4 +1,4 @@
-import VideoEditor from './VideoEditor';
+import {VideoEditor} from './VideoEditor';
 
 describe('VideoEditor', () => {
   const props = {

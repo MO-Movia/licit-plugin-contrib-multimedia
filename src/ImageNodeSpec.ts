@@ -76,7 +76,7 @@ export function getAttrs(dom: string | HTMLElement) {
 }
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
-const ImageNodeSpec: NodeSpec = {
+export const ImageNodeSpec: NodeSpec = {
   inline: true,
   attrs: {
     align: {default: null},
@@ -97,7 +97,6 @@ const ImageNodeSpec: NodeSpec = {
   },
 };
 
-export default ImageNodeSpec;
 function makeCrop(ps: CSSStyleDeclaration, marginLeft: string, marginTop: string) {
   return {
     width: parseInt(ps.width, 10) || 0,
