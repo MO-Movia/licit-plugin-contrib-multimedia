@@ -115,5 +115,10 @@ export class VideoSourceCommand extends UICommand {
     }
     return true;
   };
+
+  cancel(): void {
+    return null;
+  }
+
 }
 
