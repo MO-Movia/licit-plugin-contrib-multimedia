@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit-multimedia",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "subversion": "1",
   "description": "Multimedia plugin built with ProseMirror",
@@ -15,7 +15,7 @@
     "lint:ts": "eslint src --ext .ts,.tsx --fix",
     "lint:css": "stylelint \"**/*.css\" --fix",
     "lint": "npm run lint:css & npm run lint:ts",
-    "ci:build": "tsc --build && copyfiles --up 1 \"src/**/*.css\" dist  && copyfiles package.json dist",
+    "ci:build": "tsc --build && copyfiles --up 1 \"src/**/*.css\" dist  && copyfiles package.json dist && copyfiles --up 1 \"src/fonts/**\" dist && copyfiles --up 1 \"src/assets/**\" dist",
     "ci:bom": "cyclonedx-bom -o dist/bom.xml",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
