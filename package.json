@@ -64,7 +64,7 @@
     "style-loader": "^3.3.1",
     "stylelint": "^16.2.1",
     "stylelint-config-standard": "^36.0.0",
-    "stylelint-prettier": "^4.0.0",
+    "stylelint-prettier": "^5.0.0",
     "text-encoding": "^0.7.0",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
