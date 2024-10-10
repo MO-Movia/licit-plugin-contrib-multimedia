@@ -2,15 +2,17 @@
 import {Plugin, PluginKey} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {Node, Schema} from 'prosemirror-model';
-import { VideoNodeView } from './ui/VideoNodeView';
+import AVNodeView from './ui/audio-video/AVNodeView';
 import {VIDEO} from './Constants';
-import { VideoNodeSpec } from './VideoNodeSpec';
-import { VideoFromURLCommand } from './VideoFromURLCommand';
+import AVNodeSpec from './audio-video/AVNodeSpec';
+import AVFromURLCommand from './audio-video/AVFromURLCommand';
 import {EditorFocused} from './ui/CustomNodeView';
-import {VideoUploadCommand} from './VideoUploadCommand';
-import {ImageUploadCommand} from './ImageUploadCommand';
-import {ImageNodeView} from './ui/ImageNodeView';
-import {ImageNodeSpec} from './ImageNodeSpec';
+import AVUploadCommand from './audio-video/AVUploadCommand';
+import ImageFromURLCommand from './image/ImageFromURLCommand';
+
+import {ImageUploadCommand} from './image/ImageUploadCommand';
+import {ImageNodeView} from './ui/image/ImageNodeView';
+import {ImageNodeSpec} from './image/ImageNodeSpec';
 import {ImageFromURLCommand} from'./ImageFromURLCommand';
 const IMAGE = 'image';
 
@@ -23,8 +25,10 @@ export class MultimediaPlugin extends Plugin {
       key: new PluginKey('MultimediaPlugin'),
       state: {
         init(_config, _state) {
-          (this as MultimediaPlugin).spec.props.nodeViews[VIDEO] = bindVideoView.bind(this);
-          (this as MultimediaPlugin).spec.props.nodeViews[IMAGE] = bindImageView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[VIDEO] =
+            bindVideoView.bind(this);
+          (this as MultimediaPlugin).spec.props.nodeViews[IMAGE] =
+            bindImageView.bind(this);
         },
         apply(_tr, _set) {
           //do nothing
@@ -38,8 +42,8 @@ export class MultimediaPlugin extends Plugin {
 
   getEffectiveSchema(schema: Schema): Schema {
     const nodes = schema.spec.nodes.append({
-      video: VideoNodeSpec,
-      image: ImageNodeSpec
+      video: AVNodeSpec,
+      image: ImageNodeSpec,
     });
     const marks = schema.spec.marks;
 
@@ -51,13 +55,14 @@ export class MultimediaPlugin extends Plugin {
 
   initButtonCommands() {
     return {
-      '[mms] Insert MultiMedia': [
+      [`[${image}] Insert MultiMedia`] : [
         {
           'Insert image by URL': new ImageFromURLCommand(),
           'Upload image from computer': new ImageUploadCommand(),
-          'Insert video by URL': new VideoFromURLCommand(),
-          'Upload video from computer': new VideoUploadCommand(),
-
+          'Insert video by URL': new AVFromURLCommand(false),
+          'Upload video from computer': new AVUploadCommand(false),
+          'Insert audio by URL': new AVFromURLCommand(true),
+          'Upload audio from computer': new AVUploadCommand(true),
         },
       ],
     };
@@ -72,7 +77,7 @@ export function bindVideoView(
   return new VideoViewExt(node, view, curPos);
 }
 
-export class VideoViewExt extends VideoNodeView {
+class VideoViewExt extends AVNodeView {
   constructor(node: Node, view: EditorView, getCurPos) {
     super(node, view as EditorFocused, getCurPos, null);
   }

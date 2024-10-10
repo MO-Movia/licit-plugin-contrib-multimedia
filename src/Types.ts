@@ -1,15 +1,12 @@
-export type RenderCommentProps = {
-  commentThreadId: string;
-  isActive: boolean;
-  requestCommentThreadDeletion: () => void;
-  requestCommentThreadReflow: () => void;
-};
-
-export type VideoLike = {
+export type ImageProps = {
   height: number;
   id: string;
   src: string;
   width: number;
+};
+
+export type AVProps = ImageProps & {
+  isAudio: boolean;
 };
 
 export type EditorVideoRuntime = {
@@ -20,36 +17,26 @@ export type EditorVideoRuntime = {
 
   // Video Upload
   canUploadVideo?: () => boolean;
-  uploadVideo?: (obj: Blob) => Promise<VideoLike>;
+  uploadVideo?: (obj: Blob) => Promise<AVProps>;
 };
 
-export type ImageLike = {
-  height: number,
-  id: string,
-  src: string,
-  width: number,
+export type EditorAudioRuntime = {
+  // audio Proxy
+  canProxyAudioSrc?: (src: string) => boolean;
+  getProxyAudioSrc?: (src: string) => string;
+  getAudioSrc?: (id: string) => Promise<string>;
+
+  // audio Upload
+  canUploadAudio?: () => boolean;
+  uploadAudio?: (obj: Blob) => Promise<AVProps>;
 };
 
-export type EditorRuntime = {
+export type EditorImageRuntime = {
   // Image Proxy
-  canProxyImageSrc?: (src: string) => boolean,
-  getProxyImageSrc?: (src: string) => Promise<string>,
+  canProxyImageSrc?: (src: string) => boolean;
+  getProxyImageSrc?: (src: string) => Promise<string>;
 
   // Image Upload
-  canUploadImage?: () => boolean,
-  uploadImage?: (obj: Blob) => Promise<ImageLike>,
-
-  // Comments
-  canComment?: () => boolean,
-  createCommentThreadID?: () => string,
-  renderComment?: (props: RenderCommentProps) => React.ReactElement,
-
-  // External HTML
-  canLoadHTML?: () => boolean,
-  loadHTML?: () => Promise<string>,
-
-
-
-
-
+  canUploadImage?: () => boolean;
+  uploadImage?: (obj: Blob) => Promise<ImageProps>;
 };
