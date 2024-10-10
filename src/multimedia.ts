@@ -13,7 +13,6 @@ import ImageFromURLCommand from './image/ImageFromURLCommand';
 import {ImageUploadCommand} from './image/ImageUploadCommand';
 import {ImageNodeView} from './ui/image/ImageNodeView';
 import {ImageNodeSpec} from './image/ImageNodeSpec';
-import {ImageFromURLCommand} from'./ImageFromURLCommand';
 const IMAGE = 'image';
 
 // [FS] IRAD-1503 2021-07-02
@@ -55,7 +54,7 @@ export class MultimediaPlugin extends Plugin {
 
   initButtonCommands() {
     return {
-      [`[${image}] Insert MultiMedia`] : [
+      [`[${IMAGE}] Insert MultiMedia`]: [
         {
           'Insert image by URL': new ImageFromURLCommand(),
           'Upload image from computer': new ImageUploadCommand(),
