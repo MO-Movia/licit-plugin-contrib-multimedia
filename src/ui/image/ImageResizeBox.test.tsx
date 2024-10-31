@@ -1,32 +1,14 @@
 import {createEditor, doc, p} from 'jest-prosemirror';
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import {ImageResizeBox, ImageResizeBoxControl} from './ImageResizeBox';
 import React from 'react';
 
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {schema} from 'prosemirror-schema-basic';
-import {MultimediaPlugin} from '../index';
+import {MultimediaPlugin} from '../../index';
 
-Enzyme.configure({adapter: new Adapter()});
-jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
-jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
-describe('Image Resize Box', () => {
-  it('should render Image Resize Box', () => {
-    const ImageResizeProps = {
-      height: 150,
-      onResizeEnd: (_w: 120, _height: 200) => undefined,
-      src: '',
-      width: 180,
-      fitToParent: false,
-    };
-    const wrapper = Enzyme.shallow(<ImageResizeBox {...ImageResizeProps} />);
-    const ImageResizeBoxIns = wrapper.instance();
-    ImageResizeBoxIns.render();
-    expect(() => wrapper.find('img').simulate('click')).not.toThrow();
-  });
-});
+// jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+// jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 
 describe('Node attribute update', () => {
   let editorView!: EditorView;

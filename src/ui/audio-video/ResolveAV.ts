@@ -1,4 +1,4 @@
-import {isOffline} from '../isOffline';
+// import {isOffline} from '../isOffline';
 import url from 'url';
 import { AVEditorState } from './AVEditor';
 
@@ -79,3 +79,11 @@ function processPromise(
   // Avoid image caching remove the below line
   cache[srcStr] = { ...result };
 }
+
+function isOffline(): boolean {
+  if (Object.prototype.hasOwnProperty.call(window.navigator, 'onLine')) {
+    return !window.navigator.onLine;
+  }
+  return false;
+}
+

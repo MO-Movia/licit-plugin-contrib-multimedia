@@ -1,24 +1,25 @@
 import { createEditor, doc, p } from 'jest-prosemirror';
 import { EditorState, TextSelection, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { MultimediaPlugin } from './index';
-import {resolveImage} from './ui/resolveImage';
-import  * as resolveImageMod  from './ui/resolveImage';
-import {ImageSourceCommand, insertImage } from './ImageSourceCommand';
-import {ImageNodeView} from './ui/ImageNodeView';
+import { MultimediaPlugin } from '../index';
+import { resolveImage } from '../ui/image/resolveImage';
+import * as resolveImageMod from '../ui/image/resolveImage';
+import { ImageSourceCommand, insertImage } from './ImageSourceCommand';
+import { ImageNodeView } from '../ui/image/ImageNodeView';
 import { Schema, Node } from 'prosemirror-model';
 import { schema } from 'prosemirror-test-builder';
-import {ImageUploadPlaceholderPlugin,
+import {
+  ImageUploadPlaceholderPlugin,
   uploadImageFiles,
   customEditorView,
 } from './ImageUploadPlaceholderPlugin';
-import { ImageEditorState, ImageEditorProps, ImageURLEditor } from './ui/ImageURLEditor';
-import {ImageInlineEditor} from './ui/ImageInlineEditor';
+import { ImageEditorState, ImageEditorProps, ImageURLEditor } from '../ui/image/ImageURLEditor';
+import { ImageInlineEditor } from '../ui/image/ImageInlineEditor';
 import { EditorView } from 'prosemirror-view';
-import {ImageNodeSpec,getAttrs} from './ImageNodeSpec';
+import { ImageNodeSpec, getAttrs } from './ImageNodeSpec';
 
 import React from 'react';
-import { EditorFocused } from './ui/CustomNodeView';
+import { EditorFocused } from '../ui/CustomNodeView';
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -69,8 +70,8 @@ const newstate1: EditorState = EditorState.create({
 const srcevent = {
   target: { value: 'https://www.youtube.com/embed/ru60J99ojJw' },
 } as React.ChangeEvent<HTMLInputElement>;
-jest.mock('../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
-jest.mock('../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
+// jest.mock('../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+// jest.mock('../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 describe('MultimediaPlugin', () => {
   it('should handle Image', () => {
     const ImgSrcCmd = new ImageSourceCommand();
@@ -385,7 +386,7 @@ describe('Image Node View ', () => {
       width: 150,
     });
 
-    jest.mock('./ui/ImageNodeView', () => ({
+    jest.mock('../ui/image/ImageNodeView', () => ({
       myFunction: jest.fn().mockReturnValue(true),
     }));
     const foc = {

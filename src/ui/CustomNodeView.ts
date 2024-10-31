@@ -67,7 +67,7 @@ export function onSelection(_entries: [], observer: SelectionObserver): void {
   }
 
   const selection = window.getSelection();
-  if (!selection.containsNode) {
+  if (!selection?.containsNode) {
     console.warn('selection.containsNode() is not supported');
     observer.disconnect();
     return;
@@ -187,7 +187,7 @@ export class CustomNodeView implements NodeView {
   __renderReactComponent(callback?: () => void): void {
     const {editorView, getPos} = this.props;
 
-    if (editorView.state?.selection) {
+    if (editorView?.state?.selection) {
       const {from} = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;

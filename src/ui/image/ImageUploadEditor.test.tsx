@@ -1,9 +1,6 @@
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
+
 import React from 'react';
 import {ImageUploadEditor} from './ImageUploadEditor';
-
-Enzyme.configure({adapter: new Adapter()});
 
 const ImageUploadEditorProps = {
   runtime: {
@@ -33,17 +30,6 @@ const ImageUploadEditorProps = {
   close: () => undefined,
 };
 
-describe('Image Upload Editor', () => {
-  it('should render Image Upload Editor', () => {
-    const wrapper = Enzyme.shallow(
-      <ImageUploadEditor {...ImageUploadEditorProps} />
-    );
-    const ImageUploadEditorIns = wrapper.instance();
-    ImageUploadEditorIns.componentWillUnmount();
-    const file = new File(['hello world'], 'test.txt', {type: 'text/plain'});
-    wrapper.find('input').simulate('change', {target: {files: [file]}});
-  });
-});
 describe('Image Upload Editor', () => {
   it('should render Image Upload Editor', () => {
     const ImageUploadEditorProps = {
@@ -109,6 +95,43 @@ describe('Image Upload Editor', () => {
       error: 'error',
       id: '',
       pending: false,
+    };
+    expect(imageuploadeditor.render()).toBeDefined();
+  });
+
+  it('should handle render', () => {
+    const ImageUploadEditorProps = {
+      runtime: {
+        // Image Proxy
+        canProxyImageSrc: (_src: string) => true,
+        getProxyImageSrc: jest
+          .fn()
+          .mockReturnValue(Promise.resolve('http:image.png')),
+
+        // Image Upload
+        canUploadImage: () => true,
+        uploadImage: jest.fn().mockResolvedValue({
+          height: 200,
+          id: 'Test-1',
+          src: '',
+          width: 150,
+        }),
+
+        // Comments
+        canComment: () => true,
+        createCommentThreadID: () => 'Test-ID',
+
+        // External HTML
+        canLoadHTML: () => true,
+        loadHTML: jest.fn().mockResolvedValue('baz'),
+      },
+      close: () => undefined,
+    };
+    const imageuploadeditor = new ImageUploadEditor(ImageUploadEditorProps);
+    imageuploadeditor.state = {
+      error: 'error',
+      id: '',
+      pending: true,
     };
     expect(imageuploadeditor.render()).toBeDefined();
   });
@@ -253,4 +276,12 @@ describe('image upload editor', () => {
     const instance = await imageuploadeditor._upload(file);
     expect(instance).toBeUndefined();
   });
+  it('should hanle _onSelectFile ',()=>{
+    const ImageUploadEditorProps = {
+      close: () => undefined,
+    };
+    const imageuploadeditor = new ImageUploadEditor(ImageUploadEditorProps);
+    const instance =  imageuploadeditor._onSelectFile({target :{files:[{}]}} as unknown as React.SyntheticEvent<HTMLInputElement>);
+    expect(instance).toBeUndefined();
+  })
 });

@@ -1,11 +1,10 @@
 
 
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
+import { render, fireEvent, getByText } from '@testing-library/react';
 import VideoUploadEditor from './AVUploadEditor';
-
-Enzyme.configure({ adapter: new Adapter() });
+// setupTests.ts or setupTests.js
+import '@testing-library/jest-dom';
 
 const VideoUploadEditorProps = {
   runtime: { // Video Proxy
@@ -42,20 +41,33 @@ const VideoUploadEdrProps = {
   isAudio: false
 };
 const testCases = [VideoUploadEditorProps, VideoUploadEdrProps];
+
 describe('Video Upload Editor', () => {
+  testCases.forEach((testProps, index) => {
+    it(`should render Video Upload Editor for test case ${index + 1}`, () => {
+      const { getByText } = render(<VideoUploadEditor {...testProps} />);
+      
+      // Locate the legend element with "Upload Video"
+      const legendElement = getByText('Upload Video');
+      
+      // Find the closest form to the legend
+      const formElement = legendElement.closest('form');
+      
+      // Get the file input within the form
+      const inputElement = formElement?.querySelector('input[type="file"]');
+      
+      // Ensure the input element is found
+      expect(inputElement).toBeInTheDocument();
 
-
-
-  testCases.forEach(testProps => {
-    it('should render Video Upload Editor', () => {
-
-      const wrapper = Enzyme.shallow(<VideoUploadEditor {...testProps} />);
+      // Create a file to simulate upload
       const file = new File([''], 'test.mp4', { type: 'video/mp4' });
-
-      wrapper.find('input').simulate('change', { target: { files: [file] } });
+      
+      // Simulate the change event for file input
+      if (inputElement) {
+        fireEvent.change(inputElement, { target: { files: [file] } });
+      }
     });
   });
-
 });
 describe('Video Upload Editor', () => {
   const VideoUploadEditorProps = {
