@@ -1,4 +1,3 @@
-import nullthrows from 'nullthrows';
 import {Plugin, PluginKey, EditorState, TextSelection} from 'prosemirror-state';
 import {Decoration, DecorationSet, EditorView} from 'prosemirror-view';
 import {uuid} from './ui/uuid';
@@ -94,7 +93,10 @@ export function uploadImageFiles(
       }
       view.dispatch(trNext);
     };
-    const ff = nullthrows(imageFiles.shift());
+    const ff = imageFiles.shift(); // Get the next image file
+    if (!ff) {
+      return; // No file to upload
+    }
     uploadImage(ff)
       .then(done)
       .catch(done.bind(null, {src: null}));
