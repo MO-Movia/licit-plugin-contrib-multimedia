@@ -60,11 +60,11 @@ function resolveSelectionValue(el: Element): SelectionValue {
   return EMPTY_SELECTION_VALUE;
 }
 
-export  class SelectionObserver {
+export class SelectionObserver {
   _observables: {
     target: Element;
     selection: SelectionValue;
-}[] = [];
+  }[] = [];
   _callback: Callback;
 
   constructor(callback: Callback) {
@@ -138,6 +138,8 @@ export  class SelectionObserver {
         selection: $selection,
       };
     });
-    changed && callback && callback(this.takeRecords(), this);
+    if (changed && callback) {
+      callback(this.takeRecords(), this);
+    }
   };
 }

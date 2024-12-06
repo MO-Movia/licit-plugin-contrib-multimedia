@@ -55,7 +55,7 @@ export function observe(
     // Already observing node.
     const callbacks = nodesObserving.get(el);
     if (!callbacks) {
-      throw new Error("Unexpected null or undefined value in nodesObserving map.");
+      throw new Error('Unexpected null or undefined value in nodesObserving map.');
     }
     callbacks.push(callback);
   } else {

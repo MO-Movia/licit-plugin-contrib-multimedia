@@ -166,8 +166,9 @@ export class VideoResizeBoxControl extends React.PureComponent {
     el.style.height = this._h;
     el.className = 'molm-czi-image-resize-box';
     this._el = undefined;
-
-    this._rafID && cancelAnimationFrame(this._rafID);
+    if (this._rafID) {
+      cancelAnimationFrame(this._rafID);
+    }
     this._rafID = undefined;
   }
 

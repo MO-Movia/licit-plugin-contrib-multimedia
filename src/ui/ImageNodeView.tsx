@@ -386,7 +386,7 @@ export class ImageViewBody extends React.PureComponent<
     try {
       const origSelection = NodeSelection.create(tr.doc, selection.from);
       tr = tr.setSelection(origSelection);
-    } catch (error) {
+    } catch {
       // Ignore if can't select
     }
     editorView.dispatch(tr);
