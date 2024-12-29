@@ -54,9 +54,6 @@ export function observe(
   if (nodesObserving.has(el)) {
     // Already observing node.
     const callbacks = nodesObserving.get(el);
-    if (!callbacks) {
-      throw new Error('Unexpected null or undefined value in nodesObserving map.');
-    }
     callbacks.push(callback);
   } else {
     const callbacks = [callback];
@@ -73,19 +70,13 @@ export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
   const el = node;
   observer.unobserve(el);
 
-  if (callback) {
-    // Remove the passed in callback from the callbacks of the observed node
-    // And, if no more callbacks then stop observing the node
-    const callbacks = nodesObserving.has(el)
-      ? nodesObserving.get(el)?.filter((cb) => cb !== callback)
-      : null;
-    if (callbacks?.length) {
-      nodesObserving.set(el, callbacks);
-    } else {
-      nodesObserving.delete(el);
-    }
+  // Remove the passed in callback from the callbacks of the observed node
+  // And, if no more callbacks then stop observing the node
+  const callbacks =
+    nodesObserving.get(el)?.filter((cb) => cb !== callback) ?? [];
+  if (callbacks.length > 0) {
+    nodesObserving.set(el, callbacks);
   } else {
-    // Delete all callbacks for the node.
     nodesObserving.delete(el);
   }
 

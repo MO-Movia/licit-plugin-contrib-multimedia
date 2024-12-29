@@ -8,9 +8,6 @@ import {
 import {LoadingIndicator} from './LoadingIndicator';
 import {uuid} from './uuid';
 
-import './czi-form.css';
-import './czi-video-upload-editor.css';
-
 import type {EditorRuntime, ImageLike} from '../Types';
 type ImageUploadProps = {
   runtime: EditorRuntime;
@@ -22,7 +19,7 @@ export class ImageUploadEditor extends React.PureComponent {
   declare props: ImageUploadProps;
 
   state = {
-    error: null,
+    error: null as string,
     id: uuid(),
     pending: false,
   };

@@ -177,7 +177,7 @@ describe('Video Plugin - Test', () => {
   it('should change on src Change Event - resolved', () => {
     mockedAxios.get.mockResolvedValue(resp);
     VideoeditorIns._onSrcChange(srcevent);
-    expect(mockedAxios).toBeCalled();
+    expect(mockedAxios.get).toHaveBeenCalled();
   });
 
   it('should change on src Change Event - rejected', () => {

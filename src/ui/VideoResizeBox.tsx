@@ -4,8 +4,6 @@ import React from 'react';
 import {clamp} from '@modusoperandi/licit-ui-commands';
 import {v1 as uuid} from 'uuid';
 
-import './czi-image-resize-box.css';
-
 export type VideoResizeProps = {
   height: number;
   onResizeEnd: (w: number, height: number) => void;

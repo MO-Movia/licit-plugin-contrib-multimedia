@@ -1,9 +1,9 @@
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import React from 'react';
-import {VideoResizeBox,ResizeHadleDirection, VideoResizeBoxControl} from './VideoResizeBox';
-
-Enzyme.configure({adapter: new Adapter()});
+import {
+  VideoResizeBox,
+  ResizeHadleDirection,
+  VideoResizeBoxControl,
+} from './VideoResizeBox';
 
 describe('Video Resize Box', () => {
   it('should render Video Resize Box', () => {
@@ -13,9 +13,8 @@ describe('Video Resize Box', () => {
       src: '',
       width: 180,
     };
-    const wrapper = Enzyme.shallow(<VideoResizeBox {...VideoResizeProps} />);
-    const VideoResizeBoxIns = wrapper.instance();
-    expect(() => VideoResizeBoxIns.render()).not.toThrow();
+    const wrapper = new VideoResizeBox({...VideoResizeProps});
+    expect(wrapper.render()).toBeDefined();
   });
 });
 describe('Video Resize Box control', () => {
@@ -83,31 +82,43 @@ describe('Video Resize Box control', () => {
     );
     expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
   });
-  const directions: ResizeHadleDirection[] = ['top', 'top_right', 'right', 'bottom_right', 'bottom', 'bottom_left', 'left', 'top_left'];
-  test.each(directions)('should handle _syncSize each direction', direction => {
-    const mockElement = document.createElement('div');
-    mockElement.className = 'boxid';
+  const directions: ResizeHadleDirection[] = [
+    'top',
+    'top_right',
+    'right',
+    'bottom_right',
+    'bottom',
+    'bottom_left',
+    'left',
+    'top_left',
+  ];
+  test.each(directions)(
+    'should handle _syncSize each direction',
+    (direction) => {
+      const mockElement = document.createElement('div');
+      mockElement.className = 'boxid';
 
-    jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
-    videoresizeboxcontrol.props = {
-      boxID: 'boxid',
-      direction: direction,
-      height: 10,
-      onResizeEnd: () => undefined,
-      width: 10,
-    };
-    videoresizeboxcontrol._onMouseDown(
-      new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        screenX: 100,
-        screenY: 100,
-        clientX: 50,
-        clientY: 50,
-      }) as unknown as React.MouseEvent
-    );
-    expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
-  });
+      jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
+      videoresizeboxcontrol.props = {
+        boxID: 'boxid',
+        direction: direction,
+        height: 10,
+        onResizeEnd: () => undefined,
+        width: 10,
+      };
+      videoresizeboxcontrol._onMouseDown(
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          screenX: 100,
+          screenY: 100,
+          clientX: 50,
+          clientY: 50,
+        }) as unknown as React.MouseEvent
+      );
+      expect(videoresizeboxcontrol._syncSize()).toBeUndefined();
+    }
+  );
   it('should handle _syncSize when !this._active', () => {
     const mockElement = document.createElement('div');
     mockElement.className = 'boxid';

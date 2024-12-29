@@ -8,9 +8,6 @@ import {
 import {LoadingIndicator} from './LoadingIndicator';
 import {v1 as uuid} from 'uuid';
 
-import './czi-form.css';
-import './czi-video-upload-editor.css';
-
 import type {EditorVideoRuntime, VideoLike} from '../Types';
 type VideoUploadEditorProps = {
   runtime?: EditorVideoRuntime;

@@ -1,10 +1,5 @@
-
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
-
 import{ ImageURLEditor } from './ImageURLEditor';
 import * as resolveimage from './resolveImage';
-Enzyme.configure({ adapter: new Adapter() });
 
 describe('Image URL Editor', () => {
   const ImageEditorProps = {

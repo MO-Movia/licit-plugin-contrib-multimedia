@@ -255,12 +255,10 @@ describe('ImageEditor ', () => {
   ImgeditorIns._didSrcChange();
 
   it('should change on src Change Event', async () => {
-    const fn = ImgeditorIns._onSrcChange(srcevent);
-    expect(fn).toBeCalled();
+    expect(() => ImgeditorIns._onSrcChange(srcevent)).not.toThrow();
   });
   it('should check on src Change Event', async () => {
-    const fn = ImgeditorIns._didSrcChange();
-    expect(fn).toBeCalled();
+    expect(() => ImgeditorIns._didSrcChange()).not.toThrow();
   });
 
   it('should handle image placeholder plugin', () => {
