@@ -1,5 +1,4 @@
 import ResizeObserver from 'resize-observer-polyfill';
-import nullthrows from 'nullthrows';
 
 // flow type copied from
 // https://github.com/que-etc/resize-observer-polyfill/blob/master/src/index.js.flow
@@ -54,7 +53,7 @@ export function observe(
   const observer = instance || (instance = new ResizeObserver(onResizeObserve));
   if (nodesObserving.has(el)) {
     // Already observing node.
-    const callbacks = nullthrows(nodesObserving.get(el));
+    const callbacks = nodesObserving.get(el);
     callbacks.push(callback);
   } else {
     const callbacks = [callback];
@@ -71,19 +70,13 @@ export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
   const el = node;
   observer.unobserve(el);
 
-  if (callback) {
-    // Remove the passed in callback from the callbacks of the observed node
-    // And, if no more callbacks then stop observing the node
-    const callbacks = nodesObserving.has(el)
-      ? nullthrows(nodesObserving.get(el)).filter((cb) => cb !== callback)
-      : null;
-    if (callbacks?.length) {
-      nodesObserving.set(el, callbacks);
-    } else {
-      nodesObserving.delete(el);
-    }
+  // Remove the passed in callback from the callbacks of the observed node
+  // And, if no more callbacks then stop observing the node
+  const callbacks =
+    nodesObserving.get(el)?.filter((cb) => cb !== callback) ?? [];
+  if (callbacks.length > 0) {
+    nodesObserving.set(el, callbacks);
   } else {
-    // Delete all callbacks for the node.
     nodesObserving.delete(el);
   }
 

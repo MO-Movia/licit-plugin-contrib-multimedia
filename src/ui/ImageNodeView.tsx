@@ -18,8 +18,6 @@ import ResizeObserver from './ResizeObserver';
 import {resolveImage} from './resolveImage';
 import {uuid} from './uuid';
 
-import './czi-image-view.css';
-
 import type {EditorRuntime} from '../Types';
 import type {NodeViewProps} from './CustomNodeView';
 import type {ResizeObserverEntry} from './ResizeObserver';
@@ -386,7 +384,7 @@ export class ImageViewBody extends React.PureComponent<
     try {
       const origSelection = NodeSelection.create(tr.doc, selection.from);
       tr = tr.setSelection(origSelection);
-    } catch (error) {
+    } catch {
       // Ignore if can't select
     }
     editorView.dispatch(tr);

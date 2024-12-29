@@ -15,11 +15,6 @@
     "pretty": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "jest",
-      "node",
-      "jest-prosemirror"
-    ],
     // Ensure that .d.ts files are created by tsc, but not .js files
     "declaration": true,
     // Ensure that Babel can safely transpile files in the TypeScript project

@@ -19,8 +19,6 @@ import {v1 as uuid} from 'uuid';
 import ResizeObserver from './ResizeObserver';
 import {resolveVideo, VideoResult} from './resolveVideo';
 
-import './czi-image-view.css';
-
 import type {ResizeObserverEntry} from './ResizeObserver';
 import {CustomNodeView} from './CustomNodeView';
 import type {NodeViewProps} from './CustomNodeView';

@@ -1,16 +1,9 @@
 import {ImageInlineEditor} from './ImageInlineEditor';
-import {
-  EditorState,
-} from 'prosemirror-state';
+import {EditorState} from 'prosemirror-state';
 import {schema} from 'prosemirror-test-builder';
 import {MultimediaPlugin} from '../index';
 import {createEditor, doc, p} from 'jest-prosemirror';
 import {EditorView} from 'prosemirror-view';
-import React from 'react';
-import Enzyme, {shallow} from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18'; // or any other adapter for your version of React
-
-Enzyme.configure({adapter: new Adapter()});
 
 describe('ImageInlineEditor', () => {
   const plugin = new MultimediaPlugin();
@@ -26,29 +19,12 @@ describe('ImageInlineEditor', () => {
     state,
   });
 
-  const imageInlineEditorValue = {
-    align: 'align',
-    src: 'test',
-  };
-
-  const props = {
-    onSelect: () => undefined,
-    value: imageInlineEditorValue,
-    editorView: view1,
-  };
-  const wrapper = shallow(<ImageInlineEditor {...props} />);
-
   it('should render', () => {
-    expect(wrapper.instance()).toBeDefined();
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
     expect(imageinlineeditor).toBeDefined();
   });
   it('should render', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
     imageinlineeditor.props = {
       onSelect: () => undefined,
       value: {
@@ -62,9 +38,7 @@ describe('ImageInlineEditor', () => {
   });
 
   it('should handle parseLabel when input ""', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
     expect(imageinlineeditor.parseLabel('')).toStrictEqual({
       icon: null,
       title: null,
@@ -72,9 +46,7 @@ describe('ImageInlineEditor', () => {
   });
 
   it('should handle _onClick ', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
     imageinlineeditor.props = {
       onSelect: (val) => val.align,
       value: {
