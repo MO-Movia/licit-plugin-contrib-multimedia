@@ -1,11 +1,8 @@
 import cx from 'classnames';
-import nullthrows from 'nullthrows';
 import React from 'react';
 
 import {clamp} from '@modusoperandi/licit-ui-commands';
 import {v1 as uuid} from 'uuid';
-
-import './czi-image-resize-box.css';
 
 export type VideoResizeProps = {
   height: number;
@@ -96,8 +93,18 @@ export class VideoResizeBoxControl extends React.PureComponent {
     const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
     const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
 
-    const el = nullthrows(this._el);
-    const fn = nullthrows(ResizeDirection[direction]);
+    const el = this._el;
+    if (!el) {
+      throw new Error('Resizable element not initialized.');
+    }
+
+    const fn = ResizeDirection[direction];
+    if (!fn) {
+      throw new Error(
+        `Resize function for direction '${direction}' not found.`
+      );
+    }
+
     const aspect = width / height;
     let ww = clamp(MIN_SIZE, width + Math.round(dx), MAX_SIZE);
     let hh = clamp(MIN_SIZE, height + Math.round(dy), MAX_SIZE);
@@ -120,7 +127,10 @@ export class VideoResizeBoxControl extends React.PureComponent {
     this._active = true;
 
     const {boxID, direction, width, height} = this.props;
-    const el = nullthrows(document.getElementById(boxID));
+    const el = document.getElementById(boxID);
+    if (!el) {
+      throw new Error(`Element with ID '${boxID}' not found.`);
+    }
     el.className += ' ' + direction;
 
     this._el = el;
@@ -146,13 +156,17 @@ export class VideoResizeBoxControl extends React.PureComponent {
     document.removeEventListener('mousemove', this._onMouseMove, true);
     document.removeEventListener('mouseup', this._onMouseUp, true);
 
-    const el = nullthrows(this._el);
+    const el = this._el;
+    if (!el) {
+      throw new Error('Resizable element not initialized.');
+    }
     el.style.width = this._w;
     el.style.height = this._h;
     el.className = 'molm-czi-image-resize-box';
     this._el = undefined;
-
-    this._rafID && cancelAnimationFrame(this._rafID);
+    if (this._rafID) {
+      cancelAnimationFrame(this._rafID);
+    }
     this._rafID = undefined;
   }
 
@@ -178,7 +192,10 @@ export class VideoResizeBoxControl extends React.PureComponent {
     this._y2 = e.clientY;
 
     const {direction} = this.props;
-    const el = nullthrows(this._el);
+    const el = this._el;
+    if (!el) {
+      throw new Error('Resizable element not initialized.');
+    }
     el.classList.remove(direction);
 
     this._end();

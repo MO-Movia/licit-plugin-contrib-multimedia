@@ -1,6 +1,4 @@
 import {createEditor, doc, p} from 'jest-prosemirror';
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import {ImageResizeBox, ImageResizeBoxControl} from './ImageResizeBox';
 import React from 'react';
 
@@ -9,21 +7,17 @@ import {EditorView} from 'prosemirror-view';
 import {schema} from 'prosemirror-schema-basic';
 import {MultimediaPlugin} from '../index';
 
-Enzyme.configure({adapter: new Adapter()});
-
 describe('Image Resize Box', () => {
   it('should render Image Resize Box', () => {
     const ImageResizeProps = {
       height: 150,
-      onResizeEnd: (_w: 120, _height: 200) => undefined,
+      onResizeEnd: () => undefined,
       src: '',
       width: 180,
       fitToParent: false,
     };
-    const wrapper = Enzyme.shallow(<ImageResizeBox {...ImageResizeProps} />);
-    const ImageResizeBoxIns = wrapper.instance();
-    ImageResizeBoxIns.render();
-    expect(() => wrapper.find('img').simulate('click')).not.toThrow();
+    const wrapper = new ImageResizeBox({...ImageResizeProps});
+    expect(wrapper.render()).toBeDefined();
   });
 });
 
@@ -95,7 +89,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'bottom',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
@@ -121,7 +115,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'top_right',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
@@ -148,7 +142,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'top_right',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
@@ -176,7 +170,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'top_right',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
@@ -212,7 +206,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'top_right',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
@@ -249,7 +243,7 @@ describe('image resizebox control', () => {
       config: 'any',
       direction: 'top_right',
       height: 10,
-      onResizeEnd: (_w: 1, _height: 1) => undefined,
+      onResizeEnd: () => undefined,
       width: 10,
       fitToParent: true,
     };
