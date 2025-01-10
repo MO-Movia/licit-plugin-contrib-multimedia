@@ -157,7 +157,6 @@ export class ImageViewBody extends React.PureComponent<
     const error = retVal.error;
 
     let { width, height } = attrs;
-    this.applyResetImageMarks(editorView, this.props.getPos());
     const dimensions = this.calcWidthAndHeight(
       width,
       height,
@@ -286,21 +285,7 @@ export class ImageViewBody extends React.PureComponent<
   isUnaltered(active: boolean, crop: null, rotate: null) {
     return active && !crop && !rotate;
   }
-  // Remove marks from image node, the marks are adding unnessesarly on applying custom styles or selecting the whole text when image is inline
-  // it is noticed that some marks values are missing while retreiving json from server for image node
 
-  applyResetImageMarks(view: EditorView, pos: number) {
-    const { state, dispatch } = view;
-    let tr = state.tr;
-    const node = state.doc.nodeAt(pos);
-    // Reset marks for all image nodes
-    if (node?.type.name === 'image' && node?.marks.length > 0) {
-      tr = tr.setNodeMarkup(pos, undefined, node.attrs, []);
-    }
-    if (tr.docChanged) {
-      dispatch(tr);
-    }
-  }
   calcWidthAndHeight(
     width: number,
     height: number,

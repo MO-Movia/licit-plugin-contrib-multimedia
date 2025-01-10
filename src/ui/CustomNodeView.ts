@@ -1,10 +1,10 @@
-import {Node} from 'prosemirror-model';
-import {Decoration, EditorView, NodeView} from 'prosemirror-view';
+import { Node } from 'prosemirror-model';
+import { Decoration, EditorView, NodeView } from 'prosemirror-view';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {EditorVideoRuntime} from '../Types';
+import { EditorVideoRuntime } from '../Types';
 
-import {SelectionObserver} from './SelectionObserver';
+import { SelectionObserver } from './SelectionObserver';
+import { createRoot, Root } from 'react-dom/client';
 
 export type EditorFocused = EditorView & {
   focused: boolean;
@@ -46,7 +46,6 @@ export function onMutation(_mutations, observer: MutationObserver): void {
     const el: Element = view.dom;
     if (!root.contains(el)) {
       mountedViews.delete(view);
-      ReactDOM.unmountComponentAtNode(el);
     }
   }
 
@@ -98,7 +97,7 @@ export class CustomNodeView implements NodeView {
   dom: HTMLElement;
   _onClick: () => void;
   props: NodeViewProps;
-
+  reactRoot: Root | null = null; // Declare reactRoot
   _selected: boolean;
 
   constructor(
@@ -116,6 +115,7 @@ export class CustomNodeView implements NodeView {
       focused: false,
     };
 
+    this.reactRoot = null; // To store the root instance
     pendingViews.add(this);
 
     // The editor will use this as the node's DOM representation
@@ -182,13 +182,21 @@ export class CustomNodeView implements NodeView {
     // When destroying the node view, remove from the set.
     // FIX: This solves the image missing issue.
     pendingViews.delete(this);
+    this.cleanup();
   }
 
-  __renderReactComponent(callback?: () => void): void {
-    const {editorView, getPos} = this.props;
+  cleanup() {
+    if (this.reactRoot) {
+      this.reactRoot.unmount(); // Unmount React from the DOM
+      this.reactRoot = null; // Reset reactRoot
+    }
+  }
+
+  __renderReactComponent(): void {
+    const { editorView, getPos } = this.props;
 
     if (editorView?.state?.selection) {
-      const {from} = editorView.state.selection;
+      const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
       this.props.focused = editorView.focused && pos === from;
@@ -196,7 +204,11 @@ export class CustomNodeView implements NodeView {
       this.props.selected = false;
       this.props.focused = false;
     }
+    if (!this.reactRoot) {
+      this.reactRoot = createRoot(this.dom); // Initialize reactRoot
+    }
 
-    ReactDOM.render(this.renderReactComponent(), this.dom, callback);
+    this.reactRoot.render(this.renderReactComponent());
   }
+
 }
