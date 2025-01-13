@@ -1,4 +1,4 @@
-import {ImageInlineEditor} from './ImageInlineEditor';
+import {ImageInlineEditor, ImageInlineEditorValue} from './ImageInlineEditor';
 import {EditorState} from 'prosemirror-state';
 import {schema} from 'prosemirror-test-builder';
 import {MultimediaPlugin} from '../index';
@@ -58,5 +58,16 @@ describe('ImageInlineEditor', () => {
     const spy = jest.spyOn(imageinlineeditor.props, 'onSelect');
     imageinlineeditor._onClick('align_test');
     expect(spy).lastReturnedWith('align_test');
+  });
+  it('should handle prepButtons ', () => {
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
+    imageinlineeditor.props = {
+      onSelect: (val) => val.align,
+      value: null as unknown as ImageInlineEditorValue,
+      editorView: view1,
+    };
+    //const spy = jest.spyOn(imageinlineeditor.props, 'onSelect');
+    ;
+    expect(imageinlineeditor.prepButtons('align_test')).toBeDefined();
   });
 });
