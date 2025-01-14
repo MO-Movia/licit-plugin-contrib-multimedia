@@ -480,4 +480,7 @@ export class ImageNodeView extends CustomNodeView {
       el.style.margin = '0';
     }
   }
+  ignoreMutation(): boolean {
+    return true;
+  }
 }
