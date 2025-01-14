@@ -270,4 +270,21 @@ describe('image resizebox control', () => {
     );
     expect(spy1).toHaveBeenCalled();
   });
+  it('should handle render',()=>{
+    const irb = new ImageResizeBox({
+      height: 150,
+      onResizeEnd: () => undefined,
+      src: '',
+      width: 180,
+      fitToParent: true,
+    });
+    irb.props = {
+      height: 150,
+      onResizeEnd: () => undefined,
+      src: '',
+      width: 180,
+      fitToParent: true,
+    }
+    expect(irb.render()).toBeDefined();
+  })
 });

@@ -133,5 +133,20 @@ describe('Video Upload Editor', () => {
       expect(instance).toBeUndefined();
 
      });
+     it('should handle render',()=>{
+      const vue = new VideoUploadEditor({});
+      vue.state = {error:null,id:'id',pending:true};
+      expect(vue.render()).toBeDefined();
+     })
+     it('should handle render when there is error',()=>{
+      const vue = new VideoUploadEditor({});
+      vue.state = {error:true as unknown as null,id:'id',pending:false};
+      expect(vue.render()).toBeDefined();
+     })
+     it('should handle _onSelectFile ',()=>{
+      const vue = new VideoUploadEditor({});
+      vue.state = {error:true as unknown as null,id:'id',pending:false};
+      expect(vue._onSelectFile({target:{files:[{}]}} as unknown as React.SyntheticEvent<HTMLInputElement>)).toBeUndefined();
+     })
 });
 

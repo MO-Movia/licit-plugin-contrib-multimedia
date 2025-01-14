@@ -95,7 +95,7 @@ export class ImageInlineEditor extends React.PureComponent {
     const align = this.props.value ? this.props.value.align : null;
     const onClick = this._onClick;
     const {editorView} = this.props;
-    this.setState({srcc: this.props.value.src});
+    this.setState({srcc: this.props.value?.src});
     if (ImgValues === ImageAlterValues) {
       const onAlter = this._onAlter;
       const onRemove = this._onRemove;
