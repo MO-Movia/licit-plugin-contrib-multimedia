@@ -1,6 +1,7 @@
 {
   "name": "@modusoperandi/licit-multimedia",
   "version": "1.0.5",
+  "license": "MIT",
   "type": "module",
   "subversion": "1",
   "description": "Multimedia plugin built with ProseMirror",
@@ -8,14 +9,14 @@
   "types": "index.d.ts",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/MO-Movia/licit-plugin-contrib-multimedia.git"
   },
   "scripts": {
     "clean": "rm -rf dist/ bin/ && rm -f modusoperandi-licit-multimedia-*.*.*.tgz",
     "lint:ts": "eslint src --ext .ts,.tsx --fix",
     "lint:css": "stylelint \"**/*.css\" --fix",
     "lint": "npm run lint:css & npm run lint:ts",
-    "ci:build": "tsc --build && copyfiles --up 1 \"src/**/*.css\" dist  && copyfiles package.json dist && copyfiles --up 1 \"src/fonts/**\" dist && copyfiles --up 1 \"src/assets/**\" dist",
+    "ci:build": "tsc --build && copyfiles --up 1 \"src/**/*.css\" dist  && copyfiles package.json LICENSE dist && copyfiles --up 1 \"src/fonts/**\" dist && copyfiles --up 1 \"src/assets/**\" dist",
     "ci:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
