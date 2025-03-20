@@ -12,7 +12,7 @@
 .molm-czi-form legend {
   border: none;
   font-size: var(--czi-content-font-size-h2);
-  margin-top: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 0;
   user-select: none;
 }
