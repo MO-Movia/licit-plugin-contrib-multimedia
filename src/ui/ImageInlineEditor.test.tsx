@@ -67,7 +67,7 @@ describe('ImageInlineEditor', () => {
       editorView: view1,
     };
     //const spy = jest.spyOn(imageinlineeditor.props, 'onSelect');
-    ;
+
     expect(imageinlineeditor.prepButtons('align_test')).toBeDefined();
   });
 });
