@@ -524,7 +524,7 @@ describe('Image view body', () => {
   it('should handle _onBodyRef ',()=>{
     const mockElement = document.createElement('div');
     expect(imageviewbody._onBodyRef(mockElement as unknown as React.ReactInstance)).toBeUndefined();
-  })
+  });
   it('should handle _resolveOriginalSize  ',()=>{
     imageviewbody._mounted = true;
     imageviewbody.props = {
@@ -547,9 +547,9 @@ describe('Image view body', () => {
           height: 1,
           width: 2
       }
-    }
+    };
     expect(imageviewbody._resolveOriginalSize ()).toBeDefined();
-  })
+  });
   it('should handle _resolveOriginalSize  ',()=>{
     imageviewbody._mounted = true;
     imageviewbody.props = {
@@ -572,13 +572,13 @@ describe('Image view body', () => {
           height: 1,
           width: 2
       }
-    }
+    };
     expect(imageviewbody._resolveOriginalSize ()).toBeDefined();
-  })
+  });
   it('should handle calcWidthAndHeight',()=>{
-    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:1,height:1,src:''})).toBeDefined()
-  })
+    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:1,height:1,src:''})).toBeDefined();
+  });
   it('should handle calcWidthAndHeight',()=>{
-    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:null as unknown as number,height:null as unknown as number,src:''})).toBeDefined()
-  })
+    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:null as unknown as number,height:null as unknown as number,src:''})).toBeDefined();
+  });
 });

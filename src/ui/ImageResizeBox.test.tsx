@@ -284,7 +284,7 @@ describe('image resizebox control', () => {
       src: '',
       width: 180,
       fitToParent: true,
-    }
+    };
     expect(irb.render()).toBeDefined();
-  })
+  });
 });
