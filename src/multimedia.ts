@@ -5,13 +5,10 @@ import {Node, Schema} from 'prosemirror-model';
 import { VideoNodeView } from './ui/VideoNodeView';
 import {VIDEO} from './Constants';
 import { VideoNodeSpec } from './VideoNodeSpec';
-import { VideoFromURLCommand } from './VideoFromURLCommand';
 import {EditorFocused} from './ui/CustomNodeView';
-import {VideoUploadCommand} from './VideoUploadCommand';
 import {ImageUploadCommand} from './ImageUploadCommand';
 import {ImageNodeView} from './ui/ImageNodeView';
 import {ImageNodeSpec} from './ImageNodeSpec';
-import {ImageFromURLCommand} from'./ImageFromURLCommand';
 const IMAGE = 'image';
 
 // [FS] IRAD-1503 2021-07-02
@@ -53,11 +50,7 @@ export class MultimediaPlugin extends Plugin {
     return {
       '[mms] Insert MultiMedia': [
         {
-          'Insert image by URL': new ImageFromURLCommand(),
-          'Upload image from computer': new ImageUploadCommand(),
-          'Insert video by URL': new VideoFromURLCommand(),
-          'Upload video from computer': new VideoUploadCommand(),
-
+          'Upload image from computer': new ImageUploadCommand()
         },
       ],
     };
