@@ -187,8 +187,7 @@ export class CustomNodeView implements NodeView {
 
   cleanup() {
     if (this.reactRoot) {
-      this.reactRoot.unmount(); // Unmount React from the DOM
-      this.reactRoot = null; // Reset reactRoot
+     this.reactRoot = null; // Reset reactRoot
     }
   }
 
