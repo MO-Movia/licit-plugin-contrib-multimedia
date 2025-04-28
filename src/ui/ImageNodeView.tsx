@@ -359,9 +359,7 @@ export class ImageViewBody extends React.PureComponent<
       originalSize.height = MIN_SIZE;
     }
     this.setState({ originalSize });
-    if (!this.props.node.attrs.width && !this.props.node.attrs.height) {
-      this._onResizeEnd(originalSize.width, originalSize.height);
-    }
+
   };
 
   _onResizeEnd = (width: number, height: number): void => {
