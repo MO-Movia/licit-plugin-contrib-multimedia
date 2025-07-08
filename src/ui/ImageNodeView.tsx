@@ -102,7 +102,7 @@ async function resolveURL(
 export class ImageViewBody extends React.PureComponent<
   NodeViewProps,
   ImageState
-> {
+  > {
   declare props: NodeViewProps;
 
   _body?: HTMLElement | React.ReactInstance;
@@ -147,7 +147,7 @@ export class ImageViewBody extends React.PureComponent<
     const { editorView, node, selected, focused } = this.props;
     const { readOnly } = editorView;
     const { attrs } = node;
-    const { align, crop, rotate } = attrs;
+    const { align, crop, cropData, rotate } = attrs;
 
     const retVal = this.assignVal(originalSize, focused, readOnly);
     const loading = retVal.loading;
@@ -203,6 +203,13 @@ export class ImageViewBody extends React.PureComponent<
       position: 'relative',
     };
 
+    const cropImageStyle: React.CSSProperties = {};
+    if (cropData) {
+      cropImageStyle.position = 'absolute';
+      cropImageStyle.top = cropData.top + 'px';
+      cropImageStyle.left = cropData.left + 'px';
+    }
+
     const clipStyle: React.CSSProperties = {};
     if (crop) {
       const cropped = { ...crop };
@@ -244,6 +251,13 @@ export class ImageViewBody extends React.PureComponent<
       pStyle.padding = '0';
       pStyle.margin = '0';
     }
+    if (cropData) {
+      pStyle.overflow = 'hidden';
+      pStyle.width = `${cropData.width}px`;
+      pStyle.height = `${cropData.height}px`;
+      pStyle.position = 'relative';
+      pStyle.display = 'inline-block';
+    }
 
     return (
       <span
@@ -263,6 +277,7 @@ export class ImageViewBody extends React.PureComponent<
               data-align={align}
               height={height}
               src={src}
+              style={cropImageStyle}
               width={width}
             />
             {errorView}
@@ -324,7 +339,7 @@ export class ImageViewBody extends React.PureComponent<
         autoDismiss: false,
         container: el.closest(`.${FRAMESET_BODY_CLASSNAME}`),
         position: atAnchorBottomCenter,
-        onClose: () => {
+        onClose: (_val) => {
           this._inlineEditor = null;
         },
       });

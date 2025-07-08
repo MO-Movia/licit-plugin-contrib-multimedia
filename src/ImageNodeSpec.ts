@@ -22,8 +22,8 @@ export function getAttrs(dom: string | HTMLElement) {
   if (typeof dom === 'string') {
     return false;
   }
-  const {marginTop, marginLeft} = dom.style;
-  let {width, height} = dom.style;
+  const { marginTop, marginLeft } = dom.style;
+  let { width, height } = dom.style;
   const align = getAlignment(dom);
 
   width = width || (dom.getAttribute('width') ?? '');
@@ -37,7 +37,8 @@ export function getAttrs(dom: string | HTMLElement) {
 
   let crop = null;
   let rotate = null;
-  const {parentElement} = dom;
+  let cropData = null;
+  const { parentElement } = dom;
   if (parentElement instanceof HTMLElement) {
     // Special case for Google doc's image.
     const ps = parentElement.style;
@@ -60,12 +61,22 @@ export function getAttrs(dom: string | HTMLElement) {
         rotate = parseFloat(mm[1]);
       }
     }
+    const cropDataAttr = dom.getAttribute('data-cropdata');
+    if (cropDataAttr) {
+      try {
+        cropData = JSON.parse(cropDataAttr);
+      } catch (error) {
+        console.warn('Invalid cropDataAttr:', error);
+      }
+
+    }
   }
 
   return {
     align,
     alt: dom.getAttribute('alt'),
     crop,
+    cropData,
     height: parseInt(height, 10),
     rotate,
     src: dom.getAttribute('src'),
@@ -79,19 +90,20 @@ export function getAttrs(dom: string | HTMLElement) {
 export const ImageNodeSpec: NodeSpec = {
   inline: true,
   attrs: {
-    align: {default: null},
-    alt: {default: ''},
-    crop: {default: null},
-    height: {default: null},
-    rotate: {default: null},
-    src: {default: null},
-    title: {default: ''},
-    width: {default: null},
-    fitToParent: {default: 0},
+    align: { default: null },
+    alt: { default: '' },
+    crop: { default: null },
+    cropData: { default: null },
+    height: { default: null },
+    rotate: { default: null },
+    src: { default: null },
+    title: { default: '' },
+    width: { default: null },
+    fitToParent: { default: 0 },
   },
   group: 'inline',
   draggable: true,
-  parseDOM: [{tag: 'img[src]', getAttrs}],
+  parseDOM: [{ tag: 'img[src]', getAttrs }],
   toDOM(node) {
     return ['img', node.attrs];
   },

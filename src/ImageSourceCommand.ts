@@ -94,7 +94,7 @@ export class ImageSourceCommand extends UICommand {
       const {selection, schema} = state;
       let {tr} = state;
       tr = view ? (hideCursorPlaceholder(view.state) as Transaction) : tr;
-      tr = tr.setSelection(selection);
+      tr = tr?.setSelection(selection);
       if (inputs) {
         const {src} = inputs;
         tr = insertImage(tr, schema, src) as Transaction;

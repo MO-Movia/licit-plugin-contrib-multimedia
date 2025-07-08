@@ -1,3 +1,5 @@
+import { SyntheticEvent } from 'react';
+import { ImageLike } from '..';
 import {ImageUploadEditor} from './ImageUploadEditor';
 
 const ImageUploadEditorProps = {
@@ -35,6 +37,28 @@ describe('Image Upload Editor', () => {
     });
     ImageUploadEditorIns.componentWillUnmount();
     expect(ImageUploadEditorIns).toBeDefined();
+  });
+  it('should handle render',()=>{
+    const ImageUploadEditorIns = new ImageUploadEditor({
+      ...ImageUploadEditorProps,
+    });
+    ImageUploadEditorIns.state.pending = true;
+    expect(ImageUploadEditorIns.render()).toBeDefined();
+  });
+  it('should handle _onSelectFile ',()=>{
+    const ImageUploadEditorIns = new ImageUploadEditor({
+      ...ImageUploadEditorProps,
+    });
+    ImageUploadEditorIns.state.pending = true;
+    expect(ImageUploadEditorIns._onSelectFile({target:{files:[{type:'object'}]}} as unknown as SyntheticEvent<HTMLInputElement, Event>)).toBeUndefined();
+  });
+  it('should handle _onSuccess  ',()=>{
+    const ImageUploadEditorIns = new ImageUploadEditor({
+      ...ImageUploadEditorProps,
+    });
+    ImageUploadEditorIns.state.pending = true;
+    ImageUploadEditorIns._unmounted = true;
+    expect(ImageUploadEditorIns._onSuccess({} as unknown as ImageLike)).toBeUndefined();
   });
 });
 describe('Image Upload Editor', () => {
