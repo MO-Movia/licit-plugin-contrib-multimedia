@@ -147,7 +147,7 @@ export class ImageViewBody extends React.PureComponent<
     const { editorView, node, selected, focused } = this.props;
     const { readOnly } = editorView;
     const { attrs } = node;
-    const { align, crop, cropData, rotate } = attrs;
+    const { align, crop, rotate } = attrs;
 
     const retVal = this.assignVal(originalSize, focused, readOnly);
     const loading = retVal.loading;
@@ -182,7 +182,7 @@ export class ImageViewBody extends React.PureComponent<
       selected,
     });
 
-    const resizeBox = this.isUnaltered(active, crop, rotate) ? (
+    const resizeBox = this.isUnaltered(active, attrs.cropData, rotate) ? (
       <ImageResizeBox
         fitToParent={this.props.node.attrs['fitToParent']}
         height={height}
@@ -203,15 +203,14 @@ export class ImageViewBody extends React.PureComponent<
       position: 'relative',
     };
 
-    const cropImageStyle: React.CSSProperties = {};
-    if (cropData) {
-      cropImageStyle.position = 'absolute';
-      cropImageStyle.top = cropData.top + 'px';
-      cropImageStyle.left = cropData.left + 'px';
-    }
-
     const clipStyle: React.CSSProperties = {};
-    if (crop) {
+    if (attrs.cropData) {
+      clipStyle.width = `${attrs.cropData.width}px`;
+      clipStyle.height = `${attrs.cropData.height}px`;
+      clipStyle.overflow = 'hidden';
+      clipStyle.position = 'relative';
+      clipStyle.display = 'inline-block';
+    } else if (crop) {
       const cropped = { ...crop };
       if (scale !== 1) {
         scale = maxSize.width / cropped.width;
@@ -251,13 +250,7 @@ export class ImageViewBody extends React.PureComponent<
       pStyle.padding = '0';
       pStyle.margin = '0';
     }
-    if (cropData) {
-      pStyle.overflow = 'hidden';
-      pStyle.width = `${cropData.width}px`;
-      pStyle.height = `${cropData.height}px`;
-      pStyle.position = 'relative';
-      pStyle.display = 'inline-block';
-    }
+
 
     return (
       <span
@@ -277,7 +270,15 @@ export class ImageViewBody extends React.PureComponent<
               data-align={align}
               height={height}
               src={src}
-              style={cropImageStyle}
+              style={
+                attrs.cropData
+                  ? {
+                    position: 'absolute',
+                    top: `-${attrs.cropData.top}px`,
+                    left: `-${attrs.cropData.left}px`,
+                  }
+                  : undefined
+              }
               width={width}
             />
             {errorView}
@@ -330,6 +331,7 @@ export class ImageViewBody extends React.PureComponent<
       value: node.attrs,
       onSelect: this._onChange,
       editorView: this.props.editorView,
+      imageId: this._id
     };
     if (this._inlineEditor) {
       this._inlineEditor.update(editorProps);

@@ -74,40 +74,4 @@
     display: none;
   }
 }
-
-.CropperWrapper {
-  width: 100%;
-  max-height: 500px;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3rem;
-  padding: 1rem 3rem;
-  box-shadow: rgb(204 219 232) 3px 3px 6px 0 inset, rgb(255 255 255 / 50%) -3px -3px 6px 1px inset;
-  border-radius: 1rem;
-}
-
-.ReactCrop {
-  height: 100%;
-}
-
-.ReactCrop__child-wrapper {
-  height: 100%;
-}
-
-.InfoText {
-  font-size: 3rem;
-  color: #ccc;
-  font-weight: bold;
-  text-align: center;
-}
-
-.CanvasWrapper {
-  box-shadow: rgb(0 0 0 / 5%) 0 6px 24px 0, rgb(0 0 0 / 8%) 0 0 0 1px;
-}
-
-img {
-  height: 100%;
-  object-fit: contain;
-}
+ 

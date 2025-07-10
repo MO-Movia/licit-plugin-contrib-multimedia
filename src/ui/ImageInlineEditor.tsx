@@ -79,6 +79,7 @@ type ImageInlineProps = {
   onSelect: (val: ImageInlineEditorValue) => void;
   value: ImageInlineEditorValue;
   editorView: EditorView;
+  imageId?: string;
 };
 export class ImageInlineEditor extends React.PureComponent {
   declare props: ImageInlineProps;

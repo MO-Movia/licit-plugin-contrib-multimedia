@@ -88,6 +88,7 @@ export function CropImagePopup({ src, onConfirm, onCancel }) {
               height
             );
             setCrop(centered);
+            setCompletedCrop(centered);
           }}
           ref={imgRef}
           src={src}
