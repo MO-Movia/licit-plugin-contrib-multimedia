@@ -22,10 +22,10 @@ export function getAttrs(dom: string | HTMLElement) {
   if (typeof dom === 'string') {
     return false;
   }
-  const {marginTop, marginLeft} = dom.style;
-  let {width, height} = dom.style;
+  const { marginTop, marginLeft } = dom.style;
+  let { width, height } = dom.style;
   const align = getAlignment(dom);
-
+  const capco = dom.getAttribute('capco');
   width = width || (dom.getAttribute('width') ?? '');
   height = height || (dom.getAttribute('height') ?? '');
 
@@ -37,7 +37,7 @@ export function getAttrs(dom: string | HTMLElement) {
 
   let crop = null;
   let rotate = null;
-  const {parentElement} = dom;
+  const { parentElement } = dom;
   if (parentElement instanceof HTMLElement) {
     // Special case for Google doc's image.
     const ps = parentElement.style;
@@ -64,6 +64,7 @@ export function getAttrs(dom: string | HTMLElement) {
 
   return {
     align,
+    capco,
     alt: dom.getAttribute('alt'),
     crop,
     height: parseInt(height, 10),
@@ -79,19 +80,20 @@ export function getAttrs(dom: string | HTMLElement) {
 export const ImageNodeSpec: NodeSpec = {
   inline: true,
   attrs: {
-    align: {default: null},
-    alt: {default: ''},
-    crop: {default: null},
-    height: {default: null},
-    rotate: {default: null},
-    src: {default: null},
-    title: {default: ''},
-    width: {default: null},
-    fitToParent: {default: 0},
+    align: { default: null },
+    capco: { default: null },
+    alt: { default: '' },
+    crop: { default: null },
+    height: { default: null },
+    rotate: { default: null },
+    src: { default: null },
+    title: { default: '' },
+    width: { default: null },
+    fitToParent: { default: 0 },
   },
   group: 'inline',
   draggable: true,
-  parseDOM: [{tag: 'img[src]', getAttrs}],
+  parseDOM: [{ tag: 'img[src]', getAttrs }],
   toDOM(node) {
     return ['img', node.attrs];
   },
