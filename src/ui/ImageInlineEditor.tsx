@@ -6,7 +6,7 @@ import {
   createPopUp,
   atAnchorTopCenter,
 } from '@modusoperandi/licit-ui-commands';
-import { CropImagePopup } from './CropImagePopup';
+import { CropImagePopup, CropDataPropValue } from './CropImagePopup';
 
 export type PropValue = {
   value?: string;
@@ -197,7 +197,7 @@ export class ImageInlineEditor extends React.PureComponent {
       {
         src,
         position: atAnchorTopCenter,
-        onConfirm: (cropData) => {
+        onConfirm: (cropData: CropDataPropValue) => {
           const tr = view.state.tr.setNodeMarkup(pos, null, {
             ...node.attrs,
             cropData,
@@ -212,6 +212,7 @@ export class ImageInlineEditor extends React.PureComponent {
             popupHandle.close(null);
           }
         },
+        defaultUnit: 'px',
       },
       {
         anchor: document.body,

@@ -1,10 +1,24 @@
 import React, { useState, useRef } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop, Crop } from 'react-image-crop';
 
-export function CropImagePopup({ src, onConfirm, onCancel }) {
+
+export type CropDataPropValue = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  croppedBase64:string;
+};
+
+export function CropImagePopup({ src, onConfirm, onCancel, defaultUnit = 'px' }: {
+  src: string;
+  onConfirm: (cropData: CropDataPropValue) => void;
+  onCancel: () => void;
+  defaultUnit?: 'px' | '%';
+}) {
   const imgRef = useRef(null);
   const [crop, setCrop] = useState<Crop>({
-    unit: 'px',
+    unit: defaultUnit,
     x: 50,
     y: 50,
     width: 200,

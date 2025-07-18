@@ -29,7 +29,6 @@ describe('onMutation',()=>{
     });
 });
 class TestNodeView extends CustomNodeView {
-    //reactRoot = {} as unknown as Root;
     createDOMElement(): HTMLElement {
       const el = document.createElement('div');
       el.onclick = () => {};

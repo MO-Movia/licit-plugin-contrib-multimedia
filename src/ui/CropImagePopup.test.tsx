@@ -7,7 +7,7 @@ describe('CropImagePopup', () => {
   const testSrc = 'https://example.com/test.jpg';
 
   it('renders correctly', () => {
-    render(<CropImagePopup onConfirm={jest.fn()} onCancel={jest.fn()} src={testSrc} />);
+    render(<CropImagePopup onCancel={jest.fn()} onConfirm={jest.fn()} src={testSrc} />);
     expect(screen.getByAltText('Crop')).toBeInTheDocument();
     expect(screen.getByText('Crop')).toBeInTheDocument();
   });
@@ -15,7 +15,7 @@ describe('CropImagePopup', () => {
   it('does not call onConfirm if crop is invalid', () => {
     const onConfirmMock = jest.fn();
 
-    render(<CropImagePopup onConfirm={onConfirmMock} onCancel={jest.fn()} src={testSrc} />);
+    render(<CropImagePopup onCancel={jest.fn()} onConfirm={onConfirmMock} src={testSrc} />);
 
     // Click without loading image or setting crop
     fireEvent.click(screen.getByText('Crop'));
