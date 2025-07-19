@@ -45,7 +45,7 @@ const ResizeDirection = {
 };
 
 export class VideoResizeBoxControl extends React.PureComponent {
-  props!: {
+ declare props: {
     boxID: string;
     direction: ResizeHadleDirection;
     height: number;
@@ -180,7 +180,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
 }
 
 class VideoResizeBox extends React.PureComponent {
-  props!: AVResizeProps;
+ declare props: AVResizeProps;
 
   _id = uuid();
 

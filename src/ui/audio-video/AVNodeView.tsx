@@ -7,8 +7,8 @@ import ReactDOM from 'react-dom';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
-import Icon from '../Icon';
-import ImageInlineEditor from '../image/ImageInlineEditor';
+import {Icon} from '../Icon';
+import {ImageInlineEditor} from '../image/ImageInlineEditor';
 import VideoResizeBox, { MIN_SIZE } from './AVResizeBox';
 import {
   PopUpHandle,
@@ -22,7 +22,7 @@ import resolveVideo, { AVResult } from './ResolveAV';
 import '../czi-image-view.css';
 
 import type { ResizeObserverEntry } from '../ResizeObserver';
-import CustomNodeView from '../CustomNodeView';
+import {CustomNodeView} from '../CustomNodeView';
 import type { NodeViewProps } from '../CustomNodeView';
 import { AVEditorState } from './AVEditor';
 
@@ -84,7 +84,7 @@ function getMaxResizeWidth(el): number {
 }
 
 export class VideoViewBody extends React.PureComponent {
-  props: NodeViewProps;
+  declare props: NodeViewProps;
 
   _body?: React.ReactInstance;
   _id = uuid();

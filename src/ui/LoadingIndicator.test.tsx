@@ -1,4 +1,4 @@
-import LoadingIndicator from './LoadingIndicator';
+import {LoadingIndicator} from './LoadingIndicator';
 
 describe('Loading Indicator',()=>{
   const loadingindicator = new LoadingIndicator({});

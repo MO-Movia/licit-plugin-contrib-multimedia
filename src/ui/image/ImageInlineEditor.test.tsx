@@ -1,9 +1,9 @@
-import ImageInlineEditor from './ImageInlineEditor';
+import {ImageInlineEditor} from './ImageInlineEditor';
 import {
   EditorState,
 } from 'prosemirror-state';
 import {schema} from 'prosemirror-test-builder';
-import {MultimediaPlugin} from '../../index';
+import {MultimediaPlugin} from '../index';
 import {createEditor, doc, p} from 'jest-prosemirror';
 import {EditorView} from 'prosemirror-view';
 import React from 'react';
@@ -11,7 +11,8 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18'; // or any other adapter for your version of React
 
 Enzyme.configure({adapter: new Adapter()});
-
+jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 describe('ImageInlineEditor', () => {
   const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {

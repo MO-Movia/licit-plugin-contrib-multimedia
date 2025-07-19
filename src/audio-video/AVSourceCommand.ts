@@ -49,6 +49,19 @@ export function insertIFrame(
 }
 
 class AVSourceCommand extends UICommand {
+  renderLabel(state: EditorState) {
+   return null;
+  }
+  isActive(state: EditorState): boolean {
+    
+    return true;
+  }
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
   _popUp = null;
 
   getEditor(): typeof React.Component {
@@ -115,9 +128,9 @@ class AVSourceCommand extends UICommand {
   __isEnabled = (state: EditorState, _view?: EditorView): boolean => {
     const tr = state;
     const {selection} = tr;
-    if (selection instanceof TextSelection) {
-      return selection.from === selection.to;
-    }
+    // if (selection instanceof TextSelection) {
+    //   return selection.from === selection.to;
+    // }
     return true;
   };
 }

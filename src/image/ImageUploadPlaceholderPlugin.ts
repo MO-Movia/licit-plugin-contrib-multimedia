@@ -1,10 +1,9 @@
-
 import nullthrows from 'nullthrows';
-import { Plugin, PluginKey ,EditorState, TextSelection } from 'prosemirror-state';
-import { Decoration, DecorationSet,EditorView } from 'prosemirror-view';
-import uuid from '../ui/uuid';
+import {Plugin, PluginKey, EditorState, TextSelection} from 'prosemirror-state';
+import {Decoration, DecorationSet, EditorView} from 'prosemirror-view';
+import {uuid} from '../ui/uuid';
 
-import '../ui/czi-image-upload-placeholder.css';
+// import '../ui/czi-image-upload-placeholder.css';
 const IMAGE = 'image';
 const IMAGE_FILE_TYLES = new Set([
   'image/jpeg',
@@ -22,7 +21,7 @@ const INNER_HTML = new Array(4).join(
 export type customEditorView = EditorView & {
   runtime;
   readOnly;
-   disabled
+  disabled;
 };
 function isImageUploadPlaceholderPlugin(plugin: Plugin): boolean {
   return plugin instanceof ImageUploadPlaceholderPlugin;
@@ -35,7 +34,7 @@ function isImageFileType(file: File): boolean {
 export function findImageUploadPlaceholder(
   placeholderPlugin: ImageUploadPlaceholderPlugin,
   state: EditorState,
-  id: Record<string,unknown>
+  id: Record<string, unknown>
 ): Decoration {
   const decos = placeholderPlugin.getState(state);
   const found = decos?.find(null, null, (spec) => spec.id === id);
@@ -53,10 +52,10 @@ export function uploadImageFiles(
   files: Array<File>,
   coords: { x: number, y: number }
 ): boolean {
-  const { runtime, state, readOnly, disabled } = view;
-  const { schema, plugins } = state;
+  const {runtime, state, readOnly, disabled} = view;
+  const {schema, plugins} = state;
   const imageType = schema?.nodes?.[IMAGE];
-  const { uploadImage, canUploadImage } = runtime;
+  const {uploadImage, canUploadImage} = runtime;
   const imageFiles = Array.from(files).filter(isImageFileType);
   const placeholderPlugin = plugins.find(isImageUploadPlaceholderPlugin);
   if (
@@ -68,7 +67,7 @@ export function uploadImageFiles(
     !canUploadImage ||
     !imageFiles.length ||
     !placeholderPlugin
-    ) {
+  ) {
     return false;
   }
 
@@ -78,7 +77,7 @@ export function uploadImageFiles(
   };
 
   const uploadNext = defer(() => {
-    const done = (imageInfo: { src: string }) => {
+    const done = (imageInfo: {src: string}) => {
       const pos = findImageUploadPlaceholder(placeholderPlugin, view.state, id);
       let trNext = view.state.tr;
       if (pos && !view.readOnly && !view.disabled) {
@@ -92,19 +91,19 @@ export function uploadImageFiles(
         uploadNext();
       } else {
         // Remove the placeholder.
-        trNext = trNext.setMeta(placeholderPlugin, { remove: { id } });
+        trNext = trNext.setMeta(placeholderPlugin, {remove: {id}});
       }
       view.dispatch(trNext);
     };
     const ff = nullthrows(imageFiles.shift());
     uploadImage(ff)
       .then(done)
-      .catch(done.bind(null, { src: null }));
+      .catch(done.bind(null, {src: null}));
   });
 
   uploadNext();
 
-  let { tr } = state;
+  let {tr} = state;
 
   // Replace the selection with a placeholder
   let from = 0;
@@ -139,7 +138,7 @@ export function uploadImageFiles(
 }
 
 // https://prosemirror.net/examples/upload/
-class ImageUploadPlaceholderPlugin extends Plugin {
+export class ImageUploadPlaceholderPlugin extends Plugin {
   constructor() {
     super({
       // [FS] IRAD-1005 2020-07-07
@@ -180,5 +179,3 @@ class ImageUploadPlaceholderPlugin extends Plugin {
     });
   }
 }
-
-export default ImageUploadPlaceholderPlugin;

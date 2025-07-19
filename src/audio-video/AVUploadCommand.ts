@@ -16,32 +16,32 @@ class AVUploadCommand extends AVSourceCommand {
   }
 
   isEnabled = (state: EditorState, view?: EditorView): boolean => {
-    if (!view) {
-      return false;
-    }
+    // if (!view) {
+    //   return false;
+    // }
 
-    this.runtime = view['runtime'];
-    if (!this.runtime) {
-      return false;
-    }
-
-    if (this.isForAudio) {
-      const {canUploadAudio, uploadAudio} = this.runtime as EditorAudioRuntime;
-      if (!canUploadAudio || !uploadAudio) {
-        return false;
-      }
-      if (!canUploadAudio()) {
-        return false;
-      }
-    } else {
-      const {canUploadVideo, uploadVideo} = this.runtime as EditorVideoRuntime;
-      if (!canUploadVideo || !uploadVideo) {
-        return false;
-      }
-      if (!canUploadVideo()) {
-        return false;
-      }
-    }
+    // this.runtime = view['runtime'];
+    // if (!this.runtime) {
+    //   return false;
+    // }
+return true;
+    // if (this.isForAudio) {
+    //   const {canUploadAudio, uploadAudio} = this.runtime as EditorAudioRuntime;
+    //   if (!canUploadAudio || !uploadAudio) {
+    //     return false;
+    //   }
+    //   if (!canUploadAudio()) {
+    //     return false;
+    //   }
+    // } else {
+    //   const {canUploadVideo, uploadVideo} = this.runtime as EditorVideoRuntime;
+    //   if (!canUploadVideo || !uploadVideo) {
+    //     return false;
+    //   }
+    //   if (!canUploadVideo()) {
+    //     return false;
+    //   }
+    // }
 
     return this.__isEnabled(state, view);
   };

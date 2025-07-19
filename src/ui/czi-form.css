@@ -1,12 +1,13 @@
 @import url("./czi-vars.css");
 
 .molm-czi-form {
-  background: #fff;
+  background: var(--czi-bg);
   border: none;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   margin: 0;
   padding: 20px;
+  color: var(--czi-text-color);
 }
 
 .molm-czi-form legend {
@@ -34,7 +35,7 @@
 
 .molm-czi-form input[type="text"] {
   border-width: 0 0 2px;
-  border: var(--czi-border-blue);
+  border-color: var(--czi-border-blue);
   box-sizing: border-box;
   display: block;
   font-family: var(--czi-font-family);
@@ -47,7 +48,7 @@
 }
 
 .molm-czi-form em {
-  color: var(--czi-color-grey-200);
+  color: var(--czi-text-color);
   display: block;
   font-size: var(--czi-font-size-small);
   font-style: normal;

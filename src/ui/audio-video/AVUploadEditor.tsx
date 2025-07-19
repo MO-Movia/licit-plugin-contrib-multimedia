@@ -5,7 +5,7 @@ import {
   CustomButton,
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import LoadingIndicator from '../LoadingIndicator';
+import {LoadingIndicator} from '../LoadingIndicator';
 import {v1 as uuid} from 'uuid';
 
 import '../czi-form.css';
@@ -16,7 +16,7 @@ import type {EditorVideoRuntime, EditorAudioRuntime, AVProps} from '../../Types'
 class AVUploadEditor extends React.PureComponent {
   _unmounted = false;
 
-  props: {
+  declare props: {
     runtime?: EditorVideoRuntime | EditorAudioRuntime;
     close: (val?: AVProps) => void;
     isAudio: boolean;

@@ -1,8 +1,9 @@
-
-
-import * as React from 'react';
-import { preventEventDefault, CustomButton } from '@modusoperandi/licit-ui-commands';
-import resolveImage from './ResolveImage';
+import React from 'react';
+import {
+  preventEventDefault,
+  CustomButton,
+} from '@modusoperandi/licit-ui-commands';
+import {resolveImage} from './resolveImage';
 
 import '../czi-form.css';
 import '../czi-video-url-editor.css';
@@ -19,7 +20,10 @@ export type ImageEditorState = {
   validValue: Record<string, unknown>;
 };
 
-class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorState> {
+export class ImageURLEditor extends React.PureComponent<
+  ImageEditorProps,
+  ImageEditorState
+> {
   _unmounted = false;
 
   state = {
@@ -32,11 +36,11 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
   }
 
   render(): React.ReactElement {
-    const { src, validValue } = this.state;
+    const {src, validValue} = this.state;
     const preview = validValue ? (
       <div
         className="molm-czi-image-url-editor-input-preview"
-        style={{ backgroundImage: `url(${String(validValue.src)}` }}
+        style={{backgroundImage: `url(${String(validValue.src)}`}}
       />
     ) : null;
 
@@ -61,7 +65,11 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
             </em>
           </fieldset>
           <div className="molm-czi-form-buttons">
-            <CustomButton className="cancelbtn" label="Cancel" onClick={this._cancel}/>
+            <CustomButton
+              className="cancelbtn"
+              label="Cancel"
+              onClick={this._cancel}
+            />
             <CustomButton
               active={!!validValue}
               className="insertbtn"
@@ -75,7 +83,6 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
     );
   }
 
-
   _onSrcChange = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const src = (e.target as HTMLInputElement).value;
     this.setState(
@@ -87,12 +94,11 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
     );
   };
 
-
   _didSrcChange = (): void => {
     resolveImage(this.state.src).then((result) => {
       if (this.state.src === result.src && !this._unmounted) {
         const validValue = result.complete ? result : null;
-        this.setState({ validValue });
+        this.setState({validValue});
       }
     });
   };
@@ -102,9 +108,7 @@ class ImageURLEditor extends React.PureComponent<ImageEditorProps, ImageEditorSt
   };
 
   _insert = (): void => {
-    const { validValue } = this.state;
+    const {validValue} = this.state;
     this.props.close(validValue);
   };
 }
-
-export default ImageURLEditor;

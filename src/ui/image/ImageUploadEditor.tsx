@@ -1,25 +1,25 @@
 import cx from 'classnames';
-import * as React from 'react';
+import React from 'react';
 
 import {
   CustomButton,
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import LoadingIndicator from '../LoadingIndicator';
-import uuid from '../uuid';
+import {LoadingIndicator} from '../LoadingIndicator';
+import {uuid} from '../uuid';
 
 import '../czi-form.css';
 import '../czi-video-upload-editor.css';
 
 import type {EditorImageRuntime, ImageProps} from '../../Types';
-
-class ImageUploadEditor extends React.PureComponent {
+type ImageUploadProps = {
+  runtime: EditorImageRuntime;
+  close: (val?: ImageProps) => void;
+};
+export class ImageUploadEditor extends React.PureComponent {
   _unmounted = false;
 
-  props: {
-    runtime: EditorImageRuntime;
-    close: (val?: ImageProps) => void;
-  };
+  declare props: ImageUploadProps;
 
   state = {
     error: null,
@@ -112,5 +112,3 @@ class ImageUploadEditor extends React.PureComponent {
     this.props.close();
   };
 }
-
-export default ImageUploadEditor;

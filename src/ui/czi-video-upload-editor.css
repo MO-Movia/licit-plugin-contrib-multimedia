@@ -1,7 +1,7 @@
 @import url("./czi-vars.css");
 
 .czi-editor-frameset .molm-czi-image-upload-editor {
-  background: #fff;
+  background: var(--czi-bg);
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);

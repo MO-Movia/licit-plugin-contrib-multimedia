@@ -1,16 +1,17 @@
 import {createEditor, doc, p} from 'jest-prosemirror';
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
-import ImageResizeBox, {ImageResizeBoxControl} from './ImageResizeBox';
+import {ImageResizeBox, ImageResizeBoxControl} from './ImageResizeBox';
 import React from 'react';
 
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {schema} from 'prosemirror-schema-basic';
-import {MultimediaPlugin} from '../../index';
+import {MultimediaPlugin} from '../index';
 
 Enzyme.configure({adapter: new Adapter()});
-
+jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 describe('Image Resize Box', () => {
   it('should render Image Resize Box', () => {
     const ImageResizeProps = {
@@ -32,7 +33,7 @@ describe('Node attribute update', () => {
 
   beforeEach(() => {
     const plugin = new MultimediaPlugin();
-    const editor = createEditor(doc(p('<cursor>')), {
+    const editor = createEditor(doc(p()), {
       plugins: [plugin],
     });
     const state: EditorState = EditorState.create({

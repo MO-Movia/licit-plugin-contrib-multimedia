@@ -2,8 +2,8 @@
 import Enzyme from 'enzyme';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 
-import ImageURLEditor from './ImageURLEditor';
-import * as resolveimage from './ResolveImage';
+import{ ImageURLEditor } from './ImageURLEditor';
+import * as resolveimage from './resolveImage';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('Image URL Editor', () => {
@@ -38,7 +38,7 @@ describe('Image URL Editor', () => {
   });
 
   it('should handle _didSrcChange ', () => {
-    const spy = jest.spyOn(resolveimage,'default').mockResolvedValue({
+    const spy = jest.spyOn(resolveimage,'resolveImage').mockResolvedValue({
       complete: true,
       height: 10,
       naturalHeight: 10,
@@ -52,7 +52,7 @@ describe('Image URL Editor', () => {
     expect(spy).toBeCalled();
   });
   it('should handle _didSrcChange when result.complete = false ', () => {
-    const spy = jest.spyOn(resolveimage,'default').mockResolvedValue({
+    const spy = jest.spyOn(resolveimage,'resolveImage').mockResolvedValue({
       complete: false,
       height: 10,
       naturalHeight: 10,
