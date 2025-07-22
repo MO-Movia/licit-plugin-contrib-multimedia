@@ -102,7 +102,7 @@ async function resolveURL(
 export class ImageViewBody extends React.PureComponent<
   NodeViewProps,
   ImageState
-> {
+  > {
   declare props: NodeViewProps;
 
   _body?: HTMLElement | React.ReactInstance;
@@ -182,7 +182,7 @@ export class ImageViewBody extends React.PureComponent<
       selected,
     });
 
-    const resizeBox = this.isUnaltered(active, crop, rotate) ? (
+    const resizeBox = this.isUnaltered(active, attrs.cropData, rotate) ? (
       <ImageResizeBox
         fitToParent={this.props.node.attrs['fitToParent']}
         height={height}
@@ -204,7 +204,13 @@ export class ImageViewBody extends React.PureComponent<
     };
 
     const clipStyle: React.CSSProperties = {};
-    if (crop) {
+    if (attrs.cropData) {
+      clipStyle.width = `${attrs.cropData.width}px`;
+      clipStyle.height = `${attrs.cropData.height}px`;
+      clipStyle.overflow = 'hidden';
+      clipStyle.position = 'relative';
+      clipStyle.display = 'inline-block';
+    } else if (crop) {
       const cropped = { ...crop };
       if (scale !== 1) {
         scale = maxSize.width / cropped.width;
@@ -245,6 +251,7 @@ export class ImageViewBody extends React.PureComponent<
       pStyle.margin = '0';
     }
 
+
     return (
       <span
         className={className}
@@ -263,6 +270,15 @@ export class ImageViewBody extends React.PureComponent<
               data-align={align}
               height={height}
               src={src}
+              style={
+                attrs.cropData
+                  ? {
+                    position: 'absolute',
+                    top: `-${attrs.cropData.top}px`,
+                    left: `-${attrs.cropData.left}px`,
+                  }
+                  : undefined
+              }
               width={width}
             />
             {errorView}
@@ -315,6 +331,7 @@ export class ImageViewBody extends React.PureComponent<
       value: node.attrs,
       onSelect: this._onChange,
       editorView: this.props.editorView,
+      imageId: this._id
     };
     if (this._inlineEditor) {
       this._inlineEditor.update(editorProps);
@@ -324,7 +341,7 @@ export class ImageViewBody extends React.PureComponent<
         autoDismiss: false,
         container: el.closest(`.${FRAMESET_BODY_CLASSNAME}`),
         position: atAnchorBottomCenter,
-        onClose: () => {
+        onClose: (_val) => {
           this._inlineEditor = null;
         },
       });
