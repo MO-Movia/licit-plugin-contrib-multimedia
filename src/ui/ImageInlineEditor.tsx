@@ -1,7 +1,13 @@
-import {CustomButton} from '@modusoperandi/licit-ui-commands';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import React from 'react';
-import {Icon} from './Icon';
-import {EditorView} from 'prosemirror-view';
+import { Icon } from './Icon';
+import { EditorView } from 'prosemirror-view';
+import {
+  createPopUp,
+  atAnchorTopCenter,
+} from '@modusoperandi/licit-ui-commands';
+import { CropImagePopup, CropDataPropValue } from './CropImagePopup';
+
 export type PropValue = {
   value?: string;
   text?: string;
@@ -17,9 +23,8 @@ type parseLabeltype = {
 
 type AlignKey = 'LEFT' | 'CENTER' | 'RIGHT';
 type FloatKey = 'FLOAT_LEFT' | 'FLOAT_RIGHT';
-type AlterKey = 'EDIT' | 'DELETE';
-
-const ImageAlignValues: {[key in AlignKey]: PropValue} = {
+type AlterKey = 'EDIT' | 'DELETE' | 'CROP';
+const ImageAlignValues: { [key in AlignKey]: PropValue } = {
   LEFT: {
     value: 'left',
     text: 'Left',
@@ -36,7 +41,7 @@ const ImageAlignValues: {[key in AlignKey]: PropValue} = {
     label: '[format_align_right] Right Align',
   },
 };
-const ImageFloatValues: {[key in FloatKey]: PropValue} = {
+const ImageFloatValues: { [key in FloatKey]: PropValue } = {
   FLOAT_LEFT: {
     value: 'float-left',
     text: 'Float left',
@@ -49,7 +54,7 @@ const ImageFloatValues: {[key in FloatKey]: PropValue} = {
     label: '[format_textdirection_l_to_r] Right Align',
   },
 };
-const ImageAlterValues: {[key in AlterKey]: PropValue} = {
+const ImageAlterValues: { [key in AlterKey]: PropValue } = {
   EDIT: {
     value: 'edit',
     text: 'Edit',
@@ -60,6 +65,11 @@ const ImageAlterValues: {[key in AlterKey]: PropValue} = {
     text: 'Delete',
     label: '[delete] ',
   },
+  CROP: {
+    value: 'crop',
+    text: 'Crop',
+    label: '[crop] ',
+  },
 };
 export type ImageInlineEditorValue = {
   align?: string;
@@ -69,6 +79,7 @@ type ImageInlineProps = {
   onSelect: (val: ImageInlineEditorValue) => void;
   value: ImageInlineEditorValue;
   editorView: EditorView;
+  imageId?: string;
 };
 export class ImageInlineEditor extends React.PureComponent {
   declare props: ImageInlineProps;
@@ -94,19 +105,22 @@ export class ImageInlineEditor extends React.PureComponent {
     let buttons;
     const align = this.props.value ? this.props.value.align : null;
     const onClick = this._onClick;
-    const {editorView} = this.props;
-    this.setState({srcc: this.props.value?.src});
+    const { editorView } = this.props;
+    this.setState({ srcc: this.props.value?.src });
     if (ImgValues === ImageAlterValues) {
       const onAlter = this._onAlter;
       const onRemove = this._onRemove;
+      const onCrop = this._onCrop;
       buttons = Object.keys(ImageAlterValues).map((key) => {
-        const {text, label} = ImageAlterValues[key];
-        const {icon} = this.parseLabel(label);
+        const { text, label } = ImageAlterValues[key];
+        const { icon } = this.parseLabel(label);
+        const handler =
+          key === 'EDIT' ? onAlter : key === 'DELETE' ? onRemove : onCrop;
         return (
           <CustomButton
             icon={icon}
             key={key}
-            onClick={key === 'EDIT' ? onAlter : onRemove}
+            onClick={handler}
             title={text}
             value={editorView}
           />
@@ -114,8 +128,8 @@ export class ImageInlineEditor extends React.PureComponent {
       });
     } else {
       buttons = Object.keys(ImgValues).map((key) => {
-        const {value, text, label} = ImgValues[key];
-        const {icon} = this.parseLabel(label, value);
+        const { value, text, label } = ImgValues[key];
+        const { icon } = this.parseLabel(label, value);
 
         return (
           <CustomButton
@@ -156,16 +170,54 @@ export class ImageInlineEditor extends React.PureComponent {
   }
 
   _onClick = (align?: string) => {
-    this.props.onSelect({align: align});
+    this.props.onSelect({ align: align });
   };
 
   _onAlter = (): void => {
     //Handle Edit
   };
   _onRemove = (view: EditorView): void => {
-    const {dispatch} = view;
+    const { dispatch } = view;
     let tr = view.state.tr;
     tr = tr.deleteSelection();
     dispatch(tr);
+  };
+  _onCrop = (view: EditorView): void => {
+    const state = view.state;
+    const { from } = state.selection;
+
+    const pos = from;
+    const node = state.doc.nodeAt(pos);
+    if (!node || node.type.name !== 'image') return;
+
+    const src = node.attrs.src;
+
+    const popupHandle = createPopUp(
+      CropImagePopup,
+      {
+        src,
+        position: atAnchorTopCenter,
+        onConfirm: (cropData: CropDataPropValue) => {
+          const tr = view.state.tr.setNodeMarkup(pos, null, {
+            ...node.attrs,
+            cropData,
+          });
+          if (popupHandle) {
+            popupHandle.close(cropData);
+          }
+          view.dispatch(tr);
+        },
+        onCancel: () => {
+          if (popupHandle) {
+            popupHandle.close(null);
+          }
+        },
+        defaultUnit: 'px',
+      },
+      {
+        anchor: document.body,
+        autoDismiss: true,
+      }
+    );
   };
 }

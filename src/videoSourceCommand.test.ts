@@ -1,6 +1,7 @@
 import {Transform} from 'prosemirror-transform';
 import {Schema} from 'prosemirror-model';
 import {insertIFrame} from './VideoSourceCommand';
+
 describe('insertIFrame', () => {
   it('should handle !selection', () => {
     const mockSchema = new Schema({

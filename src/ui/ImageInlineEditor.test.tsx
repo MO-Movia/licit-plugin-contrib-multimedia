@@ -4,6 +4,7 @@ import {schema} from 'prosemirror-test-builder';
 import {MultimediaPlugin} from '../index';
 import {createEditor, doc, p} from 'jest-prosemirror';
 import {EditorView} from 'prosemirror-view';
+import '@testing-library/jest-dom';
 
 describe('ImageInlineEditor', () => {
   const plugin = new MultimediaPlugin();
@@ -45,6 +46,15 @@ describe('ImageInlineEditor', () => {
     });
   });
 
+  it('should handle empty input', () => {
+    const imageinlineeditor = new ImageInlineEditor(() => undefined);
+    const input = '';
+    const result = imageinlineeditor.parseLabel(input);
+
+    expect(result.title).toBeNull();
+    expect(result.icon).toBeNull();
+  });
+
   it('should handle _onClick ', () => {
     const imageinlineeditor = new ImageInlineEditor(() => undefined);
     imageinlineeditor.props = {
@@ -57,6 +67,8 @@ describe('ImageInlineEditor', () => {
     };
     const spy = jest.spyOn(imageinlineeditor.props, 'onSelect');
     imageinlineeditor._onClick('align_test');
+    imageinlineeditor._onRemove(view1);
+    imageinlineeditor._onCrop(view1);
     expect(spy).lastReturnedWith('align_test');
   });
   it('should handle prepButtons ', () => {
