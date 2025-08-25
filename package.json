@@ -27,7 +27,8 @@
   "peerDependencies": {
     "@modusoperandi/licit-ui-commands": "^1.0.0",
     "prosemirror-model": "^1.16.0",
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "react-image-crop": "^11.0.10",
