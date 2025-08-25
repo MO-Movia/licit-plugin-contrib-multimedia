@@ -448,13 +448,17 @@ export class ImageViewBody extends React.PureComponent<
   };
 
   _onBodyResize = (_info: ResizeObserverEntry): void => {
+    let mActualWidth = 0;
+    if (_info.contentRect) {
+      mActualWidth = _info.contentRect.width;
+    }
     const width = this._body
       ? getMaxResizeWidth(ReactDOM.findDOMNode(this._body))
       : MAX_SIZE;
 
     this.setState({
       maxSize: {
-        width,
+        width: mActualWidth > width ? mActualWidth : width,
         height: MAX_SIZE,
         complete: !!this._body,
       },
