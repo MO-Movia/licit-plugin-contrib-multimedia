@@ -21,7 +21,7 @@
   text-rendering: optimizelegibility;
   text-transform: none;
   white-space: nowrap;
-  word-wrap: normal;
+  overflow-wrap: normal;
 }
 
 .molm-czi-icon.h1,

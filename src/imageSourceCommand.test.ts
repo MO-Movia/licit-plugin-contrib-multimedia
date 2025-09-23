@@ -202,6 +202,7 @@ describe('inserimage', () => {
   });
 });
 
+
 describe('getImageSize', () => {
   const originalImage = global.Image;
 
@@ -209,17 +210,16 @@ describe('getImageSize', () => {
     width: number;
     height: number;
     onload: (() => void) | null;
-    onerror: ((...args: any[]) => void) | null;
+    onerror: ((event?: Event) => void) | null;
     src: string;
   }
 
   beforeEach(() => {
-    // Reset global.Image before each test
     global.Image = class implements MockImage {
       width = 100;
       height = 200;
       onload: (() => void) | null = null;
-      onerror: ((...args: any[]) => void) | null = null;
+      onerror: ((event?: Event) => void) | null = null;
       _src = '';
       get src() {
         return this._src;
@@ -243,7 +243,7 @@ describe('getImageSize', () => {
       width = mockWidth;
       height = mockHeight;
       onload: (() => void) | null = null;
-      onerror: ((...args: any[]) => void) | null = null;
+      onerror: ((event?: Event) => void) | null = null;
       _src = '';
       get src() {
         return this._src;
@@ -258,4 +258,25 @@ describe('getImageSize', () => {
     const size = await getImageSize('dummy-src');
     expect(size).toEqual({ width: mockWidth, height: mockHeight });
   });
+
+it('should reject on error', async () => {
+  global.Image = class implements MockImage {
+    width = 0;
+    height = 0;
+    onload: (() => void) | null = null;
+    onerror: ((event?: Event | Error) => void) | null = null;
+    _src = '';
+    get src() {
+      return this._src;
+    }
+    set src(_src: string) {
+      // Reject with an actual Error to match test expectation
+      setTimeout(() => this.onerror && this.onerror(new Error('load failed')));
+      this._src = _src;
+    }
+    constructor() {}
+  } as unknown as typeof Image;
+
+  await expect(getImageSize('dummy-src')).rejects.toBeInstanceOf(Error);
+});
 });
