@@ -148,4 +148,7 @@ executeWithUserInput = (
   executeCustom(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
+    executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
 }
