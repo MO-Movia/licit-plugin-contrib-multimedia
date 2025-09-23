@@ -12,38 +12,56 @@ import {createPopUp, PopUpHandle} from '@modusoperandi/licit-ui-commands';
 
 import type {ImageLike} from './Types';
 
-const IMAGE = 'image';
+interface ImageAttrs {
+  src: string;
+  alt: string;
+  title?: string;
+  width?: number;
+  height?: number;
+}
 
 export function insertImage(
   tr: Transform,
   schema: Schema,
-  src: string
+  src: string,
+  width?: number,
+  height?: number
 ): Transform {
-  const {selection} = tr as Transaction;
-  if (!selection) {
-    return tr;
-  }
-  const {from, to} = selection;
-  if (from !== to) {
-    return tr;
-  }
+  const { selection } = tr as Transaction;
+  if (!selection) return tr;
+  const { from, to } = selection;
+  if (from !== to) return tr;
 
-  const image = schema.nodes[IMAGE];
-  if (!image) {
-    return tr;
-  }
+  const image = schema.nodes['image'];
+  if (!image) return tr;
 
-  const attrs = {
+  const attrs: ImageAttrs = {
     src: src || '',
     alt: '',
     title: '',
   };
 
+  if (width && height) {
+    attrs.width = width;
+    attrs.height = height;
+  }
+
   const node = image.create(attrs, null);
   const frag = Fragment.from(node);
-  tr = tr.insert(from, frag);
-  return tr;
+  return tr.insert(from, frag);
 }
+
+  export function getImageSize(src: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
 
 export class ImageSourceCommand extends UICommand {
   _popUp?: PopUpHandle;
@@ -84,27 +102,27 @@ export class ImageSourceCommand extends UICommand {
     });
   };
 
-  executeWithUserInput = (
-    state: EditorState,
-    dispatch: (tr: Transform) => void,
-    view: EditorView,
-    inputs: ImageLike
-  ): boolean => {
-    if (dispatch) {
-      const {selection, schema} = state;
-      let {tr} = state;
+executeWithUserInput = (
+  state: EditorState,
+  dispatch: (tr: Transform) => void,
+  view: EditorView,
+  inputs: ImageLike
+): boolean => {
+  if (dispatch && inputs?.src) {
+    getImageSize(inputs.src).then(({ width, height }) => {
+      const { selection, schema } = state;
+      let { tr } = state;
       tr = view ? (hideCursorPlaceholder(view.state) as Transaction) : tr;
       tr = tr.setSelection(selection);
-      if (inputs) {
-        const {src} = inputs;
-        tr = insertImage(tr, schema, src) as Transaction;
-      }
+
+      tr = insertImage(tr, schema, inputs.src, width, height) as Transaction;
+
       dispatch(tr);
       view?.focus();
-    }
-
-    return false;
-  };
+    });
+  }
+  return false;
+};
 
   __isEnabled = (state: EditorState, _view: EditorView): boolean => {
     const tr = state;
