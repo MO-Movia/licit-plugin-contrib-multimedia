@@ -7,10 +7,6 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import {LoadingIndicator} from '../LoadingIndicator';
 import {uuid} from '../uuid';
-
-import '../czi-form.css';
-import '../czi-video-upload-editor.css';
-
 import type {EditorImageRuntime, ImageProps} from '../../Types';
 type ImageUploadProps = {
   runtime: EditorImageRuntime;

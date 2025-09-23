@@ -8,8 +8,7 @@ import {
 import {LoadingIndicator} from '../LoadingIndicator';
 import {v1 as uuid} from 'uuid';
 
-import '../czi-form.css';
-import '../czi-video-upload-editor.css';
+
 
 import type {EditorVideoRuntime, EditorAudioRuntime, AVProps} from '../../Types';
 

@@ -1,4 +1,3 @@
-import '../czi-inline-editor.css';
 import {CustomButton} from '@modusoperandi/licit-ui-commands';
 import React from 'react';
 import {Icon} from '../Icon';

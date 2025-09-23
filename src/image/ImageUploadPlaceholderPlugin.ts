@@ -3,7 +3,6 @@ import {Plugin, PluginKey, EditorState, TextSelection} from 'prosemirror-state';
 import {Decoration, DecorationSet, EditorView} from 'prosemirror-view';
 import {uuid} from '../ui/uuid';
 
-// import '../ui/czi-image-upload-placeholder.css';
 const IMAGE = 'image';
 const IMAGE_FILE_TYLES = new Set([
   'image/jpeg',

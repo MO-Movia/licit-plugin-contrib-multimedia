@@ -4,8 +4,7 @@ import {
   CustomButton,
 } from '@modusoperandi/licit-ui-commands';
 
-import '../czi-form.css';
-import '../czi-video-url-editor.css';
+
 import axios from 'axios';
 
 export type AVEditorProps = {

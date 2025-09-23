@@ -6,6 +6,7 @@
   "description": "Multimedia plugin built with ProseMirror",
   "main": "index.js",
   "types": "index.d.ts",
+  "style": "styles.css",
   "repository": {
     "type": "git",
     "url": ""

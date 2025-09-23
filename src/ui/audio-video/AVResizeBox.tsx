@@ -5,7 +5,6 @@ import * as React from 'react';
 import { clamp } from '@modusoperandi/licit-ui-commands';
 import { v1 as uuid } from 'uuid';
 
-import '../czi-image-resize-box.css';
 
 export type AVResizeProps = {
   height: number;

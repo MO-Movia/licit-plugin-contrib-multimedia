@@ -1,4 +1,4 @@
-import './czi-loading-indicator.css';
+
 import React from 'react';
 
 // https://loading.io/css/

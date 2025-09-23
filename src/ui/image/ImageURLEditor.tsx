@@ -4,10 +4,6 @@ import {
   CustomButton,
 } from '@modusoperandi/licit-ui-commands';
 import {resolveImage} from './resolveImage';
-
-import '../czi-form.css';
-import '../czi-video-url-editor.css';
-
 export type ImageEditorProps = {
   initialValue;
   close: (val?) => void;

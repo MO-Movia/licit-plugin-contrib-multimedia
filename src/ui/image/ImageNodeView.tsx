@@ -17,9 +17,6 @@ import {
 import ResizeObserver from '../ResizeObserver';
 import {resolveImage} from './resolveImage';
 import {uuid} from '../uuid';
-
-import '../czi-image-view.css';
-
 import type {EditorImageRuntime} from '../../Types';
 import type {NodeViewProps} from '../CustomNodeView';
 import type {ResizeObserverEntry} from '../ResizeObserver';

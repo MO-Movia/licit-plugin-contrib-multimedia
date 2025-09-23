@@ -1,4 +1,5 @@
-import DarkThemeIcon from './assets/theme_icons/dark/Icon_Multi-media.svg';
-import LightThemeIcon from './assets/theme_icons/light/Icon_Multi-media.svg';
+const DarkThemeIcon = 'assets/images/dark/Icon_Multi-media.svg';
+const LightThemeIcon = 'assets/images/light/Icon_Multi-media.svg';
 
-export {DarkThemeIcon, LightThemeIcon};
+export { DarkThemeIcon, LightThemeIcon };
+
