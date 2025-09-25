@@ -12,10 +12,6 @@ const IMAGE_FILE_TYLES = new Set([
 
 const TITLE = 'Uploading...';
 
-const INNER_HTML = new Array(4).join(
-  '<div class="molm-czi-image-upload-placeholder-child"></div>'
-);
-
 export type customEditorView = EditorView & {
   runtime;
   readOnly;
@@ -142,8 +138,6 @@ export function uploadImageFiles(
 export class ImageUploadPlaceholderPlugin extends Plugin {
   constructor() {
     super({
-      // [FS] IRAD-1005 2020-07-07
-      // Upgrade outdated packages.
       key: new PluginKey('ImageUploadPlaceholderPlugin'),
       state: {
         init() {
@@ -158,7 +152,11 @@ export class ImageUploadPlaceholderPlugin extends Plugin {
             const el = document.createElement('div');
             el.title = TITLE;
             el.className = 'molm-czi-image-upload-placeholder';
-            el.innerHTML = INNER_HTML;
+            for (let i = 0; i < 3; i++) {
+              const child = document.createElement('div');
+              child.className = 'molm-czi-image-upload-placeholder-child';
+              el.appendChild(child);
+            }
 
             const deco = Decoration.widget(action.add.pos, el, {
               id: action.add.id,

@@ -131,4 +131,8 @@ export class VideoSourceCommand extends UICommand {
   executeCustom(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
+
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
 }

@@ -57,7 +57,8 @@ type ImageState = {
   originalSize: OriginalSize;
 };
 
-const IMG_CACHE: { [url: string]: string | Promise<string> } = {};
+const IMG_CACHE: { [url: string]: Promise<string> } = {};
+let LAST_PROMISE = Promise.resolve('');
 
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el): number {
@@ -85,7 +86,7 @@ async function resolveURL(
   runtime: EditorRuntime,
   src: string
 ): Promise<string> {
-  if (IMG_CACHE[src]) {
+  if (IMG_CACHE[src]?.then) {
     return IMG_CACHE[src];
   }
   if (!runtime) {
@@ -93,8 +94,13 @@ async function resolveURL(
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
   if (src && getProxyImageSrc && canProxyImageSrc?.(src)) {
-    IMG_CACHE[src] = getProxyImageSrc(src).catch(() => src);
-    return IMG_CACHE[src];
+    const next = LAST_PROMISE.finally().then(() =>
+      getProxyImageSrc(src).catch(() => src)
+    );
+    LAST_PROMISE = next;
+    IMG_CACHE[src] = next;
+    next.catch((_err) => delete IMG_CACHE[src]);
+    return next;
   }
   return src;
 }
@@ -392,7 +398,6 @@ export class ImageViewBody extends React.PureComponent<
       let tr = editorView.state.tr;
       const { selection } = editorView.state;
       tr = tr.setNodeMarkup(pos, null, attrs);
-      // [FS] IRAD-1005 2020-07-09
       // Upgrade outdated packages.
       // reset selection to original using the latest doc.
       try {
@@ -421,7 +426,6 @@ export class ImageViewBody extends React.PureComponent<
     let tr = editorView.state.tr;
     const { selection } = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
-    // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
     const origSelection = NodeSelection.create(tr.doc, selection.from);

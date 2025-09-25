@@ -115,10 +115,6 @@
   box-shadow: 0 0 0 2px var(--czi-selection-highlight-color-dark);
 }
 
-.molm-czi-image-view-body.error {
-  /* outline: var(--czi-border-red); */
-}
-
 @media only print {
   .molm-czi-image-view-body.active {
     box-shadow: none;
