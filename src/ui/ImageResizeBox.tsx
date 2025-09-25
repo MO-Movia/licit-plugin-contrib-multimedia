@@ -242,7 +242,7 @@ export class ImageResizeBox extends React.PureComponent {
     return (
       <span className="molm-czi-image-resize-box" id={boxID} style={style}>
         {controls}
-        <img className="molm-czi-image-resize-box-image" src={src} alt='unavailable' />
+        <img alt='unavailable' className="molm-czi-image-resize-box-image" src={src} />
       </span>
     );
   }

@@ -33,8 +33,6 @@ export class ImageUploadCommand extends ImageSourceCommand {
   executeCustomStyleForTable(
     _state: EditorState,
     tr: Transform,
-    _from: number,
-    _to: number
   ): Transform {
     return tr;
   }

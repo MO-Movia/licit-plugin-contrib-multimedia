@@ -37,8 +37,6 @@ export class VideoUploadCommand extends VideoSourceCommand {
   executeCustomStyleForTable(
     _state: EditorState,
     tr: Transform,
-    _from: number,
-    _to: number
   ): Transform {
     return tr;
   }

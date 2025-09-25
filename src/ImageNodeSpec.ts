@@ -104,7 +104,7 @@ export const ImageNodeSpec: NodeSpec = {
   },
 };
 
-function getRotation(ps: CSSStyleDeclaration, rotate: any) {
+function getRotation(ps: CSSStyleDeclaration, rotate: number) {
   if (ps.transform) {
     // example: `rotate(1.57rad) translateZ(0px)`;
     const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
