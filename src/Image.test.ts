@@ -347,7 +347,7 @@ describe('resolveImage ', () => {
 describe('resolveImage ', () => {
   it('should resolve Image - onLoad offline', async () => {
     const spy = jest
-      .spyOn(Object.prototype, 'hasOwnProperty')
+      .spyOn(Object, 'hasOwn')
       .mockReturnValue(true);
     const res = {
       complete: true,

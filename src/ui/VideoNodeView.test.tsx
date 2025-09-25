@@ -1,11 +1,11 @@
 import {VideoNodeView, VideoViewBody} from './VideoNodeView';
 import {EditorState} from 'prosemirror-state';
 import {schema} from 'prosemirror-schema-basic';
-import { Schema, Node } from 'prosemirror-model';
+import {Schema, Node} from 'prosemirror-model';
 import {EditorFocused} from './CustomNodeView';
 import {MultimediaPlugin} from '../index';
 import {createEditor, doc, p} from 'jest-prosemirror';
-import { PopUpHandle } from '@modusoperandi/licit-ui-commands';
+import {PopUpHandle} from '@modusoperandi/licit-ui-commands';
 // Mock data
 
 const plugin = new MultimediaPlugin();
@@ -516,7 +516,7 @@ describe('Video view body', () => {
       },
     };
     const videoviewbody = new VideoViewBody(
-      dummyNodeWithImage as unknown as Node,
+      dummyNodeWithImage as unknown as Node
     );
 
     videoviewbody.state = {
@@ -766,7 +766,6 @@ describe('Video view body', () => {
   });
   it('should handle _renderInlineEditor', () => {
     const elem = document.createElement('div');
-    elem.innerHTML = '';
     const spy = jest.spyOn(document, 'getElementById').mockReturnValue(elem);
 
     expect(videoviewbody._renderInlineEditor()).toBeUndefined();
@@ -781,7 +780,9 @@ describe('Video view body', () => {
     expect(spy).toBeCalled();
   });
   it('should handle _renderInlineEditor else statement', () => {
-    videoviewbody._inlineEditor = {update: () => undefined} as unknown as PopUpHandle;
+    videoviewbody._inlineEditor = {
+      update: () => undefined,
+    } as unknown as PopUpHandle;
     const elem = document.createElement('div');
     elem.setAttribute('data-active', 'true');
     const spy = jest.spyOn(document, 'getElementById').mockReturnValue(elem);
@@ -859,7 +860,9 @@ describe('Video view body', () => {
       selected: true,
       focused: true,
     };
-    videoviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
+    videoviewbody._inlineEditor = {
+      close: () => undefined,
+    } as unknown as PopUpHandle;
     expect(videoviewbody._onResizeEnd(10, 20)).toBeUndefined();
   });
 
@@ -933,7 +936,9 @@ describe('Video view body', () => {
       selected: true,
       focused: true,
     };
-    videoviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
+    videoviewbody._inlineEditor = {
+      close: () => undefined,
+    } as unknown as PopUpHandle;
     expect(videoviewbody._onChange({align: 'left'})).toBeUndefined();
     videoviewbody._mounted = true;
     expect(videoviewbody._onChange({align: 'left'})).toBeUndefined();

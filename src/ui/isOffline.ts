@@ -1,5 +1,5 @@
 export  function isOffline(): boolean {
-  if (Object.prototype.hasOwnProperty.call(window.navigator, 'onLine')) {
+  if (Object.hasOwn(window.navigator, 'onLine')) {
     return !window.navigator.onLine;
   }
   return false;

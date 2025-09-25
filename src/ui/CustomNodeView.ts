@@ -124,7 +124,6 @@ export class CustomNodeView implements NodeView {
     dom.onclick = this._onClick;
 
     if (pendingViews.size === 1) {
-      // [FS] IRAD-1060 2020-09-10
       // Observe the editorview's dom insteadof root document so that
       // if multiple instances of editor in a page shouldn't cross-talk
       mutationObserver.observe(/*document*/ editorView.dom, {
@@ -178,7 +177,6 @@ export class CustomNodeView implements NodeView {
     // Called when the node view is removed from the editor or the whole
     // editor is destroyed.
     // sub-class may override this method.
-    // [FS] IRAD-1555 2021-09-13
     // When destroying the node view, remove from the set.
     // FIX: This solves the image missing issue.
     pendingViews.delete(this);

@@ -54,13 +54,7 @@ export function getAttrs(dom: string | HTMLElement) {
     ) {
       crop = makeCrop(ps, marginLeft, marginTop);
     }
-    if (ps.transform) {
-      // example: `rotate(1.57rad) translateZ(0px)`;
-      const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
-      if (mm?.[1]) {
-        rotate = parseFloat(mm[1]);
-      }
-    }
+    rotate = getRotation(ps, rotate);
     const cropDataAttr = dom.getAttribute('data-cropdata');
     if (cropDataAttr) {
       try {
@@ -109,6 +103,17 @@ export const ImageNodeSpec: NodeSpec = {
     return ['img', node.attrs];
   },
 };
+
+function getRotation(ps: CSSStyleDeclaration, rotate: number) {
+  if (ps.transform) {
+    // example: `rotate(1.57rad) translateZ(0px)`;
+    const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
+    if (mm?.[1]) {
+      rotate = parseFloat(mm[1]);
+    }
+  }
+  return rotate;
+}
 
 function makeCrop(
   ps: CSSStyleDeclaration,

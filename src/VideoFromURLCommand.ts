@@ -21,4 +21,11 @@ export class VideoFromURLCommand extends VideoSourceCommand {
   getEditor(): typeof React.Component {
     return VideoEditor;
   }
+
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+  ): Transform {
+    return tr;
+  }
 }

@@ -359,7 +359,6 @@ export class VideoViewBody extends React.PureComponent {
     let tr = editorView.state.tr;
     const {selection} = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
-    // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
     const origSelection = NodeSelection.create(tr.doc, selection.from);
@@ -383,7 +382,6 @@ export class VideoViewBody extends React.PureComponent {
     let tr = editorView.state.tr;
     const {selection} = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
-    // [FS] IRAD-1005 2020-07-09
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
     const origSelection = NodeSelection.create(tr.doc, selection.from);

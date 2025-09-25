@@ -157,7 +157,10 @@ describe('Image view body', () => {
     update: () => undefined,
   } as unknown as PopUpHandle;
 
-  const imageviewbody = new ImageViewBody(mockImageNode as unknown as NodeViewProps, editorfocused);
+  const imageviewbody = new ImageViewBody(
+    mockImageNode as unknown as NodeViewProps,
+    editorfocused
+  );
   imageviewbody.props = {
     decorations: [],
     editorView: editorfocused,
@@ -166,7 +169,9 @@ describe('Image view body', () => {
     selected: true,
     focused: true,
   };
-  imageviewbody._inlineEditor = {close: () => undefined} as unknown as PopUpHandle;
+  imageviewbody._inlineEditor = {
+    close: () => undefined,
+  } as unknown as PopUpHandle;
   it('should be defined', () => {
     expect(imageviewbody).toBeDefined();
   });
@@ -284,7 +289,6 @@ describe('Image view body', () => {
 
   it('should handle _renderInlineEditor', () => {
     const elem = document.createElement('div');
-    elem.innerHTML = '';
     const spy = jest.spyOn(document, 'getElementById').mockReturnValue(elem);
 
     expect(imageviewbody._renderInlineEditor()).toBeUndefined();
@@ -521,64 +525,88 @@ describe('Image view body', () => {
     });
     expect(ivb).toBeUndefined();
   });
-  it('should handle _onBodyRef ',()=>{
+  it('should handle _onBodyRef ', () => {
     const mockElement = document.createElement('div');
-    expect(imageviewbody._onBodyRef(mockElement as unknown as React.ReactInstance)).toBeUndefined();
+    expect(
+      imageviewbody._onBodyRef(mockElement as unknown as React.ReactInstance)
+    ).toBeUndefined();
   });
-  it('should handle _resolveOriginalSize  ',()=>{
+  it('should handle _resolveOriginalSize  ', () => {
     imageviewbody._mounted = true;
     imageviewbody.props = {
       decorations: [],
       editorView: editorfocused,
       getPos: () => 1,
-      node: {attrs: {align: 'left', fitToParent: 'fit',src:'test'}} as unknown as Node,
+      node: {
+        attrs: {align: 'left', fitToParent: 'fit', src: 'test'},
+      } as unknown as Node,
       selected: true,
       focused: true,
     };
     imageviewbody.state = {
       maxSize: {
-          width: 1,
-          height: 2,
-          complete: true
+        width: 1,
+        height: 2,
+        complete: true,
       },
       originalSize: {
-          src: 'test',
-          complete: true,
-          height: 1,
-          width: 2
-      }
+        src: 'test',
+        complete: true,
+        height: 1,
+        width: 2,
+      },
     };
-    expect(imageviewbody._resolveOriginalSize ()).toBeDefined();
+    expect(imageviewbody._resolveOriginalSize()).toBeDefined();
   });
-  it('should handle _resolveOriginalSize  ',()=>{
+  it('should handle _resolveOriginalSize  ', () => {
     imageviewbody._mounted = true;
     imageviewbody.props = {
       decorations: [],
       editorView: editorfocused,
       getPos: () => 1,
-      node: {attrs: {align: 'left', fitToParent: 'fit',src:'test'}} as unknown as Node,
+      node: {
+        attrs: {align: 'left', fitToParent: 'fit', src: 'test'},
+      } as unknown as Node,
       selected: true,
       focused: true,
     };
     imageviewbody.state = {
       maxSize: {
-          width: 1,
-          height: 2,
-          complete: true
+        width: 1,
+        height: 2,
+        complete: true,
       },
       originalSize: {
-          src: 'tes',
-          complete: true,
-          height: 1,
-          width: 2
-      }
+        src: 'tes',
+        complete: true,
+        height: 1,
+        width: 2,
+      },
     };
-    expect(imageviewbody._resolveOriginalSize ()).toBeDefined();
+    expect(imageviewbody._resolveOriginalSize()).toBeDefined();
   });
-  it('should handle calcWidthAndHeight',()=>{
-    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:1,height:1,src:''})).toBeDefined();
+  it('should handle calcWidthAndHeight', () => {
+    expect(
+      imageviewbody.calcWidthAndHeight(
+        null as unknown as number,
+        null as unknown as number,
+        1,
+        {width: 1, height: 1, src: ''}
+      )
+    ).toBeDefined();
   });
-  it('should handle calcWidthAndHeight',()=>{
-    expect(imageviewbody.calcWidthAndHeight(null as unknown as number,null as unknown as number,1,{width:null as unknown as number,height:null as unknown as number,src:''})).toBeDefined();
+  it('should handle calcWidthAndHeight', () => {
+    expect(
+      imageviewbody.calcWidthAndHeight(
+        null as unknown as number,
+        null as unknown as number,
+        1,
+        {
+          width: null as unknown as number,
+          height: null as unknown as number,
+          src: '',
+        }
+      )
+    ).toBeDefined();
   });
 });
