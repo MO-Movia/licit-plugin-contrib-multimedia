@@ -1,4 +1,4 @@
-import { ImageSourceCommand, insertImage } from './ImageSourceCommand';
+import { ImageSourceCommand, insertImage, getImageSize} from './ImageSourceCommand';
 import { Transform } from 'prosemirror-transform';
 import { Schema } from 'prosemirror-model';
 import { MultimediaPlugin } from './index';
@@ -200,4 +200,83 @@ describe('inserimage', () => {
     const src = '';
     expect(insertImage(mockTransaction, mockSchema, src)).toBeTruthy();
   });
+});
+
+
+describe('getImageSize', () => {
+  const originalImage = global.Image;
+
+  interface MockImage {
+    width: number;
+    height: number;
+    onload: (() => void) | null;
+    onerror: ((event?: Event) => void) | null;
+    src: string;
+  }
+
+  beforeEach(() => {
+    global.Image = class implements MockImage {
+      width = 100;
+      height = 200;
+      onload: (() => void) | null = null;
+      onerror: ((event?: Event) => void) | null = null;
+      _src = '';
+      get src() {
+        return this._src;
+      }
+      set src(value: string) {
+        this._src = value;
+      }
+      constructor() {}
+    } as unknown as typeof Image;
+  });
+
+  afterEach(() => {
+    global.Image = originalImage;
+  });
+
+  it('should resolve with width and height on load', async () => {
+    const mockWidth = 640;
+    const mockHeight = 480;
+
+    global.Image = class implements MockImage {
+      width = mockWidth;
+      height = mockHeight;
+      onload: (() => void) | null = null;
+      onerror: ((event?: Event) => void) | null = null;
+      _src = '';
+      get src() {
+        return this._src;
+      }
+      set src(_src: string) {
+        setTimeout(() => this.onload && this.onload());
+        this._src = _src;
+      }
+      constructor() {}
+    } as unknown as typeof Image;
+
+    const size = await getImageSize('dummy-src');
+    expect(size).toEqual({ width: mockWidth, height: mockHeight });
+  });
+
+it('should reject on error', async () => {
+  global.Image = class implements MockImage {
+    width = 0;
+    height = 0;
+    onload: (() => void) | null = null;
+    onerror: ((event?: Event | Error) => void) | null = null;
+    _src = '';
+    get src() {
+      return this._src;
+    }
+    set src(_src: string) {
+      // Reject with an actual Error to match test expectation
+      setTimeout(() => this.onerror && this.onerror(new Error('load failed')));
+      this._src = _src;
+    }
+    constructor() {}
+  } as unknown as typeof Image;
+
+  await expect(getImageSize('dummy-src')).rejects.toBeInstanceOf(Error);
+});
 });
