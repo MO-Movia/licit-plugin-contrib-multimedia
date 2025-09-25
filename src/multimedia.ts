@@ -11,8 +11,6 @@ import {ImageNodeView} from './ui/ImageNodeView';
 import {ImageNodeSpec} from './ImageNodeSpec';
 const IMAGE = 'image';
 
-// [FS] IRAD-1503 2021-07-02
-// Fix: Update the private plugin classes as a named export rather than the default
 export class MultimediaPlugin extends Plugin {
   _view: EditorView = null;
   constructor() {

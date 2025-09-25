@@ -21,7 +21,7 @@
   text-rendering: optimizelegibility;
   text-transform: none;
   white-space: nowrap;
-  word-wrap: normal;
+  overflow-wrap: normal;
 }
 
 .molm-czi-icon.h1,
@@ -34,7 +34,7 @@
 }
 
 .molm-czi-icon.hr {
-  /* [FS] IRAD-1009 2020-07-16
+  /*
   hr not grayed out on editor disable state
   Temporary Fix need to bring image instead of content */
   content: "---";

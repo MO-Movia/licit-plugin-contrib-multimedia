@@ -5,6 +5,7 @@ import React from 'react';
 import {VideoSourceCommand} from './VideoSourceCommand';
 import {VideoUploadEditor} from './ui/VideoUploadEditor';
 import type {EditorVideoRuntime} from './Types';
+import {Transform} from 'prosemirror-transform';
 
 export class VideoUploadCommand extends VideoSourceCommand {
   runtime: EditorVideoRuntime;
@@ -31,5 +32,14 @@ export class VideoUploadCommand extends VideoSourceCommand {
 
   getEditor(): typeof React.Component {
     return VideoUploadEditor;
+  }
+
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
   }
 }

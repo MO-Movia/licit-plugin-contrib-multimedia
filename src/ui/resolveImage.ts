@@ -73,7 +73,6 @@ function processPromise(
   resolveRes(srcStr, result, resolve);
 
   const parsedURL = url.parse(srcStr);
-  // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
   const {protocol} = parsedURL;
   if (!/(http:|https:|data:)/.test(protocol || window.location.protocol)) {
@@ -106,7 +105,6 @@ function processPromise(
     }
     resolve(result);
     dispose();
-    // [FS] IRAD-1006 2020-07-17
     // Fix: Inconsistent behavior on image load
     // Avoid image caching remove the below line
     cache[srcStr] = {...result};

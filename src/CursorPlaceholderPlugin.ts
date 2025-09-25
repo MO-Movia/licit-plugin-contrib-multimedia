@@ -8,7 +8,6 @@ let singletonInstance: CursorPlaceholderPlugin = null;
 
 // https://prosemirror.net/examples/upload/
 const SPEC = {
-  // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   key: new PluginKey('CursorPlaceholderPlugin'),
   state: {

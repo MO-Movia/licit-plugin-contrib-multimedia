@@ -5,6 +5,7 @@ import React from 'react';
 import {ImageSourceCommand} from './ImageSourceCommand';
 import {EditorRuntime} from './Types';
 import {ImageUploadEditor} from './ui/ImageUploadEditor';
+import {Transform} from 'prosemirror-transform';
 
 export class ImageUploadCommand extends ImageSourceCommand {
   isEnabled = (state: EditorState, view: EditorView | null): boolean => {
@@ -27,5 +28,14 @@ export class ImageUploadCommand extends ImageSourceCommand {
 
   getEditor(): typeof React.Component {
     return ImageUploadEditor;
+  }
+
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
   }
 }
