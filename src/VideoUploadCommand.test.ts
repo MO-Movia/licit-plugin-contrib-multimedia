@@ -155,4 +155,14 @@ describe('video upload command', () => {
       mockTransform
     );
   });
+    it('should noop executeCustom', () => {
+      const tr = {} as Transform;
+      const command = new VideoUploadCommand();
+      expect(command.executeCustom(null!, tr)).toBe(tr);
+    });
+    it('should noop executeCustomStyleForTable', () => {
+      const tr = {} as Transform;
+      const command = new VideoUploadCommand();
+      expect(command.executeCustomStyleForTable(null!, tr)).toBe(tr);
+    });
 });
