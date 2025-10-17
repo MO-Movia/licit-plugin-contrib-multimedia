@@ -134,7 +134,7 @@ export class VideoEditor extends React.PureComponent<
   };
 
   _onWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const width = parseInt(e.target.value);
+    const width = Number.parseInt(e.target.value);
     this.setState({
       width,
       validValue: true,
@@ -142,7 +142,7 @@ export class VideoEditor extends React.PureComponent<
   };
 
   _onHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const height = parseInt(e.target.value);
+    const height = Number.parseInt(e.target.value);
     this.setState({
       height,
       validValue: true,

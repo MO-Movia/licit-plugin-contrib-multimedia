@@ -97,6 +97,7 @@ describe('Video view body', () => {
     editorView: dummyEditorFocused,
     getPos: () => 1,
     node: dummyNodeWithImage as unknown as Node,
+    dom: document.createElement('img'),
     selected: true,
     focused: true,
   };
@@ -156,6 +157,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage1 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     });
@@ -201,6 +203,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage1 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     });
@@ -248,6 +251,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage2 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -321,6 +325,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage2 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -398,6 +403,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage2 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -465,6 +471,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage2 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -538,6 +545,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage2 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -637,6 +645,7 @@ describe('Video view body', () => {
       editorView: dummyEditorFocused,
       getPos: () => 1,
       node: dummyNodeWithImage1 as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -725,6 +734,7 @@ describe('Video view body', () => {
           fitToParent: true,
         },
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -759,6 +769,7 @@ describe('Video view body', () => {
           fitToParent: true,
         },
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -857,6 +868,7 @@ describe('Video view body', () => {
       editorView: editorfocused,
       getPos: () => 1,
       node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -933,6 +945,7 @@ describe('Video view body', () => {
       editorView: editorfocused,
       getPos: () => 1,
       node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };

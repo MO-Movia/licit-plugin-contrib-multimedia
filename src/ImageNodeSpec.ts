@@ -32,7 +32,7 @@ export function getAttrs(dom: string | HTMLElement) {
   const attrfitToParent = dom.getAttribute('fitToParent');
   let fitToParent = 0;
   if (attrfitToParent) {
-    fitToParent = parseInt(attrfitToParent);
+    fitToParent = Number.parseInt(attrfitToParent);
   }
 
   let crop = null;
@@ -71,11 +71,11 @@ export function getAttrs(dom: string | HTMLElement) {
     alt: dom.getAttribute('alt'),
     crop,
     cropData,
-    height: parseInt(height, 10),
+    height: Number.parseInt(height, 10),
     rotate,
     src: dom.getAttribute('src'),
     title: dom.getAttribute('title'),
-    width: parseInt(width, 10),
+    width: Number.parseInt(width, 10),
     fitToParent: fitToParent,
   };
 }
@@ -109,7 +109,7 @@ function getRotation(ps: CSSStyleDeclaration, rotate: number) {
     // example: `rotate(1.57rad) translateZ(0px)`;
     const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
     if (mm?.[1]) {
-      rotate = parseFloat(mm[1]);
+      rotate = Number.parseFloat(mm[1]);
     }
   }
   return rotate;
@@ -121,9 +121,9 @@ function makeCrop(
   marginTop: string
 ) {
   return {
-    width: parseInt(ps.width, 10) || 0,
-    height: parseInt(ps.height, 10) || 0,
-    left: parseInt(marginLeft, 10) || 0,
-    top: parseInt(marginTop, 10) || 0,
+    width: (ps.width, 10) || 0,
+    height: Number.parseInt(ps.height, 10) || 0,
+    left: Number.parseInt(marginLeft, 10) || 0,
+    top: Number.parseInt(marginTop, 10) || 0,
   };
 }

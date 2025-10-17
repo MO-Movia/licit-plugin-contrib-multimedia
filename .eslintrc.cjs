@@ -47,6 +47,7 @@ module.exports = {
   globals: {
     React: false,
     FontFaceSet: true,
+    globalThis: true,
   },
   overrides: [
     {

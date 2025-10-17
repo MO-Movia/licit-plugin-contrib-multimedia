@@ -18,7 +18,7 @@ const queue: {
   reject: (reason?: {value: ImageResult | PromiseLike<ImageResult>}) => void;
 }[] = [];
 
-export  function resolveImage(src: string): Promise<ImageResult> {
+export function resolveImage(src: string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
     const bag = {src, resolve, reject};
     queue.push(bag);
@@ -75,7 +75,7 @@ function processPromise(
   const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
   const {protocol} = parsedURL;
-  if (!/(http:|https:|data:)/.test(protocol || window.location.protocol)) {
+  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
     resolve(result);
     return;
   }
