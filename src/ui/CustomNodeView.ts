@@ -63,7 +63,7 @@ export function onMutation(_mutations, observer: MutationObserver): void {
 // See https://discuss.prosemirror.net/t/copy-selection-issue-with-the-image-node/1673/2;
 export function onSelection(_entries: [], observer: SelectionObserver): void {
   if (!globalThis.getSelection) {
-    console.warn('window.getSelection() is not supported');
+    console.warn('globalThis.getSelection() is not supported');
     observer.disconnect();
     return;
   }

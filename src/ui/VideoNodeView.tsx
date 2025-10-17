@@ -68,8 +68,8 @@ function getMaxResizeWidth(el): number {
     const style = el.ownerDocument.defaultView.getComputedStyle(offsetParent);
     let width = offsetParent.clientWidth - IMAGE_MARGIN * 2;
     if (style.boxSizing === 'border-box') {
-      const pl = parseInt(style.paddingLeft, 10);
-      const pr = parseInt(style.paddingRight, 10);
+      const pl = Number.parseInt(style.paddingLeft, 10);
+      const pr = Number.parseInt(style.paddingRight, 10);
       width -= pl + pr;
     }
     return Math.max(width, MIN_SIZE);

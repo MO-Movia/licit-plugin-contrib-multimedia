@@ -1,4 +1,4 @@
-import { isOffline } from './isOffline';
+import {isOffline} from './isOffline';
 import url from 'url';
 import {VideoEditorState} from './VideoEditor';
 
@@ -17,9 +17,7 @@ const queue: {
   reject: (reason?: VideoResult | PromiseLike<VideoResult>) => void;
 }[] = [];
 
-export  function resolveVideo(
-  config?: VideoEditorState
-): Promise<VideoResult> {
+export function resolveVideo(config?: VideoEditorState): Promise<VideoResult> {
   return new Promise((resolve, reject) => {
     const bag = {config, resolve, reject};
     queue.push(bag);
@@ -65,7 +63,7 @@ function processPromise(
   const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
   const protocol = parsedURL.protocol;
-  if (!/(http:|https:|data:)/.test(protocol || window.location.protocol)) {
+  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
     resolve(result);
     return;
   }
