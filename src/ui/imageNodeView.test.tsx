@@ -80,6 +80,7 @@ describe('ImageNodeView', () => {
     editorView: editorfocused,
     getPos: () => 1,
     node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+    dom: document.createElement('img'),
     selected: true,
     focused: true,
   };
@@ -166,6 +167,7 @@ describe('Image view body', () => {
     editorView: editorfocused,
     getPos: () => 1,
     node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+    dom: document.createElement('img'),
     selected: true,
     focused: true,
   };
@@ -190,6 +192,7 @@ describe('Image view body', () => {
       editorView: editorfocused,
       getPos: () => 1,
       node: {attrs: {src: 'test'}} as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     });
@@ -224,6 +227,7 @@ describe('Image view body', () => {
           fitToParent: true,
         },
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -258,6 +262,7 @@ describe('Image view body', () => {
           fitToParent: true,
         },
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -380,6 +385,7 @@ describe('Image view body', () => {
       editorView: editorfocused,
       getPos: () => 1,
       node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -454,6 +460,7 @@ describe('Image view body', () => {
       editorView: editorfocused,
       getPos: () => 1,
       node: {attrs: {align: 'left', fitToParent: 'fit'}} as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -540,6 +547,7 @@ describe('Image view body', () => {
       node: {
         attrs: {align: 'left', fitToParent: 'fit', src: 'test'},
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -558,7 +566,11 @@ describe('Image view body', () => {
     };
     expect(imageviewbody._resolveOriginalSize()).toBeDefined();
   });
-  it('should handle _resolveOriginalSize  ', () => {
+  it('should handle _resolveOriginalSize lazy', () => {
+    editorfocused.runtime = {
+      canProxyImageSrc: () => true,
+      getProxyImageSrc: (src: string) => Promise.resolve(src),
+    };
     imageviewbody._mounted = true;
     imageviewbody.props = {
       decorations: [],
@@ -567,6 +579,7 @@ describe('Image view body', () => {
       node: {
         attrs: {align: 'left', fitToParent: 'fit', src: 'test'},
       } as unknown as Node,
+      dom: document.createElement('img'),
       selected: true,
       focused: true,
     };
@@ -584,6 +597,42 @@ describe('Image view body', () => {
       },
     };
     expect(imageviewbody._resolveOriginalSize()).toBeDefined();
+    editorfocused.runtime = {};
+  });
+  it('should handle _resolveOriginalSize not lazy', () => {
+    document.body.classList.add('export-pdf-mode');
+    editorfocused.runtime = {
+      canProxyImageSrc: () => true,
+      getProxyImageSrc: (src: string) => Promise.resolve(src),
+    };
+    imageviewbody._mounted = true;
+    imageviewbody.props = {
+      decorations: [],
+      editorView: editorfocused,
+      getPos: () => 1,
+      node: {
+        attrs: {align: 'left', fitToParent: 'fit', src: 'test'},
+      } as unknown as Node,
+      dom: document.createElement('img'),
+      selected: true,
+      focused: true,
+    };
+    imageviewbody.state = {
+      maxSize: {
+        width: 1,
+        height: 2,
+        complete: true,
+      },
+      originalSize: {
+        src: 'tes',
+        complete: true,
+        height: 1,
+        width: 2,
+      },
+    };
+    expect(imageviewbody._resolveOriginalSize()).toBeDefined();
+    editorfocused.runtime = {};
+    document.body.classList.remove('export-pdf-mode');
   });
   it('should handle calcWidthAndHeight', () => {
     expect(

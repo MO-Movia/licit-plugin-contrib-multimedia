@@ -1,20 +1,26 @@
-import { createEditor, doc, p } from 'jest-prosemirror';
-import { EditorState, TextSelection, Transaction, Plugin, PluginKey } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { MultimediaPlugin, bindImageView, bindVideoView } from './index';
-import { VideoEditorState } from './ui/VideoEditor';
-import {VideoSourceCommand, insertIFrame } from './VideoSourceCommand';
+import {createEditor, doc, p} from 'jest-prosemirror';
+import {
+  EditorState,
+  TextSelection,
+  Transaction,
+  Plugin,
+  PluginKey,
+} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {MultimediaPlugin, bindImageView, bindVideoView} from './index';
+import {VideoEditorState} from './ui/VideoEditor';
+import {VideoSourceCommand, insertIFrame} from './VideoSourceCommand';
 import {ImageUploadCommand} from './ImageUploadCommand';
 import {VideoUploadCommand} from './VideoUploadCommand';
 import {isOffline} from './ui/isOffline';
 import {ImageNodeView} from './ui/ImageNodeView';
-import { EditorView } from 'prosemirror-view';
+import {EditorView} from 'prosemirror-view';
 import {VideoFromURLCommand} from './VideoFromURLCommand';
 import {SelectionObserver} from './ui/SelectionObserver';
 import {uuid} from './ui/uuid';
-import {CustomNodeView, EditorFocused } from './ui/CustomNodeView';
+import {CustomNodeView, EditorFocused} from './ui/CustomNodeView';
 import ImageFromURLCommand from './ImageFromURLCommand';
-import { EditorRuntime, ImageLike } from './Types';
+import {EditorRuntime, ImageLike} from './Types';
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -25,7 +31,6 @@ class TestPlugin extends Plugin {
 }
 
 describe('MultimediaPlugin', () => {
-
   const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {
     plugins: [plugin],
@@ -43,7 +48,7 @@ describe('MultimediaPlugin', () => {
   const selection = TextSelection.create(view.state.doc, 0, 0);
   const tr = view.state.tr.setSelection(selection);
   view.updateState(
-    view.state.reconfigure({ plugins: [plugin, new TestPlugin()] })
+    view.state.reconfigure({plugins: [plugin, new TestPlugin()]})
   );
 
   view.dispatch(tr);
@@ -76,11 +81,7 @@ describe('MultimediaPlugin', () => {
     veState
   );
 
-  new VideoSourceCommand().__isEnabled(
-    state,
-    view,
-  );
-
+  new VideoSourceCommand().__isEnabled(state, view);
 
   it('should handle Video', () => {
     const plugin = new MultimediaPlugin();
@@ -120,12 +121,14 @@ describe('MultimediaPlugin', () => {
       insertIFrame(state.tr, schema, veState) as Transaction
     );
 
-    expect(() => new VideoSourceCommand().executeWithUserInput(
-      state,
-      view.dispatch,
-      view,
-      veState
-    )).toThrow();
+    expect(() =>
+      new VideoSourceCommand().executeWithUserInput(
+        state,
+        view.dispatch,
+        view,
+        veState
+      )
+    ).toThrow();
 
     const json = state.doc.toJSON();
     const videoJSON = newState.doc.toJSON();
@@ -147,10 +150,7 @@ describe('MultimediaPlugin', () => {
       selection: undefined,
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().__isEnabled(
-      statetest,
-      view,
-    );
+    new VideoSourceCommand().__isEnabled(statetest, view);
   });
 
   it('isEnabled in VideoSourceCommand ', () => {
@@ -160,10 +160,7 @@ describe('MultimediaPlugin', () => {
       selection: undefined,
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().isEnabled(
-      statetest,
-      view,
-    );
+    new VideoSourceCommand().isEnabled(statetest, view);
   });
 
   it('isEnabled in image', () => {
@@ -171,7 +168,7 @@ describe('MultimediaPlugin', () => {
       state,
       handleKeyPress() {
         console.log('key');
-      }
+      },
     });
     const trans = new ImageUploadCommand();
     const editorruntime: EditorRuntime = {
@@ -270,7 +267,6 @@ describe('MultimediaPlugin', () => {
   });
 
   it('getEditor', () => {
-
     const trans = new VideoUploadCommand();
     trans.getEditor();
   });
@@ -291,9 +287,7 @@ describe('MultimediaPlugin', () => {
     );
     editorView['runtime'] = null;
     trans.isEnabled(state, null);
-
   });
-
 
   it('can Image Upload', () => {
     const trans = new ImageUploadCommand();
@@ -311,18 +305,16 @@ describe('MultimediaPlugin', () => {
     );
     editorView['runtime'] = null;
     trans.isEnabled(state, editorView);
-
   });
-
 
   it('bindImageView', () => {
     const view = new EditorView(document.querySelector('#editor'), {
       state,
       handleKeyPress() {
         console.log('key');
-      }
+      },
     });
-    expect(bindImageView(doc(p('<cursor>')), view, true)).toBeDefined();
+    expect(bindImageView(doc(p('<cursor>')), view, () => 1)).toBeDefined();
   });
 
   it('bindVideoView', () => {
@@ -330,9 +322,9 @@ describe('MultimediaPlugin', () => {
       state,
       handleKeyPress() {
         console.log('key');
-      }
+      },
     });
-    expect(bindVideoView(doc(p('<cursor>')), view, true)).toBeDefined();
+    expect(bindVideoView(doc(p('<cursor>')), view, () => 1)).toBeDefined();
   });
 
   it('selectionObserver', () => {
@@ -346,7 +338,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
-      { mount: dom },
+      {mount: dom},
       {
         state: state,
       }
@@ -370,7 +362,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
-      { mount: dom },
+      {mount: dom},
       {
         state: state,
       }
@@ -378,18 +370,24 @@ describe('MultimediaPlugin', () => {
     const node = view.state.doc.nodeAt(0);
     expect(node).toBeDefined();
 
-    const imagenodeview = new ImageNodeView(node, view as unknown as EditorFocused, () => 0, []);
+    const imagenodeview = new ImageNodeView(
+      node,
+      view as unknown as EditorFocused,
+      () => 0,
+      []
+    );
     imagenodeview.update(node, []);
     imagenodeview.renderReactComponent();
     const demodom = document.createElement('div');
 
-
     imagenodeview._updateDOM(demodom);
-    expect(() => new CustomNodeView(node, view as unknown as EditorFocused, () => 1, [])).toThrow();
+    expect(
+      () =>
+        new CustomNodeView(node, view as unknown as EditorFocused, () => 1, [])
+    ).toThrow();
   });
 
   it('should init buttons', () => {
     expect(() => plugin.initButtonCommands()).not.toThrow();
   });
 });
-

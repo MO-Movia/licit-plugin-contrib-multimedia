@@ -24,32 +24,27 @@ export type EditorVideoRuntime = {
 };
 
 export type ImageLike = {
-  height: number,
-  id: string,
-  src: string,
-  width: number,
+  height: number;
+  id: string;
+  src: string;
+  width: number;
 };
 
 export type EditorRuntime = {
   // Image Proxy
-  canProxyImageSrc?: (src: string) => boolean,
-  getProxyImageSrc?: (src: string) => Promise<string>,
+  canProxyImageSrc?: (src: string) => boolean;
+  getProxyImageSrc?: (src: string) => Promise<string>;
 
   // Image Upload
-  canUploadImage?: () => boolean,
-  uploadImage?: (obj: Blob) => Promise<ImageLike>,
+  canUploadImage?: () => boolean;
+  uploadImage?: (obj: Blob) => Promise<ImageLike>;
 
   // Comments
-  canComment?: () => boolean,
-  createCommentThreadID?: () => string,
-  renderComment?: (props: RenderCommentProps) => React.ReactElement,
+  canComment?: () => boolean;
+  createCommentThreadID?: () => string;
+  renderComment?: (props: RenderCommentProps) => React.ReactElement;
 
   // External HTML
-  canLoadHTML?: () => boolean,
-  loadHTML?: () => Promise<string>,
-
-
-
-
-
+  canLoadHTML?: () => boolean;
+  loadHTML?: () => Promise<string>;
 };
