@@ -1,4 +1,4 @@
-import { NodeSpec } from 'prosemirror-model';
+import {NodeSpec} from 'prosemirror-model';
 
 const CSS_ROTATE_PATTERN = /rotate\(([0-9.]+)rad\)/i;
 const EMPTY_CSS_VALUE = new Set(['0%', '0pt', '0px']);
@@ -28,24 +28,28 @@ export function getCropRotate(
       !EMPTY_CSS_VALUE.has(marginTop)
     ) {
       crop = {
-        width: parseInt(ps.width, 10) || 0,
-        height: parseInt(ps.height, 10) || 0,
-        left: parseInt(marginLeft, 10) || 0,
-        top: parseInt(marginTop, 10) || 0,
+        width: Number.parseInt(ps.width, 10) || 0,
+        height: Number.parseInt(ps.height, 10) || 0,
+        left: Number.parseInt(marginLeft, 10) || 0,
+        top: Number.parseInt(marginTop, 10) || 0,
       };
     }
     if (ps.transform) {
       // example: `rotate(1.57rad) translateZ(0px)`;
       const mm = CSS_ROTATE_PATTERN.exec(ps.transform);
       if (mm?.[1]) {
-        rotate = parseFloat(mm[1]) || null;
+        rotate = Number.parseFloat(mm[1]) || null;
       }
     }
   }
   return {crop, rotate};
 }
 
-export function getAlign(dom: HTMLElement, cssFloat: string, display: string): string | null{
+export function getAlign(
+  dom: HTMLElement,
+  cssFloat: string,
+  display: string
+): string | null {
   let align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
   if (align) {
     align = /(left|right|center)/.test(align) ? align : null;
@@ -80,13 +84,13 @@ export function getAttrs(dom: string | HTMLElement) {
     align,
     alt: dom.getAttribute('alt'),
     crop,
-    height: parseInt(height, 10) || null,
+    height: Number.parseInt(height, 10) || null,
     rotate,
     src: dom.getAttribute('src'),
     title: dom.getAttribute('title'),
-    width: parseInt(width, 10) || null,
-    marginLeft: parseInt(marginLeft, 10) || null,
-    marginTop: parseInt(marginTop, 10) || null,
+    width: Number.parseInt(width, 10) || null,
+    marginLeft: Number.parseInt(marginLeft, 10) || null,
+    marginTop: Number.parseInt(marginTop, 10) || null,
     id: dom.getAttribute('id'),
   };
 }
@@ -116,4 +120,3 @@ export const VideoNodeSpec: NodeSpec = {
     return ['iframe', newAttrs];
   },
 };
-

@@ -24,14 +24,14 @@ describe('selection observer', () => {
     selectionobserver._observables = [
       {target: elem, selection: 1} as unknown as never,
     ];
-    const spy = jest.spyOn(window, 'getSelection').mockReturnValue(null);
+    const spy = jest.spyOn(globalThis, 'getSelection').mockReturnValue(null);
     expect(selectionobserver.observe(elem)).toBeUndefined();
     spy.mockReset();
   });
   it('should handle observe', () => {
     selectionobserver._callback = () => undefined;
     const elem = document.createElement('div');
-    const spy = jest.spyOn(window, 'getSelection').mockReturnValue({
+    const spy = jest.spyOn(globalThis, 'getSelection').mockReturnValue({
       rangeCount: 1,
       getRangeAt: () => ({startContainer: elem}),
     } as unknown as Selection);

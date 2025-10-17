@@ -17,7 +17,7 @@
     "lint:css": "stylelint \"**/*.css\" --fix",
     "lint": "npm run lint:css & npm run lint:ts",
     "ci:build": "tsc --build && copyfiles --up 1 \"src/**/*.css\" dist  && copyfiles package.json LICENSE dist && copyfiles --up 1 \"src/fonts/**\" dist && copyfiles --up 1 \"src/assets/**\" dist",
-    "ci:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
+    "ci:bom": "npx cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
     "test": "jest --coverage",
@@ -36,7 +36,6 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@cyclonedx/cyclonedx-npm": "^4.0.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -73,9 +72,6 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "url": "^0.11.4"
-  },
-  "overrides": {
-    "libxmljs2": "^1.0.0"
   },
   "importSort": {
     ".js": {
