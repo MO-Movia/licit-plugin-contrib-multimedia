@@ -1,4 +1,3 @@
-import nullthrows from 'nullthrows';
 import {Plugin, PluginKey, EditorState, TextSelection} from 'prosemirror-state';
 import {Decoration, DecorationSet, EditorView} from 'prosemirror-view';
 import {uuid} from '../ui/uuid';
@@ -48,15 +47,16 @@ function defer(fn: () => void) {
 
 export function uploadImageFiles(
   view: customEditorView,
-  files: Array<File>,
-  coords: { x: number, y: number }
+  files: File[],
+  coords?: { x: number; y: number }
 ): boolean {
-  const {runtime, state, readOnly, disabled} = view;
-  const {schema, plugins} = state;
+  const { runtime, state, readOnly, disabled } = view;
+  const { schema, plugins } = state;
   const imageType = schema?.nodes?.[IMAGE];
-  const {uploadImage, canUploadImage} = runtime;
+  const { uploadImage, canUploadImage } = runtime;
   const imageFiles = Array.from(files).filter(isImageFileType);
   const placeholderPlugin = plugins.find(isImageUploadPlaceholderPlugin);
+
   if (
     readOnly ||
     disabled ||
@@ -70,72 +70,63 @@ export function uploadImageFiles(
     return false;
   }
 
-  // A fresh object to act as the ID for this upload.
-  const id = {
-    debugId: 'image_upload_' + uuid(),
+  const id = { debugId: 'image_upload_' + uuid() };
+
+  const uploadNext = () => {
+    if (!imageFiles.length) return;
+
+    const file = imageFiles.shift();
+    if (!file) return;
+
+    uploadImage(file)
+      .then((imageInfo: { src: string }) => {
+        const pos = findImageUploadPlaceholder(placeholderPlugin, view.state, id);
+        let trNext = view.state.tr;
+
+        if (pos && !view.readOnly && !view.disabled) {
+          const imageNode = imageType.create(imageInfo);
+          trNext = trNext.replaceWith(pos.from, pos.to, imageNode);
+        } else {
+          // Upload cancelled
+          imageFiles.length = 0;
+        }
+
+        if (imageFiles.length) {
+          uploadNext();
+        } else {
+          // Remove placeholder when done
+          trNext = trNext.setMeta(placeholderPlugin, { remove: { id } });
+        }
+
+        view.dispatch(trNext);
+      })
+      .catch(() => {
+        // Treat errors as cancelled uploads
+        uploadNext();
+      });
   };
 
-  const uploadNext = defer(() => {
-    const done = (imageInfo: {src: string}) => {
-      const pos = findImageUploadPlaceholder(placeholderPlugin, view.state, id);
-      let trNext = view.state.tr;
-      if (pos && !view.readOnly && !view.disabled) {
-        const imageNode = imageType.create(imageInfo);
-        trNext = trNext.replaceWith(pos.from, pos.to, imageNode);
-      } else {
-        // Upload was cancelled.
-        imageFiles.length = 0;
-      }
-      if (imageFiles.length) {
-        uploadNext();
-      } else {
-        // Remove the placeholder.
-        trNext = trNext.setMeta(placeholderPlugin, {remove: {id}});
-      }
-      view.dispatch(trNext);
-    };
-    const ff = nullthrows(imageFiles.shift());
-    uploadImage(ff)
-      .then(done)
-      .catch(done.bind(null, {src: null}));
-  });
+  defer(uploadNext);
 
-  uploadNext();
-
-  let {tr} = state;
-
-  // Replace the selection with a placeholder
+  let { tr } = state;
   let from = 0;
 
-  // Adjust the cursor to the dropped position.
   if (coords) {
-    const dropPos = view.posAtCoords({
-      left: coords.x,
-      top: coords.y,
-    });
-
-    if (!dropPos) {
-      return false;
-    }
-
+    const dropPos = view.posAtCoords({ left: coords.x, top: coords.y });
+    if (!dropPos) return false;
     from = dropPos.pos;
-    tr = tr.setSelection(TextSelection.create(tr.doc, from, from));
   } else {
     from = tr.selection.to;
-    tr = tr.setSelection(TextSelection.create(tr.doc, from, from));
   }
-  const meta = {
-    add: {
-      id,
-      pos: from,
-    },
-  };
 
+  tr = tr.setSelection(TextSelection.create(tr.doc, from, from));
+
+  const meta = { add: { id, pos: from } };
   tr = tr.setMeta(placeholderPlugin, meta);
   view.dispatch(tr);
+
   return true;
 }
-
 // https://prosemirror.net/examples/upload/
 export class ImageUploadPlaceholderPlugin extends Plugin {
   constructor() {

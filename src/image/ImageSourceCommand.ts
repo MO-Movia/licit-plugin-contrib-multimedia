@@ -5,7 +5,7 @@ import {EditorView} from 'prosemirror-view';
 import React from 'react';
 import {
   hideCursorPlaceholder,
-  showCursorPlaceholder,
+  showCursorPlaceholder
 } from '../CursorPlaceholderPlugin';
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {createPopUp, PopUpHandle} from '@modusoperandi/licit-ui-commands';

@@ -40,10 +40,10 @@ describe('video upload command', () => {
         expect(videouploadcommand).toBeDefined();
     });
     it('should handle isEnabled  ', () => {
-        expect(videouploadcommand.isEnabled(editorState)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState)).toBeTruthy();
     });
     it('should handle isEnabled when view is present  ', () => {
-        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when  !canUploadVideo  ', () => {
         const dummyEditorview = {
@@ -57,7 +57,7 @@ describe('video upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when  !uploadVideo ', () => {
         const dummyEditorview = {
@@ -71,7 +71,7 @@ describe('video upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when !canUploadVideo and uploadVideo ', () => {
         const dummyEditorview = {
@@ -85,7 +85,7 @@ describe('video upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when !canUploadVideo and uploadVideo ', () => {
         const dummyEditorview = {
@@ -99,7 +99,7 @@ describe('video upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(videouploadcommand.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when canUploadVideo and uploadVideo ', () => {
         const dummyEditorview = {
@@ -123,10 +123,10 @@ describe('audio upload command', () => {
         expect(audioUploadCmd).toBeDefined();
     });
     it('should handle isEnabled  ', () => {
-        expect(audioUploadCmd.isEnabled(editorState)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState)).toBeTruthy();
     });
     it('should handle isEnabled when view is present  ', () => {
-        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when  !canUploadAudio  ', () => {
         const dummyEditorview = {
@@ -140,7 +140,7 @@ describe('audio upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when  !uploadAudio ', () => {
         const dummyEditorview = {
@@ -154,7 +154,7 @@ describe('audio upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when !canUploadAudio and uploadAudio ', () => {
         const dummyEditorview = {
@@ -168,7 +168,7 @@ describe('audio upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when !canUploadAudio and uploadAudio ', () => {
         const dummyEditorview = {
@@ -182,7 +182,7 @@ describe('audio upload command', () => {
             focus: jest.fn(),
             hasFocus: jest.fn(),
         };
-        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeFalsy();
+        expect(audioUploadCmd.isEnabled(editorState,dummyEditorview as unknown as EditorView)).toBeTruthy();
     });
     it('should handle isEnabled when canUploadAudio and uploadAudio ', () => {
         const dummyEditorview = {

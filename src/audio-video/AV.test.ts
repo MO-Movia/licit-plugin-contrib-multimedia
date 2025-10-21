@@ -7,7 +7,8 @@ import VideoEditor, {
   AVEditorProps,
 } from '../ui/audio-video/AVEditor';
 import VideoSourceCommand, { insertIFrame } from './AVSourceCommand';
-import CursorPlaceholderPlugin, {
+import  {
+  CursorPlaceholderPlugin,
   showCursorPlaceholder,
   hideCursorPlaceholder,
   specFinder,

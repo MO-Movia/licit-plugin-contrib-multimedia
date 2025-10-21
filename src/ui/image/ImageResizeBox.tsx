@@ -1,45 +1,36 @@
 import cx from 'classnames';
-import nullthrows from 'nullthrows';
 import React from 'react';
-
-import {clamp} from '@modusoperandi/licit-ui-commands';
-import {uuid} from '../uuid';
-import {FP_WIDTH} from '../../Constants';
+import { clamp } from '@modusoperandi/licit-ui-commands';
+import { uuid } from '../uuid';
+import { FP_WIDTH } from '../../Constants';
 
 type Props = {
   height: number;
-  onResizeEnd: (w: number, height: number) => void;
-  src: string;
   width: number;
+  src: string;
   fitToParent: boolean;
+  onResizeEnd: (width: number, height: number) => void;
 };
 
 export const MIN_SIZE = 20;
 export const MAX_SIZE = 10000;
 
+// Resize functions
 function setWidth(el: HTMLElement, width: number, fitToParent: boolean): void {
   el.style.width = fitToParent ? FP_WIDTH : width + 'px';
 }
 
-function setHeight(
-  el: HTMLElement,
-  height: number,
-  _fitToParent: boolean
-): void {
+function setHeight(el: HTMLElement, height: number): void {
   el.style.height = height + 'px';
 }
 
-function setSize(
-  el: HTMLElement,
-  width: number,
-  height: number,
-  fitToParent: boolean
-): void {
+function setSize(el: HTMLElement, width: number, height: number, fitToParent: boolean): void {
   el.style.width = fitToParent ? FP_WIDTH : Math.round(width) + 'px';
   el.style.height = Math.round(height) + 'px';
 }
 
-const ResizeDirection = {
+// Mapping resize directions to functions
+const ResizeDirection: Record<string, Function> = {
   top: setHeight,
   top_right: setSize,
   right: setWidth,
@@ -49,88 +40,82 @@ const ResizeDirection = {
   left: setWidth,
   top_left: setSize,
 };
-type ImageResizwBoxProps = {
-  boxID: string;
-  config;
-  direction: string;
-  height: number;
-  onResizeEnd: (w: number, height: number) => void;
-  width: number;
-  fitToParent: boolean;
-};
-export class ImageResizeBoxControl extends React.PureComponent {
-  declare props: ImageResizwBoxProps;
 
+// Props for individual resize control
+type ImageResizeBoxControlProps = {
+  boxID: string;
+  direction: string;
+  width: number;
+  height: number;
+  fitToParent: boolean;
+  onResizeEnd: (w: number, h: number) => void;
+};
+
+export class ImageResizeBoxControl extends React.PureComponent<ImageResizeBoxControlProps> {
   _active = false;
-  _el = null;
-  _h = '';
-  _rafID = 0;
-  _w = '';
+  _el: HTMLElement | null = null;
+  _rafID: number | null = null;
+
   _x1 = 0;
-  _x2 = 0;
   _y1 = 0;
+  _x2 = 0;
   _y2 = 0;
   _ww = 0;
   _hh = 0;
+  _w = '';
+  _h = '';
 
   componentWillUnmount(): void {
     this._end();
   }
 
   render(): React.ReactElement {
-    const {direction} = this.props;
-
-    const className = cx({
-      'molm-czi-image-resize-box-control': true,
-      [direction]: true,
-    });
-
+    const { direction } = this.props;
+    const className = cx('molm-czi-image-resize-box-control', direction);
     return <span className={className} onMouseDown={this._onMouseDown} />;
   }
 
   _syncSize = (): void => {
-    if (!this._active) {
-      return;
-    }
-    const {direction, width, height} = this.props;
+    if (!this._active || !this._el) return;
 
+    const { direction, width, height, fitToParent } = this.props;
     const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
     const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
 
-    const el = nullthrows(this._el);
-    const fn = nullthrows(ResizeDirection[direction]);
+    const fn = ResizeDirection[direction];
+    if (!fn) return;
+
     const aspect = width / height;
     let ww = clamp(MIN_SIZE, width + Math.round(dx), MAX_SIZE);
     let hh = clamp(MIN_SIZE, height + Math.round(dy), MAX_SIZE);
 
     if (fn === setSize) {
-      hh = Math.max(ww / aspect, MIN_SIZE);
+      hh = clamp(MIN_SIZE, Math.max(ww / aspect, MIN_SIZE), MAX_SIZE);
       ww = hh * aspect;
     }
 
-    fn(el, Math.round(ww), Math.round(hh), this.props.fitToParent);
+    fn(this._el, Math.round(ww), Math.round(hh), fitToParent);
     this._ww = ww;
     this._hh = hh;
   };
 
   _start(e: React.MouseEvent): void {
-    if (this._active) {
-      this._end();
-    }
+    if (this._active) this._end();
 
     this._active = true;
+    const { boxID, direction, width, height } = this.props;
+    const el = document.getElementById(boxID);
+    if (!el) return;
 
-    const {boxID, direction, width, height} = this.props;
-    const el = nullthrows(document.getElementById(boxID));
-    el.className += ' ' + direction;
+    el.classList.add(direction);
 
     this._el = el;
     this._x1 = e.clientX;
     this._y1 = e.clientY;
     this._x2 = this._x1;
     this._y2 = this._y1;
-    this._w = this._el.style.width;
-    this._h = this._el.style.height;
+    this._w = el.style.width;
+    this._h = el.style.height;
     this._ww = width;
     this._hh = height;
 
@@ -139,22 +124,24 @@ export class ImageResizeBoxControl extends React.PureComponent {
   }
 
   _end(): void {
-    if (!this._active) {
-      return;
-    }
+    if (!this._active) return;
 
     this._active = false;
+
     document.removeEventListener('mousemove', this._onMouseMove, true);
     document.removeEventListener('mouseup', this._onMouseUp, true);
 
-    const el = nullthrows(this._el);
-    el.style.width = this._w;
-    el.style.height = this._h;
-    el.className = 'molm-czi-image-resize-box';
-    this._el = null;
+    if (this._el) {
+      this._el.style.width = this._w;
+      this._el.style.height = this._h;
+      this._el.className = 'molm-czi-image-resize-box';
+      this._el = null;
+    }
 
-    this._rafID && cancelAnimationFrame(this._rafID);
-    this._rafID = null;
+    if (this._rafID) {
+      cancelAnimationFrame(this._rafID);
+      this._rafID = null;
+    }
   }
 
   _onMouseDown = (e: React.MouseEvent): void => {
@@ -178,52 +165,41 @@ export class ImageResizeBoxControl extends React.PureComponent {
     this._x2 = e.clientX;
     this._y2 = e.clientY;
 
-    const {direction} = this.props;
-    const el = nullthrows(this._el);
-    el.classList.remove(direction);
+    const { direction, onResizeEnd } = this.props;
+    if (this._el) this._el.classList.remove(direction);
 
     this._end();
-    this.props.onResizeEnd(this._ww, this._hh);
+    onResizeEnd(this._ww, this._hh);
   };
 }
 
-export class ImageResizeBox extends React.PureComponent {
-  declare props: Props;
-
+export class ImageResizeBox extends React.PureComponent<Props> {
   _id = uuid();
 
   render(): React.ReactElement {
-    const {onResizeEnd, width, height, src, fitToParent} = this.props;
+    const { width, height, src, fitToParent, onResizeEnd } = this.props;
 
     const style: React.CSSProperties = {
-      height: height + 'px',
       width: fitToParent ? FP_WIDTH : width + 'px',
+      height: height + 'px',
+      padding: fitToParent ? '0' : undefined,
+      margin: fitToParent ? '0' : undefined,
     };
 
-    if (fitToParent) {
-      style.padding = '0';
-      style.margin = '0';
-    }
-
-    const boxID = this._id;
-
-    const controls = Object.keys(ResizeDirection).map((key) => {
-      return (
-        <ImageResizeBoxControl
-          boxID={boxID}
-          config={ResizeDirection[key]}
-          direction={key}
-          fitToParent={fitToParent}
-          height={height}
-          key={key}
-          onResizeEnd={onResizeEnd}
-          width={width}
-        />
-      );
-    });
+    const controls = Object.keys(ResizeDirection).map((key) => (
+      <ImageResizeBoxControl
+        key={key}
+        boxID={this._id}
+        direction={key}
+        width={width}
+        height={height}
+        fitToParent={fitToParent}
+        onResizeEnd={onResizeEnd}
+      />
+    ));
 
     return (
-      <span className="molm-czi-image-resize-box" id={boxID} style={style}>
+      <span className="molm-czi-image-resize-box" id={this._id} style={style}>
         {controls}
         <img className="molm-czi-image-resize-box-image" src={src} />
       </span>

@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import nullthrows from 'nullthrows';
 import * as React from 'react';
 
 import { clamp } from '@modusoperandi/licit-ui-commands';
@@ -178,7 +177,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
   };
 }
 
-class VideoResizeBox extends React.PureComponent {
+export class VideoResizeBox extends React.PureComponent {
  declare props: AVResizeProps;
 
   _id = uuid();

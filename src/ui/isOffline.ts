@@ -1,4 +1,4 @@
-export  function isOffline(): boolean {
+export default  function isOffline(): boolean {
   if (Object.prototype.hasOwnProperty.call(window.navigator, 'onLine')) {
     return !window.navigator.onLine;
   }

@@ -1,5 +1,4 @@
 import ResizeObserver from 'resize-observer-polyfill';
-import nullthrows from 'nullthrows';
 
 // flow type copied from
 // https://github.com/que-etc/resize-observer-polyfill/blob/master/src/index.js.flow
@@ -48,51 +47,48 @@ function handleResizeObserverEntry(entry: ResizeObserverEntry): void {
 
 export function observe(
   node: HTMLElement,
-  callback: (ResizeObserverEntry) => void
+  callback: (entry: ResizeObserverEntry) => void
 ): void {
   const el = node;
   const observer = instance || (instance = new ResizeObserver(onResizeObserve));
+
   if (nodesObserving.has(el)) {
-    // Already observing node.
-    const callbacks = nullthrows(nodesObserving.get(el));
-    callbacks.push(callback);
+    // Node is already being observed, just add the new callback
+    const callbacks = nodesObserving.get(el);
+    if (callbacks) {
+      callbacks.push(callback);
+    }
   } else {
-    const callbacks = [callback];
-    nodesObserving.set(el, callbacks);
+    // First time observing this node
+    nodesObserving.set(el, [callback]);
     observer.observe(el);
   }
 }
 
 export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
   const observer = instance;
-  if (!observer) {
-    return;
-  }
+  if (!observer) return;
+
   const el = node;
   observer.unobserve(el);
 
   if (callback) {
-    // Remove the passed in callback from the callbacks of the observed node
-    // And, if no more callbacks then stop observing the node
-    const callbacks = nodesObserving.has(el)
-      ? nullthrows(nodesObserving.get(el)).filter((cb) => cb !== callback)
-      : null;
-    if (callbacks?.length) {
-      nodesObserving.set(el, callbacks);
-    } else {
-      nodesObserving.delete(el);
+    const existingCallbacks = nodesObserving.get(el);
+    if (existingCallbacks) {
+      const filteredCallbacks = existingCallbacks.filter(cb => cb !== callback);
+      if (filteredCallbacks.length > 0) {
+        nodesObserving.set(el, filteredCallbacks);
+      } else {
+        nodesObserving.delete(el);
+      }
     }
   } else {
-    // Delete all callbacks for the node.
+    // Remove all callbacks if no specific one is provided
     nodesObserving.delete(el);
   }
 
-  if (!nodesObserving.size) {
-    // We have nothing to observe. Stop observing, which stops the
-    // ResizeObserver instance from receiving notifications of
-    // DOM resizing. Until the observe() method is used again.
-    // According to specification a ResizeObserver is deleted by the garbage
-    // collector if the target element is deleted.
+  // Disconnect the observer if no nodes are left
+  if (nodesObserving.size === 0) {
     observer.disconnect();
     instance = null;
   }

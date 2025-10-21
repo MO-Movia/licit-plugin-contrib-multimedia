@@ -1,6 +1,6 @@
 import url from 'url';
 
-import {isOffline} from '../isOffline';
+import  isOffline   from '../isOffline';
 
 export type ImageResult = {
   complete: boolean;

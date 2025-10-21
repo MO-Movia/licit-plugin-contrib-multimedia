@@ -25,26 +25,24 @@
   },
   "peerDependencies": {
     "uuid": "^9.0.0",
-    "@modusoperandi/licit-ui-commands": "^1.0.0",
+	  "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-1.0.3.tgz",
+    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-1.0.9.tgz",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "prosemirror-model": "^1.16.0"
   },
   "dependencies": {
     "axios": "^1.1.3"
   },
   "devDependencies": {
-    "@cfaester/enzyme-adapter-react-18": "^0.8.0",
     "@cyclonedx/bom": "^4.0.3",
-    "@testing-library/dom": "^10.0.0",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^15.0.2",
-    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.11.17",
     "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "copyfiles": "^2.4.1",
-    "enzyme": "^3.11.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.26.0",
@@ -57,20 +55,21 @@
     "jest-environment-jsdom": "^29.2.0",
     "jest-json": "^2.0.0",
     "jest-junit": "^16.0.0",
-    "jest-prosemirror": "^2.0.0",
+    "jest-prosemirror": "^3.0.1",
     "jest-sonar-reporter": "^2.0.0",
+    "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-1.0.3.tgz",
+    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-1.0.9.tgz",
     "lint-staged": "^15.2.1",
     "prettier": "^3.0.0",
-    "react-test-renderer": "^18.2.0",
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^4.0.0",
     "stylelint": "^16.2.1",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-prettier": "^5.0.0",
     "text-encoding": "^0.7.0",
-    "ts-jest": "^29.0.3",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.3",
+    "ts-jest": "^29.4.1",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.9.2",
     "url": "^0.11.0"
   },
   "overrides": {
@@ -91,7 +90,7 @@
     "*.css": [
       "stylelint --fix"
     ],
-    "!(*test|*.setup).ts": [
+    "!(*test|*.setup).js": [
       "eslint --fix"
     ],
     "*.json": [

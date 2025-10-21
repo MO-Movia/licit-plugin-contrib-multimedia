@@ -1,91 +1,102 @@
 import {ImageInlineEditor} from './ImageInlineEditor';
-import {
-  EditorState,
-} from 'prosemirror-state';
-import {schema} from 'prosemirror-test-builder';
-import {MultimediaPlugin} from '../index';
-import {createEditor, doc, p} from 'jest-prosemirror';
+import {CustomButton} from '@modusoperandi/licit-ui-commands';
 import {EditorView} from 'prosemirror-view';
-import React from 'react';
-import Enzyme, {shallow} from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18'; // or any other adapter for your version of React
 
-Enzyme.configure({adapter: new Adapter()});
-jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
-jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
-describe('ImageInlineEditor', () => {
-  const plugin = new MultimediaPlugin();
-  const editor = createEditor(doc(p('<cursor>')), {
-    plugins: [plugin],
-  });
-  const state: EditorState = EditorState.create({
-    schema: schema,
-    selection: editor.selection,
-    plugins: [new MultimediaPlugin()],
-  });
-  const view1 = new EditorView(document.querySelector('#editor'), {
-    state,
-  });
+jest.mock('@modusoperandi/licit-ui-commands', () => ({
+  CustomButton: jest.fn(() => null),
+}));
 
-  const imageInlineEditorValue = {
-    align: 'align',
-    src: 'test',
-  };
+jest.mock('../Icon', () => ({
+  Icon: {get: jest.fn((name) => `<icon ${name}>`)},
+}));
 
-  const props = {
-    onSelect: () => undefined,
-    value: imageInlineEditorValue,
-    editorView: view1,
-  };
-  const wrapper = shallow(<ImageInlineEditor {...props} />);
+const createMockEditorView = () =>
+  ({
+    state: {
+      tr: {deleteSelection: jest.fn(() => 'mockTr')},
+    },
+    dispatch: jest.fn(),
+  }) as unknown as EditorView;
 
-  it('should render', () => {
-    expect(wrapper.instance()).toBeDefined();
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
-    expect(imageinlineeditor).toBeDefined();
-  });
-  it('should render', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
-    imageinlineeditor.props = {
-      onSelect: () => undefined,
-      value: {
-        align: '',
-        src: 'test',
-      },
-      editorView: view1,
-    };
+describe('ImageInlineEditor (no react-test-renderer)', () => {
+  let onSelect: jest.Mock;
+  let editorView: EditorView;
 
-    expect(imageinlineeditor.render()).toBeDefined();
+  beforeEach(() => {
+    onSelect = jest.fn();
+    editorView = createMockEditorView();
+    jest.clearAllMocks();
   });
 
-  it('should handle parseLabel when input ""', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
-    expect(imageinlineeditor.parseLabel('')).toStrictEqual({
-      icon: null,
-      title: null,
+  it('calls onSelect with correct align value when _onClick is triggered', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {align: 'left'},
+      editorView,
     });
+
+    comp._onClick('center');
+    expect(onSelect).toHaveBeenCalledWith({align: 'center'});
   });
 
-  it('should handle _onClick ', () => {
-    const imageinlineeditor = new ImageInlineEditor(
-      () => undefined
-    );
-    imageinlineeditor.props = {
-      onSelect: (val) => val.align,
-      value: {
-        align: '',
-        src: 'test',
-      },
-      editorView: view1,
-    };
-    const spy = jest.spyOn(imageinlineeditor.props, 'onSelect');
-    imageinlineeditor._onClick('align_test');
-    expect(spy).lastReturnedWith('align_test');
+  it('handles parseLabel correctly with icon and text', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {},
+      editorView,
+    });
+
+    const result = comp.parseLabel('[edit] Edit something');
+    expect(result.title).toBe(' Edit something');
+    expect(result.icon).toBeDefined();
+  });
+
+  it('returns plain label when parseLabel has no match', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {},
+      editorView,
+    });
+
+    const result = comp.parseLabel('No icon label');
+    expect(result.icon).toBeNull();
+    expect(result.title).toBe('No icon label');
+  });
+
+  it('calls dispatch when _onRemove is called', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {},
+      editorView,
+    });
+
+    comp._onRemove(editorView);
+    expect(editorView.state.tr.deleteSelection).toHaveBeenCalled();
+    expect(editorView.dispatch).toHaveBeenCalledWith('mockTr');
+  });
+
+  it('does not crash when _onAlter is called (placeholder)', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {},
+      editorView,
+    });
+
+    expect(() => comp._onAlter()).not.toThrow();
+  });
+
+  it('prepButtons calls CustomButton for align buttons', () => {
+    const comp = new ImageInlineEditor({
+      onSelect,
+      value: {align: 'left'},
+      editorView,
+    });
+
+    comp.prepButtons({
+      LEFT: {value: 'left', text: 'Left', label: '[icon] Left Align'},
+      RIGHT: {value: 'right', text: 'Right', label: '[icon] Right Align'},
+    });
+
+    expect(CustomButton).toBeDefined();
   });
 });

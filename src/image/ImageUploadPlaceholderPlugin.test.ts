@@ -4,11 +4,11 @@ import { EditorState } from 'prosemirror-state';
 import { createEditor, doc, p } from 'jest-prosemirror';
 
 import { EditorView } from 'prosemirror-view';
-import { MultimediaPlugin } from './index';
+import { MultimediaPlugin } from '../../src/index';
 import { schema } from 'prosemirror-test-builder';
 
-jest.mock('../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
-jest.mock('../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/images/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/images/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 describe('image upload place holder plugin', () => {
   const plugin = new MultimediaPlugin();
   const editor = createEditor(doc(p('<cursor>')), {

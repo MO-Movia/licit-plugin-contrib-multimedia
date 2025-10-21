@@ -1,14 +1,11 @@
 import {EditorState} from 'prosemirror-state';
 import {builders} from 'prosemirror-test-builder';
-import Enzyme from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import {schema} from 'jest-prosemirror';
 import {MultimediaPlugin} from '../index';
 import {Icon} from './Icon';
 
-Enzyme.configure({adapter: new Adapter()});
-jest.mock('../../src/assets/theme_icons/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
-jest.mock('../../src/assets/theme_icons/light/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/images/dark/Icon_Multi-media.svg', () => 'Icon SVG content');
+jest.mock('../../src/assets/images/light/Icon_Multi-media.svg', () => 'Icon SVG content');
 describe('initialize icon', () => {
   const plugin = new MultimediaPlugin();
   const effSchema = plugin.getEffectiveSchema(schema);
