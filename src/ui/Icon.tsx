@@ -3,12 +3,7 @@ import React from 'react';
 
 import {canUseCSSFont} from './canUseCSSFont';
 
-
-// [FS] IRAD-1061 2020-09-19
-// Now loaded locally, so that it work in closed network as well.
-//import injectStyleSheet from './injectStyleSheet';
-
-const VALID_CHARS = /[a-z_]+/;
+const VALID_CHARS = /[a-z_]{1,100000000}/;
 const cached = {};
 
 const CSS_CDN_URL = '//fonts.googleapis.com/icon?family=Material+Icons';
@@ -19,7 +14,6 @@ const CSS_FONT = 'Material Icons';
   const fontSupported = await canUseCSSFont(CSS_FONT);
   if (!fontSupported) {
     console.info('Add CSS from ', CSS_CDN_URL);
-    // [FS] IRAD-1061 2020-09-19
     // Now loaded locally, so that it work in closed network as well.
     //injectStyleSheet(CSS_CDN_URL);
   }

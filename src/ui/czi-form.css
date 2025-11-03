@@ -1,19 +1,18 @@
-@import url("./czi-vars.css");
+@import url('./czi-vars.css');
 
 .molm-czi-form {
-  background: var(--czi-bg);
+  background: #fff;
   border: none;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   margin: 0;
   padding: 20px;
-  color: var(--czi-text-color);
 }
 
 .molm-czi-form legend {
   border: none;
   font-size: var(--czi-content-font-size-h2);
-  margin-top: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 0;
   user-select: none;
 }
@@ -33,7 +32,7 @@
   padding: 0;
 }
 
-.molm-czi-form input[type="text"] {
+.molm-czi-form input[type='text'] {
   border-width: 0 0 2px;
   border-color: var(--czi-border-blue);
   box-sizing: border-box;
@@ -48,7 +47,7 @@
 }
 
 .molm-czi-form em {
-  color: var(--czi-text-color);
+  color: var(--czi-color-grey-200);
   display: block;
   font-size: var(--czi-font-size-small);
   font-style: normal;

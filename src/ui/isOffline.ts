@@ -1,6 +1,6 @@
-export default  function isOffline(): boolean {
-  if (Object.prototype.hasOwnProperty.call(window.navigator, 'onLine')) {
-    return !window.navigator.onLine;
+export function isOffline(): boolean {
+  if (Object.hasOwn(globalThis.navigator, 'onLine')) {
+    return !globalThis.navigator.onLine;
   }
   return false;
 }

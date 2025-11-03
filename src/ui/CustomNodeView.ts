@@ -1,14 +1,14 @@
 import {Node} from 'prosemirror-model';
 import {Decoration, EditorView, NodeView} from 'prosemirror-view';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {EditorVideoRuntime} from '../Types';
+import {EditorRuntime, EditorVideoRuntime} from '../Types';
 
 import {SelectionObserver} from './SelectionObserver';
+import {createRoot, Root} from 'react-dom/client';
 
 export type EditorFocused = EditorView & {
   focused: boolean;
-  runtime: EditorVideoRuntime;
+  runtime: EditorRuntime & EditorVideoRuntime;
   readOnly?: boolean;
 };
 export type NodeViewProps = {
@@ -16,6 +16,7 @@ export type NodeViewProps = {
   editorView: EditorFocused;
   getPos: () => number;
   node: Node;
+  dom: Element;
   selected: boolean;
   focused: boolean;
 };
@@ -46,11 +47,12 @@ export function onMutation(_mutations, observer: MutationObserver): void {
     const el: Element = view.dom;
     if (!root.contains(el)) {
       mountedViews.delete(view);
-      ReactDOM.unmountComponentAtNode(el);
     }
   }
 
-  mountingViews.forEach((view) => mountedViews.add(view));
+  for (const view of mountingViews) {
+    mountedViews.add(view);
+  }
 
   if (mountedViews.size === 0) {
     observer.disconnect();
@@ -60,14 +62,14 @@ export function onMutation(_mutations, observer: MutationObserver): void {
 // Workaround to get in-selection views selected.
 // See https://discuss.prosemirror.net/t/copy-selection-issue-with-the-image-node/1673/2;
 export function onSelection(_entries: [], observer: SelectionObserver): void {
-  if (!window.getSelection) {
-    console.warn('window.getSelection() is not supported');
+  if (!globalThis.getSelection) {
+    console.warn('globalThis.getSelection() is not supported');
     observer.disconnect();
     return;
   }
 
-  const selection = window.getSelection();
-  if (!selection.containsNode) {
+  const selection = globalThis.getSelection();
+  if (!selection?.containsNode) {
     console.warn('selection.containsNode() is not supported');
     observer.disconnect();
     return;
@@ -98,7 +100,7 @@ export class CustomNodeView implements NodeView {
   dom: HTMLElement;
   _onClick: () => void;
   props: NodeViewProps;
-
+  reactRoot: Root | null = null; // Declare reactRoot
   _selected: boolean;
 
   constructor(
@@ -112,19 +114,20 @@ export class CustomNodeView implements NodeView {
       editorView,
       getPos,
       node,
+      dom: undefined,
       selected: false,
       focused: false,
     };
-
-    pendingViews.add(this);
-
     // The editor will use this as the node's DOM representation
     const dom = this.createDOMElement();
     this.dom = dom;
     dom.onclick = this._onClick;
+    this.props.dom = dom;
 
+    this.reactRoot = null; // To store the root instance
+
+    pendingViews.add(this);
     if (pendingViews.size === 1) {
-      // [FS] IRAD-1060 2020-09-10
       // Observe the editorview's dom insteadof root document so that
       // if multiple instances of editor in a page shouldn't cross-talk
       mutationObserver.observe(/*document*/ editorView.dom, {
@@ -178,16 +181,22 @@ export class CustomNodeView implements NodeView {
     // Called when the node view is removed from the editor or the whole
     // editor is destroyed.
     // sub-class may override this method.
-    // [FS] IRAD-1555 2021-09-13
     // When destroying the node view, remove from the set.
     // FIX: This solves the image missing issue.
     pendingViews.delete(this);
+    this.cleanup();
   }
 
-  __renderReactComponent(callback?: () => void): void {
+  cleanup() {
+    if (this.reactRoot) {
+      this.reactRoot = null; // Reset reactRoot
+    }
+  }
+
+  __renderReactComponent(): void {
     const {editorView, getPos} = this.props;
 
-    if (editorView.state?.selection) {
+    if (editorView?.state?.selection) {
       const {from} = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
@@ -196,7 +205,10 @@ export class CustomNodeView implements NodeView {
       this.props.selected = false;
       this.props.focused = false;
     }
+    if (!this.reactRoot) {
+      this.reactRoot = createRoot(this.dom); // Initialize reactRoot
+    }
 
-    ReactDOM.render(this.renderReactComponent(), this.dom, callback);
+    this.reactRoot.render(this.renderReactComponent());
   }
 }

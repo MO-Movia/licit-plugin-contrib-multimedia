@@ -7,7 +7,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "lib": [
-      "es2017",
+      "es2022",
       "dom",
       "dom.Iterable"
     ],
@@ -15,15 +15,8 @@
     "pretty": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "jest",
-      "node",
-      "jest-prosemirror"
-    ],
     // Ensure that .d.ts files are created by tsc, but not .js files
-    "declaration": true,
-    // Ensure that Babel can safely transpile files in the TypeScript project
-    "isolatedModules": true,
+    "declaration": true
   },
   "typeAcquisition": {
     "enable": true

@@ -16,19 +16,9 @@ type Callback = (
 const EMPTY_SELECTION_VALUE = Object.freeze({from: 0, to: 0});
 
 function getSelectionRange(): Range | undefined {
-  if (!window.getSelection) {
-    console.warn('window.getSelection() is not supported');
-    return undefined;
-  }
-
-  const selection = window.getSelection();
+  const selection = getSelection();
   if (!selection) {
     console.warn('selection not found');
-    return undefined;
-  }
-
-  if (!selection.containsNode) {
-    console.warn('selection.containsNode() is not supported');
     return undefined;
   }
 
@@ -60,11 +50,11 @@ function resolveSelectionValue(el: Element): SelectionValue {
   return EMPTY_SELECTION_VALUE;
 }
 
-export  class SelectionObserver {
+export class SelectionObserver {
   _observables: {
     target: Element;
     selection: SelectionValue;
-}[] = [];
+  }[] = [];
   _callback: Callback;
 
   constructor(callback: Callback) {
@@ -81,11 +71,6 @@ export  class SelectionObserver {
   }
 
   observe(el: Element): void {
-    if (!window.getSelection) {
-      console.warn('window.getSelection() is not supported');
-      return;
-    }
-
     if (this._observables.some((obs) => obs.target === el)) {
       // Already observed.
       return;
@@ -123,9 +108,6 @@ export  class SelectionObserver {
     this._observables = this._observables.map((obj) => {
       const {target, selection} = obj;
       const $selection = resolveSelectionValue(target);
-      if (selection === $selection) {
-        return obj;
-      }
       if (
         selection.from === $selection.from &&
         selection.to === $selection.to
@@ -138,6 +120,8 @@ export  class SelectionObserver {
         selection: $selection,
       };
     });
-    changed && callback && callback(this.takeRecords(), this);
+    if (changed && callback) {
+      callback(this.takeRecords(), this);
+    }
   };
 }

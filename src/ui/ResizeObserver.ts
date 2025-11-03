@@ -47,48 +47,45 @@ function handleResizeObserverEntry(entry: ResizeObserverEntry): void {
 
 export function observe(
   node: HTMLElement,
-  callback: (entry: ResizeObserverEntry) => void
+  callback: (ResizeObserverEntry) => void
 ): void {
   const el = node;
   const observer = instance || (instance = new ResizeObserver(onResizeObserve));
-
   if (nodesObserving.has(el)) {
-    // Node is already being observed, just add the new callback
+    // Already observing node.
     const callbacks = nodesObserving.get(el);
-    if (callbacks) {
-      callbacks.push(callback);
-    }
+    callbacks.push(callback);
   } else {
-    // First time observing this node
-    nodesObserving.set(el, [callback]);
+    const callbacks = [callback];
+    nodesObserving.set(el, callbacks);
     observer.observe(el);
   }
 }
 
 export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
   const observer = instance;
-  if (!observer) return;
-
+  if (!observer) {
+    return;
+  }
   const el = node;
   observer.unobserve(el);
 
-  if (callback) {
-    const existingCallbacks = nodesObserving.get(el);
-    if (existingCallbacks) {
-      const filteredCallbacks = existingCallbacks.filter(cb => cb !== callback);
-      if (filteredCallbacks.length > 0) {
-        nodesObserving.set(el, filteredCallbacks);
-      } else {
-        nodesObserving.delete(el);
-      }
-    }
+  // Remove the passed in callback from the callbacks of the observed node
+  // And, if no more callbacks then stop observing the node
+  const callbacks =
+    nodesObserving.get(el)?.filter((cb) => cb !== callback) ?? [];
+  if (callbacks.length > 0) {
+    nodesObserving.set(el, callbacks);
   } else {
-    // Remove all callbacks if no specific one is provided
     nodesObserving.delete(el);
   }
 
-  // Disconnect the observer if no nodes are left
-  if (nodesObserving.size === 0) {
+  if (!nodesObserving.size) {
+    // We have nothing to observe. Stop observing, which stops the
+    // ResizeObserver instance from receiving notifications of
+    // DOM resizing. Until the observe() method is used again.
+    // According to specification a ResizeObserver is deleted by the garbage
+    // collector if the target element is deleted.
     observer.disconnect();
     instance = null;
   }

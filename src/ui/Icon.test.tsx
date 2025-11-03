@@ -27,9 +27,12 @@ describe('initialize icon', () => {
     expect(icon.render()).toBeDefined();
   });
 
-  test.each(['superscript', 'subscript', undefined])('should handle Icon type', type => {
-    const props = {type, title: 'title'};
-    const icon = new Icon(props);
-    expect(icon.render()).toBeDefined();
-  });
+  test.each(['superscript', 'subscript', undefined])(
+    'should handle Icon type',
+    (type) => {
+      const props = {type, title: 'title'};
+      const icon = new Icon(props);
+      expect(icon.render()).toBeDefined();
+    }
+  );
 });
