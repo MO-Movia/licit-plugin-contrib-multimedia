@@ -166,6 +166,9 @@ export class ImageViewBody extends React.PureComponent<
       this._resolveOriginalSize();
     }
     this._renderInlineEditor();
+
+    // Persist display clamping into node attrs when needed.
+    this._syncAttrsToMaxSize();
   }
 
   render(): React.ReactElement {
@@ -191,13 +194,21 @@ export class ImageViewBody extends React.PureComponent<
     );
     width = dimensions.width;
     height = dimensions.height;
-    let scale = 1;
-    if (width > maxSize.width && (!crop || crop.width > maxSize.width)) {
+
+    let displayWidth = width;
+    let displayHeight = height;
+    let displayScale = 1;
+
+    if (
+      displayWidth > maxSize.width &&
+      (!crop || crop.width > maxSize.width)
+    ) {
       // Scale image to fit its containing space.
       // If the image is not cropped.
-      width = maxSize.width;
-      height = width / aspectRatio;
-      scale = maxSize.width / width;
+      const originalWidth = displayWidth;
+      displayWidth = maxSize.width;
+      displayHeight = displayWidth / aspectRatio;
+      displayScale = originalWidth ? maxSize.width / originalWidth : 1;
     }
 
     const className = cx('molm-czi-image-view-body', {
@@ -211,10 +222,10 @@ export class ImageViewBody extends React.PureComponent<
     const resizeBox = this.isUnaltered(active, attrs.cropData, rotate) ? (
       <ImageResizeBox
         fitToParent={this.props.node.attrs['fitToParent']}
-        height={height}
+        height={displayHeight}
         onResizeEnd={this._onResizeEnd}
         src={src}
-        width={width}
+        width={displayWidth}
       />
     ) : null;
 
@@ -222,10 +233,10 @@ export class ImageViewBody extends React.PureComponent<
       backgroundImage: loading ? EMPTY_SRC : undefined,
       backgroundSize: 'cover',
       display: 'inline-block',
-      height: height + 'px',
+      height: displayHeight + 'px',
       left: '0',
       top: '0',
-      width: width + 'px',
+      width: displayWidth + 'px',
       position: 'relative',
     };
 
@@ -238,12 +249,12 @@ export class ImageViewBody extends React.PureComponent<
       clipStyle.display = 'inline-block';
     } else if (crop) {
       const cropped = {...crop};
-      if (scale !== 1) {
-        scale = maxSize.width / cropped.width;
-        cropped.width *= scale;
-        cropped.height *= scale;
-        cropped.left *= scale;
-        cropped.top *= scale;
+      if (displayScale !== 1) {
+        // scale crop coordinates according to displayScale -> preserve relative crop
+        cropped.width *= displayScale;
+        cropped.height *= displayScale;
+        cropped.left *= displayScale;
+        cropped.top *= displayScale;
       }
       clipStyle.width = cropped.width + 'px';
       clipStyle.height = cropped.height + 'px';
@@ -262,12 +273,13 @@ export class ImageViewBody extends React.PureComponent<
 
     const pStyle: React.CSSProperties = {};
     if (this.props.node.attrs['fitToParent']) {
-      width = FP_WIDTH;
+      const fpw = FP_WIDTH;
+      displayWidth = fpw as unknown as number;
       clipStyle.width = FP_WIDTH;
       imageStyle.width = FP_WIDTH;
       pStyle.width = FP_WIDTH;
 
-      pStyle.height = height;
+      pStyle.height = displayHeight;
 
       clipStyle.padding = '0';
       clipStyle.margin = '0';
@@ -293,7 +305,7 @@ export class ImageViewBody extends React.PureComponent<
               alt=""
               className="molm-czi-image-view-body-img"
               data-align={align}
-              height={height}
+              height={displayHeight}
               src={src}
               style={
                 attrs.cropData
@@ -304,7 +316,7 @@ export class ImageViewBody extends React.PureComponent<
                     }
                   : undefined
               }
-              width={width}
+              width={displayWidth}
             />
             {errorView}
           </span>
@@ -487,6 +499,58 @@ export class ImageViewBody extends React.PureComponent<
       },
     });
   };
+
+  _syncAttrsToMaxSize(): void {
+    if (!this._mounted) return;
+
+    const { node, editorView, getPos } = this.props;
+    const { originalSize, maxSize } = this.state;
+
+    // Wait until image loaded and maxSize known
+    if (!originalSize?.complete || !maxSize?.complete) return;
+
+    const attrs = node.attrs || {};
+    const { width: attrW, height: attrH, crop } = attrs;
+
+    // compute aspect ratio from original size
+    const aspectRatio = originalSize.width && originalSize.height
+      ? originalSize.width / originalSize.height
+      : 1;
+
+    let desiredWidth = attrW || originalSize.width || IMAGE_PLACEHOLDER_SIZE;
+    let desiredHeight = attrH || originalSize.height || IMAGE_PLACEHOLDER_SIZE;
+
+    // apply the same clamp rule as render: clamp to maxSize.width when needed
+    if (desiredWidth > maxSize.width && (!crop || crop.width > maxSize.width)) {
+      desiredWidth = maxSize.width;
+      desiredHeight = desiredWidth / aspectRatio;
+    }
+
+    // normalize to integers to avoid float noise
+    desiredWidth = Math.round(desiredWidth);
+    desiredHeight = Math.round(desiredHeight);
+
+    const currentWidth = Number.parseInt(attrW, 10) || null;
+    const currentHeight = Number.parseInt(attrH, 10) || null;
+
+    // only dispatch when different (avoids loops)
+    if (currentWidth !== desiredWidth || currentHeight !== desiredHeight) {
+      const pos = getPos();
+      if (typeof pos === 'number') {
+        const newAttrs = { ...node.attrs, width: desiredWidth, height: desiredHeight, crop: null };
+        let tr = editorView.state.tr.setNodeMarkup(pos, undefined, newAttrs);
+
+        // try to restore selection similar to other updates
+        try {
+          const { selection } = editorView.state;
+          const origSelection = NodeSelection.create(tr.doc, selection.from);
+          tr = tr.setSelection(origSelection);
+        } catch { /* ignore */ }
+
+        editorView.dispatch(tr);
+      }
+    }
+  }
 }
 
 export class ImageNodeView extends CustomNodeView {
