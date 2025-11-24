@@ -585,6 +585,9 @@ export class ImageViewBody extends React.PureComponent<
     // normalize to integers to avoid float noise
     desiredWidth = Math.round(desiredWidth);
     desiredHeight = Math.round(desiredHeight);
+    if (Number.isNaN(desiredHeight)) {
+      desiredHeight = 'auto';
+    }
 
     const currentWidth = Number.parseInt(attrW, 10) || null;
     const currentHeight = Number.parseInt(attrH, 10) || null;
