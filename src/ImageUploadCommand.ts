@@ -8,22 +8,8 @@ import {ImageUploadEditor} from './ui/ImageUploadEditor';
 import {Transform} from 'prosemirror-transform';
 
 export class ImageUploadCommand extends ImageSourceCommand {
-  isEnabled = (state: EditorState, view: EditorView | null): boolean => {
-    if (!view) {
-      return false;
-    }
-
-    const runtime: EditorRuntime = view['runtime'];
-    if (!runtime) {
-      return false;
-    }
-
-    const {canUploadImage, uploadImage} = runtime;
-    if (!uploadImage || !canUploadImage?.()) {
-      return false;
-    }
-
-    return this.__isEnabled(state, view);
+  isEnabled = (state: EditorState): boolean => {
+       return this.__isEnabled(state);
   };
 
   getEditor(): typeof React.Component {

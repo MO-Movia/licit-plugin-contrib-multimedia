@@ -87,10 +87,10 @@ describe('MultimediaPlugin', () => {
       view,
       ImageArgs
     );
-    ImgSrcCmd.__isEnabled(state, view);
-    ImgSrcCmd.__isEnabled(newstate, view);
-    ImgSrcCmd.__isEnabled(newstate1, view);
-    ImgSrcCmd.isEnabled(state, view);
+    ImgSrcCmd.__isEnabled(state);
+    ImgSrcCmd.__isEnabled(newstate);
+    ImgSrcCmd.__isEnabled(newstate1);
+    ImgSrcCmd.isEnabled(state);
   });
 
   it('ImageNodespec ', () => {
@@ -346,9 +346,7 @@ describe('resolveImage ', () => {
 
 describe('resolveImage ', () => {
   it('should resolve Image - onLoad offline', async () => {
-    const spy = jest
-      .spyOn(Object, 'hasOwn')
-      .mockReturnValue(true);
+    const spy = jest.spyOn(Object, 'hasOwn').mockReturnValue(true);
     const res = {
       complete: true,
       height: 400,

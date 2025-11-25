@@ -187,12 +187,11 @@ describe('MultimediaPlugin', () => {
       canLoadHTML: () => true,
       //loadHTML: () => Promise<string>,
     };
-    view['runtime'] = editorruntime;
-    expect(trans.isEnabled(state, view)).toBeFalsy();
+    expect(trans.isEnabled(state)).toBeTruthy();
     editorruntime.uploadImage = () => Promise.resolve({} as ImageLike);
-    expect(trans.isEnabled(state, view)).toBeFalsy();
+    expect(trans.isEnabled(state)).toBeTruthy();
     editorruntime.canUploadImage = () => false;
-    expect(trans.isEnabled(state, view)).toBeFalsy();
+    expect(trans.isEnabled(state)).toBeTruthy();
   });
 
   it('Image Upload Command', () => {
@@ -218,16 +217,8 @@ describe('MultimediaPlugin', () => {
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
-    const dom = document.createElement('div');
 
-    const editorView = new EditorView(
-      {mount: dom},
-      {
-        state: state,
-      }
-    );
-    editorView['runtime'] = editorruntime;
-    trans.isEnabled(state, editorView);
+    trans.isEnabled(state);
     trans.getEditor();
   });
 
@@ -254,16 +245,8 @@ describe('MultimediaPlugin', () => {
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
-    const dom = document.createElement('div');
 
-    const editorView = new EditorView(
-      {mount: dom},
-      {
-        state: state,
-      }
-    );
-    editorView['runtime'] = editorruntime;
-    trans.isEnabled(state, editorView);
+    trans.isEnabled(state);
   });
 
   it('getEditor', () => {
@@ -277,16 +260,8 @@ describe('MultimediaPlugin', () => {
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
-    const dom = document.createElement('div');
 
-    const editorView = new EditorView(
-      {mount: dom},
-      {
-        state: state,
-      }
-    );
-    editorView['runtime'] = null;
-    trans.isEnabled(state, null);
+    trans.isEnabled(state);
   });
 
   it('can Image Upload', () => {
@@ -295,16 +270,8 @@ describe('MultimediaPlugin', () => {
       doc: doc(p('Hello World!!')),
       schema: schema,
     });
-    const dom = document.createElement('div');
 
-    const editorView = new EditorView(
-      {mount: dom},
-      {
-        state: state,
-      }
-    );
-    editorView['runtime'] = null;
-    trans.isEnabled(state, editorView);
+    trans.isEnabled(state);
   });
 
   it('bindImageView', () => {

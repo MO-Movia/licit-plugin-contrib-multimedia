@@ -71,8 +71,8 @@ export class ImageSourceCommand extends UICommand {
     throw new Error('Not implemented');
   }
 
-  isEnabled = (state: EditorState, view: EditorView): boolean => {
-    return this.__isEnabled(state, view);
+  isEnabled = (state: EditorState): boolean => {
+    return this.__isEnabled(state);
   };
 
   waitForUserInput = (
@@ -125,7 +125,7 @@ export class ImageSourceCommand extends UICommand {
     return false;
   };
 
-  __isEnabled = (state: EditorState, _view: EditorView): boolean => {
+  __isEnabled = (state: EditorState): boolean => {
     const tr = state;
     const {selection} = tr;
     if (selection instanceof TextSelection) {
