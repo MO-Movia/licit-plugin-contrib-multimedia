@@ -30,8 +30,8 @@ jobs:
         # Workflow actions will not trigger new workflows
         run: |
           git fetch origin develop
-          git merge --no-ff develop -m "Sync master back to develop"
-          git push origin develop
+          git merge --no-ff origin/develop -m "Sync master back to develop"
+          git push -u origin develop
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Ensure npm 11.5.1 or later is installed for secure auth
