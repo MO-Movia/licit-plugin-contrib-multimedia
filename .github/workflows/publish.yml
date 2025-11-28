@@ -20,6 +20,8 @@ jobs:
     timeout-minutes: 30 # Default 5 days for self hosted
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # for Sync step
       - uses: actions/setup-node@v4
         name: Use Node.js ${{ matrix.node-version }}
         with:
@@ -29,7 +31,6 @@ jobs:
       - name: Sync
         # Workflow actions will not trigger new workflows
         run: |
-          git fetch origin
           git merge --no-ff origin/develop -m "Sync master back to develop"
           git push -u origin develop
         env:
