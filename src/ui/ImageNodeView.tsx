@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { Attrs, Node } from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 import { Decoration } from 'prosemirror-view';
 import { NodeSelection } from 'prosemirror-state';
 import React from 'react';
@@ -166,7 +166,6 @@ export class ImageViewBody extends React.PureComponent<
       this._resolveOriginalSize();
     }
     this._renderInlineEditor();
-    this._syncAttrsToMaxSize();
   }
 
   render(): React.ReactElement {
@@ -488,99 +487,6 @@ export class ImageViewBody extends React.PureComponent<
       },
     });
   };
-
-_syncAttrsToMaxSize(): void {
-  if (!this._mounted) return;
-
-  const { node, editorView, getPos } = this.props;
-  const { originalSize, maxSize } = this.state;
-
-  if (!originalSize?.complete || !maxSize?.complete) return;
-
-  const attrs = node.attrs || {};
-  const { width: attrW, height: attrH, crop } = attrs;
-
-  const aspectRatio =
-    originalSize.width && originalSize.height
-      ? originalSize.width / originalSize.height
-      : 1;
-
-  let desiredWidth =
-    attrW != null ? attrW : null;
-  let desiredHeight =
-    attrH != null ? attrH : null;
-
-  // If only one dimension is set, derive the other using aspect ratio
-  if (desiredWidth != null && desiredHeight == null) {
-    desiredHeight = desiredWidth / aspectRatio;
-  } else if (desiredHeight != null && desiredWidth == null) {
-    desiredWidth = desiredHeight * aspectRatio;
-  }
-
-  if (desiredWidth == null && desiredHeight == null) {
-    return;
-  }
-
-  // apply the same clamp rule as render: clamp to maxSize.width when needed
-  if (
-    desiredWidth != null &&
-    desiredWidth > maxSize.width &&
-    (!crop || crop.width > maxSize.width)
-  ) {
-    desiredWidth = maxSize.width;
-    desiredHeight = desiredWidth / aspectRatio;
-  }
-
-  // normalize to integers to avoid float noise
-  if (desiredWidth != null) {
-    desiredWidth = Math.round(desiredWidth);
-  }
-  if (desiredHeight != null) {
-    desiredHeight = Math.round(desiredHeight);
-  }
-
-  if (Number.isNaN(desiredHeight)) {
-    desiredHeight = 'auto';
-  }
-
-  const currentWidth =
-    attrW != null ? Number.parseInt(attrW, 10) : null;
-  const currentHeight =
-    attrH != null ? Number.parseInt(attrH, 10) : null;
-
-  // only dispatch when different (avoids loops)
-  if (currentWidth !== desiredWidth || currentHeight !== desiredHeight) {
-    const pos = getPos();
-    if (typeof pos === 'number') {
-      const newAttrs = {
-        ...node.attrs,
-        width: desiredWidth ?? null,
-        height: desiredHeight ?? null,
-        crop: null,
-      };
-
-      let tr = editorView.state.tr.setNodeMarkup(
-        pos,
-        undefined,
-        newAttrs,
-      );
-
-      // try to restore selection similar to other updates
-      try {
-        const { selection } = editorView.state;
-        const origSelection = NodeSelection.create(
-          tr.doc,
-          selection.from,
-        );
-        tr = tr.setSelection(origSelection);
-      } catch {
-        /* ignore */
-      }
-
-      editorView.dispatch(tr);
-    }
-  }
-}
 }
 
 export class ImageNodeView extends CustomNodeView {

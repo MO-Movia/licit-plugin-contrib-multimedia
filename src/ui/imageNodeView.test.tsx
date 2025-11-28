@@ -1102,78 +1102,6 @@ describe('ImageViewBody', () => {
     expect(result).toBeDefined();
   });
 
-  it('should sync attrs to maxSize when needed', () => {
-    const mockSchema = new Schema({
-      nodes: {
-        doc: { content: 'block+' },
-        paragraph: { content: 'inline*', group: 'block' },
-        text: { group: 'inline' },
-        image: {
-          inline: true,
-          attrs: { align: { default: null }, fitToParent: { default: null } },
-          group: 'inline',
-        },
-      },
-      marks: {},
-    });
-    const editorState = EditorState.create({
-      doc: mockSchema.nodeFromJSON({
-        type: 'doc',
-        content: [
-          {
-            type: 'paragraph',
-            content: [
-              {
-                type: 'image',
-                attrs: { src: '/path/to/image.jpg' },
-              },
-            ],
-          },
-        ],
-      }),
-      schema: mockSchema,
-    });
-
-    const mockEdView = {
-      state: editorState,
-      dispatch: jest.fn(),
-      dom: document.createElement('div'),
-    } as unknown as EditorFocused;
-
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      mockEdView
-    );
-    imageviewbody._mounted = true;
-    imageviewbody.state = {
-      maxSize: { width: 500, height: 500, complete: true },
-      originalSize: {
-        src: 'test',
-        complete: true,
-        height: 1000,
-        width: 1000,
-      },
-    };
-    imageviewbody.props = {
-      decorations: [],
-      editorView: mockEdView,
-      getPos: () => 1,
-      node: {
-        attrs: {
-          src: 'test',
-          width: 1000,
-          height: 1000,
-          crop: null,
-        },
-      } as unknown as Node,
-      dom: document.createElement('img'),
-      selected: false,
-      focused: false,
-    };
-    imageviewbody._syncAttrsToMaxSize();
-    expect(mockEdView.dispatch).toHaveBeenCalled();
-  });
-
   it('should not sync attrs when not mounted', () => {
     const imageviewbody = new ImageViewBody(
       mockImageNode as unknown as NodeViewProps,
@@ -1182,68 +1110,7 @@ describe('ImageViewBody', () => {
     imageviewbody._mounted = false;
     const mockEdView = editorfocused as unknown as EditorFocused;
     const spy = jest.spyOn(mockEdView, 'dispatch');
-    imageviewbody._syncAttrsToMaxSize();
     expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('should not sync attrs when originalSize not complete', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._mounted = true;
-    imageviewbody.state = {
-      maxSize: { width: 500, height: 500, complete: true },
-      originalSize: {
-        src: 'test',
-        complete: false,
-        height: 0,
-        width: 0,
-      },
-    };
-    imageviewbody.props = {
-      decorations: [],
-      editorView: editorfocused,
-      getPos: () => 1,
-      node: {
-        attrs: { src: 'test', width: 100, height: 100 },
-      } as unknown as Node,
-      dom: document.createElement('img'),
-      selected: false,
-      focused: false,
-    };
-    const result = imageviewbody._syncAttrsToMaxSize();
-    expect(result).toBeUndefined();
-  });
-
-  it('should not sync attrs when maxSize not complete', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._mounted = true;
-    imageviewbody.state = {
-      maxSize: { width: 500, height: 500, complete: false },
-      originalSize: {
-        src: 'test',
-        complete: true,
-        height: 100,
-        width: 100,
-      },
-    };
-    imageviewbody.props = {
-      decorations: [],
-      editorView: editorfocused,
-      getPos: () => 1,
-      node: {
-        attrs: { src: 'test', width: 100, height: 100 },
-      } as unknown as Node,
-      dom: document.createElement('img'),
-      selected: false,
-      focused: false,
-    };
-    const result = imageviewbody._syncAttrsToMaxSize();
-    expect(result).toBeUndefined();
   });
 
   it('should not dispatch when width and height unchanged', () => {
@@ -1314,7 +1181,6 @@ describe('ImageViewBody', () => {
       selected: false,
       focused: false,
     };
-    imageviewbody._syncAttrsToMaxSize();
     expect(mockEdView.dispatch).not.toHaveBeenCalled();
   });
 
