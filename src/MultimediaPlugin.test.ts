@@ -164,12 +164,6 @@ describe('MultimediaPlugin', () => {
   });
 
   it('isEnabled in image', () => {
-    const view = new EditorView(document.querySelector('#editor'), {
-      state,
-      handleKeyPress() {
-        console.log('key');
-      },
-    });
     const trans = new ImageUploadCommand();
     const editorruntime: EditorRuntime = {
       // Image Proxy
@@ -195,22 +189,6 @@ describe('MultimediaPlugin', () => {
   });
 
   it('Image Upload Command', () => {
-    const editorruntime: EditorRuntime = {
-      // Image Proxy
-      canProxyImageSrc: () => {
-        return true;
-      },
-      // getProxyImageSrc: () => Promise.reject(),
-      // Image Upload
-      canUploadImage: () => false,
-      uploadImage: () => Promise.reject(),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
-    };
     const trans = new ImageUploadCommand();
 
     const state = EditorState.create({
@@ -223,22 +201,6 @@ describe('MultimediaPlugin', () => {
   });
 
   it('isEnabled', () => {
-    const editorruntime: EditorRuntime = {
-      // Image Proxy
-      canProxyImageSrc: () => {
-        return true;
-      },
-      // getProxyImageSrc: () => Promise.reject(),
-      // Image Upload
-      canUploadImage: () => true,
-      uploadImage: () => Promise.reject(),
-      // Comments
-      canComment: () => false,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
-    };
     const trans = new ImageUploadCommand();
 
     const state = EditorState.create({

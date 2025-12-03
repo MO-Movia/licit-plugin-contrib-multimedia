@@ -1,9 +1,7 @@
 import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
 import React from 'react';
 
 import {ImageSourceCommand} from './ImageSourceCommand';
-import {EditorRuntime} from './Types';
 import {ImageUploadEditor} from './ui/ImageUploadEditor';
 import {Transform} from 'prosemirror-transform';
 
