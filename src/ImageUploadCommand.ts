@@ -10,6 +10,10 @@ export class ImageUploadCommand extends ImageSourceCommand {
        return this.__isEnabled(state);
   };
 
+  isActive = (): boolean => {
+    return false;
+  };
+
   getEditor(): typeof React.Component {
     return ImageUploadEditor;
   }
