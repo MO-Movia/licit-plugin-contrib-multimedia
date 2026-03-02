@@ -460,14 +460,6 @@ describe('Image Node View ', () => {
         src: '',
         width: 150,
       }),
-
-      // Comments
-      canComment: () => true,
-      createCommentThreadID: () => 'Test-ID',
-
-      // External HTML
-      canLoadHTML: () => true,
-      loadHTML: jest.fn().mockResolvedValue('baz'),
     };
     const editFoc = {...editor.view, ...foc} as unknown as EditorFocused;
     const ImageNdView = new ImageNodeView(newNode, editFoc, () => 10, []);

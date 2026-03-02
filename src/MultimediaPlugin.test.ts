@@ -174,12 +174,6 @@ describe('MultimediaPlugin', () => {
       // Image Upload
       canUploadImage: undefined,
       uploadImage: undefined,
-      // Comments
-      canComment: () => true,
-      createCommentThreadID: () => 'string',
-      // External HTML
-      canLoadHTML: () => true,
-      //loadHTML: () => Promise<string>,
     };
     expect(trans.isEnabled(state)).toBeTruthy();
     editorruntime.uploadImage = () => Promise.resolve({} as ImageLike);
