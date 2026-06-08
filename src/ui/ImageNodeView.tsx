@@ -9,14 +9,9 @@ import { CustomNodeView } from './CustomNodeView';
 import { Icon } from './Icon';
 import { ImageResizeBox, MIN_SIZE } from './ImageResizeBox';
 
-import {
-  createPopUp,
-  atAnchorBottomCenter,
-  PopUpHandle,
-} from '@modusoperandi/licit-ui-commands';
+import { uuid } from './uuid';
 import ResizeObserver from './ResizeObserver';
 import { resolveImage } from './resolveImage';
-import { uuid } from './uuid';
 
 import type { EditorRuntime } from '../Types';
 import type { NodeViewProps } from './CustomNodeView';
@@ -24,7 +19,6 @@ import type { ResizeObserverEntry } from './ResizeObserver';
 import { ImageInlineEditor } from './ImageInlineEditor';
 import { FP_WIDTH } from '../Constants';
 
-const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 const EMPTY_SRC =
   'data:image/gif;base64,' +
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -133,7 +127,6 @@ export class ImageViewBody extends React.PureComponent<
 
   _body?: HTMLElement | React.ReactInstance;
   _id = uuid();
-  _inlineEditor?: PopUpHandle;
   _mounted = false;
 
   state = {
@@ -148,13 +141,10 @@ export class ImageViewBody extends React.PureComponent<
   componentDidMount(): void {
     this._mounted = true;
     this._resolveOriginalSize();
-    this._renderInlineEditor();
   }
 
   componentWillUnmount(): void {
     this._mounted = false;
-    this._inlineEditor?.close(undefined);
-    this._inlineEditor = undefined;
   }
 
   componentDidUpdate(prevProps: NodeViewProps): void {
@@ -165,7 +155,6 @@ export class ImageViewBody extends React.PureComponent<
       // A new image is provided, resolve it.
       this._resolveOriginalSize();
     }
-    this._renderInlineEditor();
   }
 
   render(): React.ReactElement {
@@ -237,7 +226,7 @@ export class ImageViewBody extends React.PureComponent<
       clipStyle.position = 'relative';
       clipStyle.display = 'inline-block';
     } else if (crop) {
-      const cropped = {...crop};
+      const cropped = { ...crop };
       if (scale !== 1) {
         scale = maxSize.width / cropped.width;
         cropped.width *= scale;
@@ -287,6 +276,15 @@ export class ImageViewBody extends React.PureComponent<
         style={pStyle}
         title={errorTitle}
       >
+        <div className="molm-czi-image-view-hamburger">
+          <ImageInlineEditor
+            editorView={editorView}
+            getPos={this.props.getPos}
+            imageId={this._id}
+            onSelect={this._onChange}
+            value={attrs}
+          />
+        </div>
         <span className="molm-czi-image-view-body-img-clip" style={clipStyle}>
           <span id={this._id} style={imageStyle}>
             <img
@@ -345,32 +343,7 @@ export class ImageViewBody extends React.PureComponent<
   }
 
   _renderInlineEditor(): void {
-    const el = document.getElementById(this._id);
-    if (!el || el.getAttribute('data-active') !== 'true') {
-      this._inlineEditor?.close?.(undefined);
-      return;
-    }
-
-    const { node } = this.props;
-    const editorProps = {
-      value: node.attrs,
-      onSelect: this._onChange,
-      editorView: this.props.editorView,
-      imageId: this._id,
-    };
-    if (this._inlineEditor) {
-      this._inlineEditor.update(editorProps);
-    } else {
-      this._inlineEditor = createPopUp(ImageInlineEditor, editorProps, {
-        anchor: el,
-        autoDismiss: false,
-        container: el.closest(`.${FRAMESET_BODY_CLASSNAME}`),
-        position: atAnchorBottomCenter,
-        onClose: (_val) => {
-          this._inlineEditor = null;
-        },
-      });
-    }
+    // Intentional no-op: the hamburger menu is rendered inline directly in the image body.
   }
 
   _resolveOriginalSize = async (): Promise<void> => {
@@ -437,6 +410,9 @@ export class ImageViewBody extends React.PureComponent<
     const align = value ? value.align : null;
     const { getPos, node, editorView } = this.props;
     const pos = getPos();
+    if (pos == null) {
+      return;
+    }
     const attrs = {
       ...node.attrs,
       align,
@@ -522,7 +498,9 @@ export class ImageNodeView extends CustomNodeView {
       el.style.padding = '0';
       el.style.margin = '0';
     }
+
   }
+
   ignoreMutation(): boolean {
     return true;
   }
