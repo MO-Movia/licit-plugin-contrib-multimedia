@@ -213,7 +213,7 @@ export class ImageInlineEditor extends React.PureComponent<
 
             if (editorView) {
               if (key === 'CROP') {
-                window.setTimeout(() => handler(editorView), 0);
+                globalThis.setTimeout(() => handler(editorView), 0);
               } else {
                 handler(editorView);
               }
@@ -315,10 +315,6 @@ export class ImageInlineEditor extends React.PureComponent<
   _closeMenu = (): void => {
     this._menuHandle?.close?.(undefined);
     this._menuHandle = null;
-  };
-
-  _onAlter = (): void => {
-    //Handle Edit
   };
 
   _getImageNodeContext = (view: EditorView): { pos: number; node } | null => {

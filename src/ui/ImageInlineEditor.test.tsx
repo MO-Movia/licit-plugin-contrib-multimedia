@@ -483,6 +483,6 @@ function createParagraphEditorView(): EditorView {
 
 function flushPromises(): Promise<void> {
   return new Promise((resolve) => {
-    window.setTimeout(resolve, 0);
+    globalThis.setTimeout(resolve, 0);
   });
 }

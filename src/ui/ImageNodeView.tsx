@@ -342,10 +342,6 @@ export class ImageViewBody extends React.PureComponent<
     return { width, height };
   }
 
-  _renderInlineEditor(): void {
-    // Intentional no-op: the hamburger menu is rendered inline directly in the image body.
-  }
-
   _resolveOriginalSize = async (): Promise<void> => {
     if (!this._mounted) {
       // unmounted;
