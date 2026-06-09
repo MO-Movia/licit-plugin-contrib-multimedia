@@ -156,7 +156,7 @@ export class ImageInlineEditor extends React.PureComponent<
   declare props: ImageInlineProps;
   _buttonEl?: HTMLButtonElement | null;
   _menuHandle?: PopUpHandle | null;
-
+  private readonly TITLE_STYLE_NAMES = new Set(['chFigureTitle', 'chTableTitle']);
   componentWillUnmount(): void {
     this._closeMenu();
   }
@@ -222,7 +222,6 @@ export class ImageInlineEditor extends React.PureComponent<
         };
       });
     }
-    // React.createElement('span', { className: 'enhanced-table-hamburger-menu-icon' }, item.icon),
     return Object.keys(ImgValues).map((key) => {
       const { value, text, label } = ImgValues[key];
       const { icon } = this.parseLabel(label, value);
@@ -441,20 +440,8 @@ export class ImageInlineEditor extends React.PureComponent<
     if (!imageContext) {
       return;
     }
-    const { state, dispatch } = view;
-    const { schema } = state;
     const { pos } = imageContext;
-    // Create empty paragraph node
-    const paragraph = schema.nodes.paragraph.create();
-
-    // Insert at the node position
-    let tr = state.tr.insert(pos, paragraph);
-
-    // Set cursor in the new paragraph
-    const resolvedPos = tr.doc.resolve(pos + 1);
-    tr = tr.setSelection(TextSelection.create(tr.doc, resolvedPos.pos));
-
-    dispatch(tr);
+    this.insertParagraph(this.getTitleAdjustedPosition_before(pos - 1, pos, view), view);
   };
 
   insertParagraphBelow = (view?: EditorView): void => {
@@ -466,24 +453,59 @@ export class ImageInlineEditor extends React.PureComponent<
     if (!imageContext) {
       return;
     }
-    const { state, dispatch } = view;
-    const { schema } = state;
     const { pos } = imageContext;
-    // Create empty paragraph node
-    const paragraph = schema.nodes.paragraph.create();
 
     // Calculate position after the figure
     const posAfterNode = pos + imageContext.node.nodeSize;
+    this.insertParagraph(this.getTitleAdjustedPosition_after(posAfterNode, view), view);
 
-    // Insert after the node
-    let tr = state.tr.insert(posAfterNode, paragraph);
+  };
 
-    // Set cursor in the new paragraph
-    const resolvedPos = tr.doc.resolve(posAfterNode + 1);
-    tr = tr.setSelection(TextSelection.create(tr.doc, resolvedPos.pos));
+  private insertParagraph(insertPos: number, view?: EditorView): void {
+    const { state, dispatch } = view;
+    const paragraph = state.schema.nodes.paragraph.create();
+    let tr = state.tr.insert(insertPos, paragraph);
+    tr = tr
+      .setSelection(TextSelection.create(tr.doc, insertPos + 1))
+      .scrollIntoView();
 
     dispatch(tr);
-  };
+    this.focusEditor(view);
+  }
+
+  private focusEditor(view?: EditorView): void {
+    const focus = () => view.focus();
+    if (typeof queueMicrotask === 'function') {
+      queueMicrotask(focus);
+      return;
+    }
+
+    setTimeout(focus, 0);
+  }
+
+  private getTitleAdjustedPosition_before(resolvePos: number, fallbackPos: number, view?: EditorView): number {
+    if (resolvePos < 0 || resolvePos > view.state.doc.content.size) {
+      return fallbackPos;
+    }
+
+    const $pos = view.state.doc.resolve(resolvePos);
+    const styleName = $pos.parent?.attrs['styleName'];
+    if (!this.TITLE_STYLE_NAMES.has(styleName)) {
+      return fallbackPos;
+    }
+
+    return resolvePos - ($pos.parentOffset + $pos.depth);
+  }
+  private getTitleAdjustedPosition_after(resolvePos: number, view?: EditorView): number {
+
+    const $pos = view.state.doc.resolve(resolvePos);
+    const styleName = $pos.nodeAfter?.attrs['styleName'];
+    if (!this.TITLE_STYLE_NAMES.has(styleName)) {
+      return resolvePos;
+    }
+
+    return resolvePos + ($pos.nodeAfter?.nodeSize || 0);
+  }
   handleChooseFile = (view?: EditorView): void => {
     // Open file chooser dialog
     const fileInput = document.createElement('input');
