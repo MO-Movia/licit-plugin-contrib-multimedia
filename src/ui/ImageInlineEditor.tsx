@@ -457,7 +457,7 @@ export class ImageInlineEditor extends React.PureComponent<
 
     // Calculate position after the figure
     const posAfterNode = pos + imageContext.node.nodeSize;
-    this.insertParagraph(this.getTitleAdjustedPosition_after(posAfterNode, view), view);
+    this.insertParagraph(this.getTitleAdjustedPosition_after(posAfterNode + 1, view), view);
 
   };
 
@@ -489,12 +489,12 @@ export class ImageInlineEditor extends React.PureComponent<
     }
 
     const $pos = view.state.doc.resolve(resolvePos);
-    const styleName = $pos.parent?.attrs['styleName'];
+    const styleName = $pos.nodeBefore?.attrs['styleName'];
     if (!this.TITLE_STYLE_NAMES.has(styleName)) {
       return fallbackPos;
     }
 
-    return resolvePos - ($pos.parentOffset + $pos.depth);
+    return resolvePos - ($pos.nodeBefore?.nodeSize || 0) - $pos.depth;
   }
   private getTitleAdjustedPosition_after(resolvePos: number, view?: EditorView): number {
 
