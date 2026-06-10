@@ -41,6 +41,12 @@
   user-select: none;
 }
 
+body.export-pdf-mode .molm-czi-inline-editor-toggle.figure-select-hamburger,
+body.export-pdf-mode .molm-czi-inline-editor-toggle.figure-select-hamburger:hover,
+body.export-pdf-mode .molm-czi-inline-editor-toggle.figure-select-hamburger.hover {
+  display: none;
+}
+
 .molm-czi-inline-editor .molm-czi-custom-button {
   border: none;
 }
