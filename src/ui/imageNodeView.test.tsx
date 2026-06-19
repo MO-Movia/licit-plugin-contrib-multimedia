@@ -3,7 +3,6 @@ import { Schema, Node } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { EditorFocused, NodeViewProps } from './CustomNodeView';
 import ResizeObserver from './ResizeObserver';
-import { PopUpHandle } from '@modusoperandi/licit-ui-commands';
 
 describe('ImageNodeView', () => {
   const mockSchema = new Schema({
@@ -242,11 +241,6 @@ describe('ImageViewBody', () => {
     },
   }) as unknown as Node;
 
-  const mockPopupHandle = {
-    close: () => undefined,
-    update: () => undefined,
-  } as unknown as PopUpHandle;
-
   it('should be defined', () => {
     const imageviewbody = new ImageViewBody(
       mockImageNode as unknown as NodeViewProps,
@@ -273,28 +267,6 @@ describe('ImageViewBody', () => {
     expect(imageviewbody._mounted).toBe(true);
   });
 
-  it('should handle componentWillUnmount', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._inlineEditor = mockPopupHandle;
-    const spy = jest.spyOn(imageviewbody._inlineEditor, 'close');
-    imageviewbody.componentWillUnmount();
-    expect(spy).toHaveBeenCalled();
-    expect(imageviewbody._mounted).toBe(false);
-  });
-
-  it('should handle componentWillUnmount without inlineEditor', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._inlineEditor = undefined;
-    imageviewbody.componentWillUnmount();
-    expect(imageviewbody._mounted).toBe(false);
-  });
-
   it('should handle componentDidUpdate with src change', () => {
     const imageviewbody = new ImageViewBody(
       mockImageNode as unknown as NodeViewProps,
@@ -318,29 +290,6 @@ describe('ImageViewBody', () => {
     imageviewbody.componentDidUpdate({
       ...imageviewbody.props,
       node: prevNode,
-    });
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should handle componentDidUpdate without src change', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    const spy = jest.spyOn(imageviewbody, '_renderInlineEditor');
-
-    imageviewbody.props = {
-      decorations: [],
-      editorView: editorfocused,
-      getPos: () => 1,
-      node: { attrs: { src: 'same-src', align: 'left' } } as unknown as Node,
-      dom: document.createElement('img'),
-      selected: false,
-      focused: false,
-    };
-
-    imageviewbody.componentDidUpdate({
-      ...imageviewbody.props,
     });
     expect(spy).toHaveBeenCalled();
   });
@@ -778,31 +727,6 @@ describe('ImageViewBody', () => {
     expect(result.height).toBe(24);
   });
 
-  it('should handle _renderInlineEditor when not active', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._inlineEditor = mockPopupHandle;
-    const spy = jest.spyOn(mockPopupHandle, 'close');
-    jest.spyOn(document, 'getElementById').mockReturnValue(null);
-    imageviewbody._renderInlineEditor();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should handle _renderInlineEditor when data-active is false', () => {
-    const imageviewbody = new ImageViewBody(
-      mockImageNode as unknown as NodeViewProps,
-      editorfocused
-    );
-    imageviewbody._inlineEditor = mockPopupHandle;
-    const elem = document.createElement('div');
-    elem.setAttribute('data-active', 'false');
-    jest.spyOn(document, 'getElementById').mockReturnValue(elem);
-    const spy = jest.spyOn(mockPopupHandle, 'close');
-    imageviewbody._renderInlineEditor();
-    expect(spy).toHaveBeenCalled();
-  });
 
   it('should handle _onResizeEnd with valid position', () => {
     const mockSchema = new Schema({

@@ -1,6 +1,6 @@
-@import url("./czi-vars.css");
+@import url('./czi-vars.css');
 
-.ProseMirror td[fullsize="1"] > p {
+.ProseMirror td[fullsize='1'] > p {
   line-height: 0;
   margin: 0;
   padding: 0;
@@ -38,7 +38,7 @@
 
 .molm-czi-image-view.align-center {
   clear: both;
-  display: block; 
+  display: block;
   float: none;
   margin: 0 0 20px;
 }
@@ -71,7 +71,7 @@
   animation: czi-animation-blink normal 800ms infinite ease-in-out;
   background-color: #cdcdcd;
   inset: 0;
-  content: "";
+  content: '';
   cursor: wait;
   position: absolute;
   z-index: 3;
@@ -80,7 +80,7 @@
 .molm-czi-image-view-body.error::before {
   background-color: #fff;
   inset: 0;
-  content: "";
+  content: '';
   outline: solid 1px #cdcdcd;
   position: absolute;
   z-index: 3;
@@ -100,7 +100,7 @@
   /* simulated selection highlight */
   background-color: var(--czi-selection-highlight-color-dark);
   inset: 0;
-  content: "";
+  content: '';
   position: absolute;
   z-index: 2;
 }
@@ -119,6 +119,34 @@
   .molm-czi-image-view-body.active {
     box-shadow: none;
   }
+}
+
+.molm-czi-image-view-hamburger {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(calc(100% + 2px));
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease-in-out;
+}
+
+.molm-czi-image-view-body:hover .molm-czi-image-view-hamburger {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Disable when inside enhanced-table-figure-body */
+.enhanced-table-figure-body
+  .molm-czi-image-view-body:hover
+  .molm-czi-image-view-hamburger {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.molm-czi-image-view-hamburger .molm-czi-inline-editor {
+  position: relative;
 }
 
 @keyframes czi-animation-blink {
