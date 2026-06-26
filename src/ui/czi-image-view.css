@@ -122,17 +122,23 @@
 }
 
 .molm-czi-image-view-hamburger {
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  height: 28px;
+  justify-content: flex-end;
   position: absolute;
-  right: 0;
+  right: -32px;
   top: 0;
-  transform: translateX(calc(100% + 2px));
+  width: 32px;
   z-index: 5;
   opacity: 0;
   pointer-events: none;
   transition: opacity 150ms ease-in-out;
 }
 
-.molm-czi-image-view-body:hover .molm-czi-image-view-hamburger {
+.molm-czi-image-view-body:hover .molm-czi-image-view-hamburger,
+.molm-czi-image-view-hamburger:hover {
   opacity: 1;
   pointer-events: auto;
 }
@@ -147,6 +153,10 @@
 
 .molm-czi-image-view-hamburger .molm-czi-inline-editor {
   position: relative;
+}
+
+.molm-czi-image-view-hamburger .figure-select-hamburger {
+  position: static;
 }
 
 @keyframes czi-animation-blink {
