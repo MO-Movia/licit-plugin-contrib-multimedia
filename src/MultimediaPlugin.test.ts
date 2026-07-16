@@ -1,4 +1,4 @@
-import {createEditor, doc, p} from 'jest-prosemirror';
+import { createEditor, doc, p } from 'jest-prosemirror';
 import {
   EditorState,
   TextSelection,
@@ -6,21 +6,22 @@ import {
   Plugin,
   PluginKey,
 } from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {MultimediaPlugin, bindImageView, bindVideoView} from './index';
-import {VideoEditorState} from './ui/VideoEditor';
-import {VideoSourceCommand, insertIFrame} from './VideoSourceCommand';
-import {ImageUploadCommand} from './ImageUploadCommand';
-import {VideoUploadCommand} from './VideoUploadCommand';
-import {isOffline} from './ui/isOffline';
-import {ImageNodeView} from './ui/ImageNodeView';
-import {EditorView} from 'prosemirror-view';
-import {VideoFromURLCommand} from './VideoFromURLCommand';
-import {SelectionObserver} from './ui/SelectionObserver';
-import {uuid} from './ui/uuid';
-import {CustomNodeView, EditorFocused} from './ui/CustomNodeView';
+import { Transform } from 'prosemirror-transform';
+import { MultimediaPlugin, bindImageView, bindVideoView } from './index';
+import { VideoEditorState } from './ui/VideoEditor';
+import { VideoSourceCommand, insertIFrame } from './VideoSourceCommand';
+import { ImageUploadCommand } from './ImageUploadCommand';
+import { VideoUploadCommand } from './VideoUploadCommand';
+import { isOffline } from './ui/isOffline';
+import { ImageNodeView } from './ui/ImageNodeView';
+import { EditorView } from 'prosemirror-view';
+import { VideoFromURLCommand } from './VideoFromURLCommand';
+import { SelectionObserver } from './ui/SelectionObserver';
+import { uuid } from './ui/uuid';
+import { CustomNodeView, EditorFocused } from './ui/CustomNodeView';
 import ImageFromURLCommand from './ImageFromURLCommand';
-import {EditorRuntime, ImageLike} from './Types';
+import { EditorRuntime, ImageLike } from './Types';
+import { ImageUploadEditor } from './ui/ImageUploadEditor';
 
 class TestPlugin extends Plugin {
   constructor() {
@@ -48,7 +49,7 @@ describe('MultimediaPlugin', () => {
   const selection = TextSelection.create(view.state.doc, 0, 0);
   const tr = view.state.tr.setSelection(selection);
   view.updateState(
-    view.state.reconfigure({plugins: [plugin, new TestPlugin()]})
+    view.state.reconfigure({ plugins: [plugin, new TestPlugin()] })
   );
 
   view.dispatch(tr);
@@ -144,23 +145,29 @@ describe('MultimediaPlugin', () => {
   });
 
   it('__isEnabled in VideoSourceCommand ', () => {
+    const testDoc = schema.node('doc', null, [
+      schema.node('paragraph', null, [schema.text('Hello World!!!')]),
+    ]);
     const statetest: EditorState = EditorState.create({
-      doc: doc(p('Hello World!!!')),
+      doc: testDoc,
       schema: schema,
-      selection: undefined,
+      selection: TextSelection.create(testDoc, 1, 3),
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().__isEnabled(statetest, view);
+    expect(new VideoSourceCommand().__isEnabled(statetest, view)).toBe(false);
   });
 
   it('isEnabled in VideoSourceCommand ', () => {
+    const testDoc = schema.node('doc', null, [
+      schema.node('paragraph', null, [schema.text('Hello World!!!')]),
+    ]);
     const statetest: EditorState = EditorState.create({
-      doc: doc(p('Hello World!!!')),
+      doc: testDoc,
       schema: schema,
-      selection: undefined,
+      selection: TextSelection.create(testDoc, 1, 3),
       plugins: [new MultimediaPlugin()],
     });
-    new VideoSourceCommand().isEnabled(statetest, view);
+    expect(new VideoSourceCommand().isEnabled(statetest, view)).toBe(false);
   });
 
   it('isEnabled in image', () => {
@@ -221,14 +228,14 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
     );
     editorView['runtime'] = editorruntime;
     trans.isEnabled(state, editorView);
-    trans.getEditor();
+    expect(trans.getEditor()).toBe(ImageUploadEditor);
   });
 
   it('isEnabled', () => {
@@ -257,18 +264,18 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
     );
     editorView['runtime'] = editorruntime;
-    trans.isEnabled(state, editorView);
+    expect(trans.isEnabled(state, editorView)).toBe(true);
   });
 
   it('getEditor', () => {
     const trans = new VideoUploadCommand();
-    trans.getEditor();
+    expect(trans.getEditor()).toBeDefined();
   });
 
   it('can Image Upload', () => {
@@ -280,16 +287,16 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
     );
     editorView['runtime'] = null;
-    trans.isEnabled(state, null);
+    expect(trans.isEnabled(state, null)).toBe(false);
   });
 
-  it('can Image Upload', () => {
+  it('can Image Upload-runtime', () => {
     const trans = new ImageUploadCommand();
     const state = EditorState.create({
       doc: doc(p('Hello World!!')),
@@ -298,13 +305,13 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
 
     const editorView = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
     );
     editorView['runtime'] = null;
-    trans.isEnabled(state, editorView);
+    expect(trans.isEnabled(state, editorView)).toBe(false);
   });
 
   it('bindImageView', () => {
@@ -331,14 +338,14 @@ describe('MultimediaPlugin', () => {
     const selection = new SelectionObserver(() => undefined);
     selection.disconnect();
     selection.takeRecords();
-    selection._check();
+    expect(selection._check()).toBeUndefined();
   });
 
   it('EditorFocused', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }
@@ -350,7 +357,7 @@ describe('MultimediaPlugin', () => {
     const trans = new ImageFromURLCommand();
     trans.getEditor();
     const trans1 = new VideoFromURLCommand();
-    trans1.getEditor();
+    expect(trans1.getEditor()).toBeDefined();
   });
 
   it('uuid', () => {
@@ -362,7 +369,7 @@ describe('MultimediaPlugin', () => {
     const dom = document.createElement('div');
     document.body.appendChild(dom);
     const view = new EditorView(
-      {mount: dom},
+      { mount: dom },
       {
         state: state,
       }

@@ -4,7 +4,7 @@ const CSS_ROTATE_PATTERN = /rotate\(([0-9.]+)rad\)/i;
 const EMPTY_CSS_VALUE = new Set(['0%', '0pt', '0px']);
 
 function getAlignment(dom: HTMLElement) {
-  const align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
+  const align = dom.dataset.align ?? dom.getAttribute('align');
   const {cssFloat, display} = dom.style;
   if (align) {
     return /(left|right|center)/.test(align) ? align : null;
@@ -55,7 +55,7 @@ export function getAttrs(dom: string | HTMLElement) {
       crop = makeCrop(ps, marginLeft, marginTop);
     }
     rotate = getRotation(ps, rotate);
-    const cropDataAttr = dom.getAttribute('data-cropdata');
+    const cropDataAttr = dom.dataset.cropdata;
     if (cropDataAttr) {
       try {
         cropData = JSON.parse(cropDataAttr);
@@ -121,7 +121,7 @@ function makeCrop(
   marginTop: string
 ) {
   return {
-    width: (ps.width, 10) || 0,
+    width: Number.parseInt(ps.width, 10) || 0,
     height: Number.parseInt(ps.height, 10) || 0,
     left: Number.parseInt(marginLeft, 10) || 0,
     top: Number.parseInt(marginTop, 10) || 0,

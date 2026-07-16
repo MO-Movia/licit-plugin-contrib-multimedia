@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { ImageNodeView, ImageViewBody } from './ImageNodeView';
 import { Schema, Node } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
@@ -910,9 +911,9 @@ describe('ImageViewBody', () => {
       mockImageNode as unknown as NodeViewProps,
       editorfocused
     );
-    const mockElement = document.createElement('div');
+    const mockElement = document.createElement('span');
     const spy = jest.spyOn(ResizeObserver, 'observe');
-    imageviewbody._onBodyRef(mockElement as unknown as React.ReactInstance);
+    imageviewbody._onBodyRef(mockElement);
     expect(spy).toHaveBeenCalled();
   });
 

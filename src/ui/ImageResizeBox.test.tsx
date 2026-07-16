@@ -1,3 +1,4 @@
+import {jest} from '@jest/globals';
 import {createEditor, doc, p} from 'jest-prosemirror';
 import {ImageResizeBox, ImageResizeBoxControl} from './ImageResizeBox';
 import React from 'react';
@@ -62,7 +63,6 @@ describe('Node attribute update', () => {
 describe('image resizebox control', () => {
   const imageresizeboxcontrol = new ImageResizeBoxControl({
     boxID: 'boxid',
-    config: 'any',
     direction: 'bottom',
     height: 10,
     onResizeEnd: (_w: 1, _height: 1) => undefined,
@@ -86,7 +86,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'bottom',
       height: 10,
       onResizeEnd: () => undefined,
@@ -112,7 +111,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'top_right',
       height: 10,
       onResizeEnd: () => undefined,
@@ -139,7 +137,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'top_right',
       height: 10,
       onResizeEnd: () => undefined,
@@ -167,7 +164,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'top_right',
       height: 10,
       onResizeEnd: () => undefined,
@@ -203,7 +199,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'top_right',
       height: 10,
       onResizeEnd: () => undefined,
@@ -240,7 +235,6 @@ describe('image resizebox control', () => {
     jest.spyOn(document, 'getElementById').mockReturnValue(mockElement);
     imageresizeboxcontrol.props = {
       boxID: 'boxid',
-      config: 'any',
       direction: 'top_right',
       height: 10,
       onResizeEnd: () => undefined,

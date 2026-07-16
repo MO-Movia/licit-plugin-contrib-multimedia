@@ -50,7 +50,7 @@ export function getAlign(
   cssFloat: string,
   display: string
 ): string | null {
-  let align = dom.getAttribute('data-align') ?? dom.getAttribute('align');
+  let align = dom.dataset.align ?? dom.getAttribute('align');
   if (align) {
     align = /(left|right|center)/.test(align) ? align : null;
   } else if (cssFloat === 'left' && !display) {

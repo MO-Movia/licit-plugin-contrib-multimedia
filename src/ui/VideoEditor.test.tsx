@@ -1,3 +1,4 @@
+import {jest} from '@jest/globals';
 import {VideoEditor} from './VideoEditor';
 
 describe('VideoEditor', () => {
@@ -38,6 +39,17 @@ describe('VideoEditor', () => {
       src: '',
       width: 1,
       height: 1,
+      validValue: true,
+    };
+    expect(videoeditor.render()).toBeDefined();
+  });
+  it('should render empty width and height values', () => {
+    const videoeditor = new VideoEditor(props);
+    videoeditor.state = {
+      id: 'id',
+      src: '',
+      width: 0,
+      height: 0,
       validValue: true,
     };
     expect(videoeditor.render()).toBeDefined();

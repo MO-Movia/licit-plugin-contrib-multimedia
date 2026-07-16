@@ -1,6 +1,6 @@
-import {isOffline} from './isOffline';
-import url from 'url';
-import {VideoEditorState} from './VideoEditor';
+import { isOffline } from './isOffline';
+import url from 'node:url';
+import { VideoEditorState } from './VideoEditor';
 
 export type VideoResult = {
   complete: boolean;
@@ -10,7 +10,7 @@ export type VideoResult = {
   width: number;
 };
 
-const cache: {[src: string]: VideoResult} = {};
+const cache: { [src: string]: VideoResult } = {};
 const queue: {
   config: VideoEditorState | undefined;
   resolve: (value: VideoResult | PromiseLike<VideoResult>) => void;
@@ -19,7 +19,7 @@ const queue: {
 
 export function resolveVideo(config?: VideoEditorState): Promise<VideoResult> {
   return new Promise((resolve, reject) => {
-    const bag = {config, resolve, reject};
+    const bag = { config, resolve, reject };
     queue.push(bag);
     processQueue();
   });
@@ -55,7 +55,7 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = {...cache[srcStr]};
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
     return;
   }
@@ -71,5 +71,5 @@ function processPromise(
   resolve(result);
   // Fix: Inconsistent behavior on image load
   // Avoid image caching remove the below line
-  cache[srcStr] = {...result};
+  cache[srcStr] = { ...result };
 }

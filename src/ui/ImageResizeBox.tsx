@@ -49,9 +49,20 @@ const ResizeDirection = {
   left: setWidth,
   top_left: setSize,
 };
+
+const ResizeCursor: Record<string, React.CSSProperties['cursor']> = {
+  top: 'n-resize',
+  top_right: 'ne-resize',
+  right: 'e-resize',
+  bottom_right: 'se-resize',
+  bottom: 's-resize',
+  bottom_left: 'sw-resize',
+  left: 'w-resize',
+  top_left: 'nw-resize',
+};
+
 type ImageResizwBoxProps = {
   boxID: string;
-  config;
   direction: string;
   height: number;
   onResizeEnd: (w: number, height: number) => void;
@@ -85,7 +96,15 @@ export class ImageResizeBoxControl extends React.PureComponent {
       [direction]: true,
     });
 
-    return <span className={className} onMouseDown={this._onMouseDown} />;
+    return (
+      <button
+        aria-label={`Resize image ${direction.replace('_', ' ')}`}
+        className={className}
+        onMouseDown={this._onMouseDown}
+        style={{cursor: ResizeCursor[direction]}}
+        type="button"
+      />
+    );
   }
 
   _syncSize = (): void => {
@@ -228,7 +247,6 @@ export class ImageResizeBox extends React.PureComponent {
       return (
         <ImageResizeBoxControl
           boxID={boxID}
-          config={ResizeDirection[key]}
           direction={key}
           fitToParent={fitToParent}
           height={height}

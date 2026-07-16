@@ -1,14 +1,14 @@
 import cx from 'classnames';
 import React from 'react';
 
-import {clamp} from '@modusoperandi/licit-ui-commands';
-import {v1 as uuid} from 'uuid';
+import { clamp } from '@modusoperandi/licit-ui-commands';
+import { v1 as uuid } from 'uuid';
 
 export type VideoResizeProps = {
   height: number;
   onResizeEnd: (w: number, height: number) => void;
-  src: string;
   width: number;
+  src: string;// NOSONAR
 };
 
 export const MIN_SIZE = 20;
@@ -47,6 +47,21 @@ const ResizeDirection = {
   left: setWidth,
   top_left: setSize,
 };
+
+const ResizeCursor: Record<
+  ResizeHadleDirection,
+  React.CSSProperties['cursor']
+> = {
+  top: 'n-resize',
+  top_right: 'ne-resize',
+  right: 'e-resize',
+  bottom_right: 'se-resize',
+  bottom: 's-resize',
+  bottom_left: 'sw-resize',
+  left: 'w-resize',
+  top_left: 'nw-resize',
+};
+
 type VideoResizeBoxControlProps = {
   boxID: string;
   direction: ResizeHadleDirection;
@@ -74,21 +89,29 @@ export class VideoResizeBoxControl extends React.PureComponent {
   }
 
   render(): React.ReactElement {
-    const {direction} = this.props;
+    const { direction } = this.props;
 
     const className = cx({
       'molm-czi-image-resize-box-control': true,
       [direction]: true,
     });
 
-    return <span className={className} onMouseDown={this._onMouseDown} />;
+    return (
+      <button
+        aria-label={`Resize video ${direction.replace('_', ' ')}`}
+        className={className}
+        onMouseDown={this._onMouseDown}
+        style={{ cursor: ResizeCursor[direction] }}
+        type="button"
+      />
+    );
   }
 
   _syncSize = (): void => {
     if (!this._active) {
       return;
     }
-    const {direction, width, height} = this.props;
+    const { direction, width, height } = this.props;
 
     const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
     const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
@@ -126,7 +149,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
 
     this._active = true;
 
-    const {boxID, direction, width, height} = this.props;
+    const { boxID, direction, width, height } = this.props;
     const el = document.getElementById(boxID);
     if (!el) {
       throw new Error(`Element with ID '${boxID}' not found.`);
@@ -191,7 +214,7 @@ export class VideoResizeBoxControl extends React.PureComponent {
     this._x2 = e.clientX;
     this._y2 = e.clientY;
 
-    const {direction} = this.props;
+    const { direction } = this.props;
     const el = this._el;
     if (!el) {
       throw new Error('Resizable element not initialized.');
@@ -209,7 +232,7 @@ export class VideoResizeBox extends React.PureComponent {
   _id = uuid();
 
   render(): React.ReactElement<VideoResizeBoxControl> {
-    const {onResizeEnd, width, height} = this.props;
+    const { onResizeEnd, width, height } = this.props;
 
     const style = {
       height: height + 'px',
