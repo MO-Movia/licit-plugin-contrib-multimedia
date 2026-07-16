@@ -1,5 +1,4 @@
 import { isOffline } from './isOffline';
-import url from 'node:url';
 import { VideoEditorState } from './VideoEditor';
 
 export type VideoResult = {
@@ -32,6 +31,14 @@ function processQueue() {
   }
 }
 
+function getProtocol(srcStr: string): string {
+  try {
+    return new URL(srcStr, globalThis.location.href).protocol;
+  } catch {
+    return globalThis.location.protocol;
+  }
+}
+
 function processPromise(
   config: VideoEditorState | undefined,
   resolve: (value: VideoResult | PromiseLike<VideoResult>) => void,
@@ -60,10 +67,9 @@ function processPromise(
     return;
   }
 
-  const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
-  const protocol = parsedURL.protocol;
-  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
+  const protocol = getProtocol(srcStr);
+  if (!/(http:|https:|data:)/.test(protocol)) {
     resolve(result);
     return;
   }

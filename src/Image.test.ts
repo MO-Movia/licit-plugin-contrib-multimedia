@@ -98,17 +98,17 @@ describe('MultimediaPlugin', () => {
     img.src = '1200x800';
     img.setAttribute('align', 'left');
     expect(getAttrs(img)).toEqual({
-      "align": "left",
-      "alt": null,
-      "capco": null,
-      "crop": null,
-      "cropData": null,
-      "fitToParent": 0,
-      "height": NaN,
-      "rotate": null,
-      "src": "1200x800",
-      "title": null,
-      "width": NaN,
+      'align': 'left',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
     });
   });
 
@@ -117,17 +117,17 @@ describe('MultimediaPlugin', () => {
     img.src = '1200x800';
     img.style.cssFloat = 'left';
     expect(getAttrs(img)).toEqual({
-      "align": "left",
-      "alt": null,
-      "capco": null,
-      "crop": null,
-      "cropData": null,
-      "fitToParent": 0,
-      "height": NaN,
-      "rotate": null,
-      "src": "1200x800",
-      "title": null,
-      "width": NaN,
+      'align': 'left',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
     });
   });
 
@@ -136,17 +136,17 @@ describe('MultimediaPlugin', () => {
     img.src = '1200x800';
     img.style.cssFloat = 'right';
     expect(getAttrs(img)).toEqual({
-      "align": "right",
-      "alt": null,
-      "capco": null,
-      "crop": null,
-      "cropData": null,
-      "fitToParent": 0,
-      "height": NaN,
-      "rotate": null,
-      "src": "1200x800",
-      "title": null,
-      "width": NaN,
+      'align': 'right',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
     });
   });
 
@@ -155,17 +155,17 @@ describe('MultimediaPlugin', () => {
     img.src = '1200x800';
     img.style.display = 'block';
     expect(getAttrs(img)).toEqual({
-      "align": "block",
-      "alt": null,
-      "capco": null,
-      "crop": null,
-      "cropData": null,
-      "fitToParent": 0,
-      "height": NaN,
-      "rotate": null,
-      "src": "1200x800",
-      "title": null,
-      "width": NaN,
+      'align': 'block',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
     });
   });
 

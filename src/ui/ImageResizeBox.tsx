@@ -1,10 +1,15 @@
-import cx from 'classnames';
 import React from 'react';
 
-import {clamp} from '@modusoperandi/licit-ui-commands';
 import {uuid} from './uuid';
 
 import {FP_WIDTH} from '../Constants';
+import {
+  RESIZE_HANDLE_DIRECTIONS,
+  ResizeBoxControl,
+  ResizeBoxControlProps,
+  ResizeHandleDirection,
+} from './ResizeBoxControl';
+export {MAX_SIZE, MIN_SIZE} from './ResizeBoxControl';
 
 type Props = {
   height: number;
@@ -14,213 +19,42 @@ type Props = {
   fitToParent: boolean;
 };
 
-export const MIN_SIZE = 20;
-export const MAX_SIZE = 10000;
-
-function setWidth(el: HTMLElement, width: number, fitToParent: boolean): void {
-  el.style.width = fitToParent ? FP_WIDTH : width + 'px';
-}
-
-function setHeight(
+function applyImageResizeSize(
   el: HTMLElement,
-  height: number,
-  _fitToParent: boolean
-): void {
-  el.style.height = height + 'px';
-}
-
-function setSize(
-  el: HTMLElement,
+  direction: ResizeHandleDirection,
   width: number,
   height: number,
   fitToParent: boolean
 ): void {
-  el.style.width = fitToParent ? FP_WIDTH : Math.round(width) + 'px';
-  el.style.height = Math.round(height) + 'px';
+  if (direction === 'top' || direction === 'bottom') {
+    el.style.height = height + 'px';
+    return;
+  }
+
+  el.style.width = fitToParent ? FP_WIDTH : width + 'px';
+  if (direction.includes('_')) {
+    el.style.height = height + 'px';
+  }
 }
 
-const ResizeDirection = {
-  top: setHeight,
-  top_right: setSize,
-  right: setWidth,
-  bottom_right: setSize,
-  bottom: setHeight,
-  bottom_left: setSize,
-  left: setWidth,
-  top_left: setSize,
-};
-
-const ResizeCursor: Record<string, React.CSSProperties['cursor']> = {
-  top: 'n-resize',
-  top_right: 'ne-resize',
-  right: 'e-resize',
-  bottom_right: 'se-resize',
-  bottom: 's-resize',
-  bottom_left: 'sw-resize',
-  left: 'w-resize',
-  top_left: 'nw-resize',
-};
-
-type ImageResizwBoxProps = {
-  boxID: string;
-  direction: string;
-  height: number;
-  onResizeEnd: (w: number, height: number) => void;
-  width: number;
+type ImageResizwBoxProps = ResizeBoxControlProps & {
   fitToParent: boolean;
 };
-export class ImageResizeBoxControl extends React.PureComponent {
+export class ImageResizeBoxControl extends ResizeBoxControl<ImageResizwBoxProps> {
   declare props: ImageResizwBoxProps;
 
-  _active = false;
-  _el = null;
-  _h = '';
-  _rafID = 0;
-  _w = '';
-  _x1 = 0;
-  _x2 = 0;
-  _y1 = 0;
-  _y2 = 0;
-  _ww = 0;
-  _hh = 0;
-
-  componentWillUnmount(): void {
-    this._end();
+  protected _applyResizeSize(
+    el: HTMLElement,
+    direction: ResizeHandleDirection,
+    width: number,
+    height: number
+  ): void {
+    applyImageResizeSize(el, direction, width, height, this.props.fitToParent);
   }
 
-  render(): React.ReactElement {
-    const {direction} = this.props;
-
-    const className = cx({
-      'molm-czi-image-resize-box-control': true,
-      [direction]: true,
-    });
-
-    return (
-      <button
-        aria-label={`Resize image ${direction.replace('_', ' ')}`}
-        className={className}
-        onMouseDown={this._onMouseDown}
-        style={{cursor: ResizeCursor[direction]}}
-        type="button"
-      />
-    );
+  protected _getResizeTargetName(): string {
+    return 'image';
   }
-
-  _syncSize = (): void => {
-    if (!this._active) {
-      return;
-    }
-    const {direction, width, height} = this.props;
-
-    const dx = (this._x2 - this._x1) * (/left/.test(direction) ? -1 : 1);
-    const dy = (this._y2 - this._y1) * (/top/.test(direction) ? -1 : 1);
-
-    const el = this._el;
-    if (!el) {
-      throw new Error('Element is not initialized.');
-    }
-
-    const fn = ResizeDirection[direction];
-    if (!fn) {
-      throw new Error(`Invalid resize direction: ${direction}`);
-    }
-    const aspect = width / height;
-    let ww = clamp(MIN_SIZE, width + Math.round(dx), MAX_SIZE);
-    let hh = clamp(MIN_SIZE, height + Math.round(dy), MAX_SIZE);
-
-    if (fn === setSize) {
-      hh = Math.max(ww / aspect, MIN_SIZE);
-      ww = hh * aspect;
-    }
-
-    fn(el, Math.round(ww), Math.round(hh), this.props.fitToParent);
-    this._ww = ww;
-    this._hh = hh;
-  };
-
-  _start(e: React.MouseEvent): void {
-    if (this._active) {
-      this._end();
-    }
-
-    this._active = true;
-
-    const {boxID, direction, width, height} = this.props;
-    const el = document.getElementById(boxID);
-    if (!el) {
-      throw new Error(`Element with ID '${boxID}' not found.`);
-    }
-    el.className += ' ' + direction;
-
-    this._el = el;
-    this._x1 = e.clientX;
-    this._y1 = e.clientY;
-    this._x2 = this._x1;
-    this._y2 = this._y1;
-    this._w = this._el.style.width;
-    this._h = this._el.style.height;
-    this._ww = width;
-    this._hh = height;
-
-    document.addEventListener('mousemove', this._onMouseMove, true);
-    document.addEventListener('mouseup', this._onMouseUp, true);
-  }
-
-  _end(): void {
-    if (!this._active) {
-      return;
-    }
-
-    this._active = false;
-    document.removeEventListener('mousemove', this._onMouseMove, true);
-    document.removeEventListener('mouseup', this._onMouseUp, true);
-
-    const el = this._el;
-    if (!el) {
-      throw new Error('Resizable element not initialized.');
-    }
-    el.style.width = this._w;
-    el.style.height = this._h;
-    el.className = 'molm-czi-image-resize-box';
-    this._el = null;
-    if (this._rafID) {
-      cancelAnimationFrame(this._rafID);
-    }
-    this._rafID = null;
-  }
-
-  _onMouseDown = (e: React.MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    this._end();
-    this._start(e);
-  };
-
-  _onMouseMove = (e: MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    this._x2 = e.clientX;
-    this._y2 = e.clientY;
-    this._rafID = requestAnimationFrame(this._syncSize);
-  };
-
-  _onMouseUp = (e: MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    this._x2 = e.clientX;
-    this._y2 = e.clientY;
-
-    const {direction} = this.props;
-    const el = this._el;
-    if (!el) {
-      throw new Error('Resizable element not initialized.');
-    }
-    el.classList.remove(direction);
-
-    this._end();
-    this.props.onResizeEnd(this._ww, this._hh);
-  };
 }
 
 export class ImageResizeBox extends React.PureComponent {
@@ -243,14 +77,14 @@ export class ImageResizeBox extends React.PureComponent {
 
     const boxID = this._id;
 
-    const controls = Object.keys(ResizeDirection).map((key) => {
+    const controls = RESIZE_HANDLE_DIRECTIONS.map((direction) => {
       return (
         <ImageResizeBoxControl
           boxID={boxID}
-          direction={key}
+          direction={direction}
           fitToParent={fitToParent}
           height={height}
-          key={key}
+          key={direction}
           onResizeEnd={onResizeEnd}
           width={width}
         />

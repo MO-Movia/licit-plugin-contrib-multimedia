@@ -1,5 +1,4 @@
 import { isOffline } from './isOffline';
-import url from 'node:url';
 export type ImageResult = {
   complete: boolean;
   height: number;
@@ -30,6 +29,15 @@ function processQueue() {
     processPromise(bag.src, bag.resolve, bag.reject);
   }
 }
+
+function getProtocol(srcStr: string): string {
+  try {
+    return new URL(srcStr, globalThis.location.href).protocol;
+  } catch {
+    return globalThis.location.protocol;
+  }
+}
+
 export function isImgInstance(img: unknown): boolean {
   return img instanceof HTMLElement;
 }
@@ -70,10 +78,9 @@ function processPromise(
 
   resolveRes(srcStr, result, resolve);
 
-  const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
-  const { protocol } = parsedURL;
-  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
+  const protocol = getProtocol(srcStr);
+  if (!/(http:|https:|data:)/.test(protocol)) {
     resolve(result);
     return;
   }
