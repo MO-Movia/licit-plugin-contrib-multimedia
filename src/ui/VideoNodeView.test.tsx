@@ -1,3 +1,4 @@
+import {jest} from '@jest/globals';
 import {VideoNodeView, VideoViewBody} from './VideoNodeView';
 import {EditorState} from 'prosemirror-state';
 import {schema} from 'prosemirror-schema-basic';
@@ -658,12 +659,8 @@ describe('Video view body', () => {
   });
 
   it('should handle _onBodyRef', () => {
-    const mockReactInstance = document.createElement('div');
-    expect(
-      videoviewbody._onBodyRef(
-        mockReactInstance as unknown as React.ReactInstance
-      )
-    ).toBeUndefined();
+    const mockElement = document.createElement('span');
+    expect(videoviewbody._onBodyRef(mockElement)).toBeUndefined();
   });
   it('should handle _onBodyRef when ref is undefined', () => {
     expect(videoviewbody._onBodyRef()).toBeUndefined();

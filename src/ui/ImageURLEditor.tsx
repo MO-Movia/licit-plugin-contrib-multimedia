@@ -3,7 +3,7 @@ import {
   preventEventDefault,
   CustomButton,
 } from '@modusoperandi/licit-ui-commands';
-import {resolveImage} from './resolveImage';
+import { resolveImage } from './resolveImage';
 
 export type ImageEditorProps = {
   initialValue;
@@ -24,7 +24,7 @@ export class ImageURLEditor extends React.PureComponent<
   _unmounted = false;
 
   state = {
-    ...(this.props.initialValue || {}),
+    ...(this.props.initialValue),
     validValue: null,
   };
 
@@ -33,11 +33,11 @@ export class ImageURLEditor extends React.PureComponent<
   }
 
   render(): React.ReactElement {
-    const {src, validValue} = this.state;
+    const { src, validValue } = this.state;
     const preview = validValue ? (
       <div
         className="molm-czi-image-url-editor-input-preview"
-        style={{backgroundImage: `url(${String(validValue.src)}`}}
+        style={{ backgroundImage: `url(${String(validValue.src)}` }}
       />
     ) : null;
 
@@ -95,7 +95,7 @@ export class ImageURLEditor extends React.PureComponent<
     resolveImage(this.state.src).then((result) => {
       if (this.state.src === result.src && !this._unmounted) {
         const validValue = result.complete ? result : null;
-        this.setState({validValue});
+        this.setState({ validValue });
       }
     });
   };
@@ -105,7 +105,7 @@ export class ImageURLEditor extends React.PureComponent<
   };
 
   _insert = (): void => {
-    const {validValue} = this.state;
+    const { validValue } = this.state;
     this.props.close(validValue);
   };
 }

@@ -1,7 +1,4 @@
-import url from 'url';
-
-import {isOffline} from './isOffline';
-
+import { isOffline } from './isOffline';
 export type ImageResult = {
   complete: boolean;
   height: number;
@@ -11,16 +8,16 @@ export type ImageResult = {
   width: number;
 };
 
-const cache: {[src: string]: ImageResult} = {};
+const cache: { [src: string]: ImageResult } = {};
 const queue: {
   src: string;
   resolve: (value: ImageResult | PromiseLike<ImageResult>) => void;
-  reject: (reason?: {value: ImageResult | PromiseLike<ImageResult>}) => void;
+  reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void;
 }[] = [];
 
 export function resolveImage(src: string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
-    const bag = {src, resolve, reject};
+    const bag = { src, resolve, reject };
     queue.push(bag);
     processQueue();
   });
@@ -32,6 +29,15 @@ function processQueue() {
     processPromise(bag.src, bag.resolve, bag.reject);
   }
 }
+
+function getProtocol(srcStr: string): string {
+  try {
+    return new URL(srcStr, globalThis.location.href).protocol;
+  } catch {
+    return globalThis.location.protocol;
+  }
+}
+
 export function isImgInstance(img: unknown): boolean {
   return img instanceof HTMLElement;
 }
@@ -44,7 +50,7 @@ function resolveRes(
   if (!srcStr) {
     resolve(result);
   } else if (cache[srcStr]) {
-    const cachedResult = {...cache[srcStr]};
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
   }
 }
@@ -52,7 +58,7 @@ function resolveRes(
 function processPromise(
   src: string,
   resolve: (value: ImageResult | PromiseLike<ImageResult>) => void,
-  _reject: (reason?: {value: ImageResult | PromiseLike<ImageResult>}) => void
+  _reject: (reason?: { value: ImageResult | PromiseLike<ImageResult> }) => void
 ): void {
   const result: ImageResult = {
     complete: false,
@@ -72,10 +78,9 @@ function processPromise(
 
   resolveRes(srcStr, result, resolve);
 
-  const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
-  const {protocol} = parsedURL;
-  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
+  const protocol = getProtocol(srcStr);
+  if (!/(http:|https:|data:)/.test(protocol)) {
     resolve(result);
     return;
   }
@@ -85,8 +90,7 @@ function processPromise(
   const dispose = () => {
     if (img) {
       if (isImgInstance(img)) {
-        const pe = img.parentNode;
-        pe?.removeChild(img);
+        img.remove();
       }
       img.onload = null;
       img.onerror = null;
@@ -107,7 +111,7 @@ function processPromise(
     dispose();
     // Fix: Inconsistent behavior on image load
     // Avoid image caching remove the below line
-    cache[srcStr] = {...result};
+    cache[srcStr] = { ...result };
   };
 
   const onError = () => {

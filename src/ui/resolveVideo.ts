@@ -1,6 +1,5 @@
-import {isOffline} from './isOffline';
-import url from 'url';
-import {VideoEditorState} from './VideoEditor';
+import { isOffline } from './isOffline';
+import { VideoEditorState } from './VideoEditor';
 
 export type VideoResult = {
   complete: boolean;
@@ -10,7 +9,7 @@ export type VideoResult = {
   width: number;
 };
 
-const cache: {[src: string]: VideoResult} = {};
+const cache: { [src: string]: VideoResult } = {};
 const queue: {
   config: VideoEditorState | undefined;
   resolve: (value: VideoResult | PromiseLike<VideoResult>) => void;
@@ -19,7 +18,7 @@ const queue: {
 
 export function resolveVideo(config?: VideoEditorState): Promise<VideoResult> {
   return new Promise((resolve, reject) => {
-    const bag = {config, resolve, reject};
+    const bag = { config, resolve, reject };
     queue.push(bag);
     processQueue();
   });
@@ -29,6 +28,14 @@ function processQueue() {
   const bag = queue.shift();
   if (bag) {
     processPromise(bag.config, bag.resolve, bag.reject);
+  }
+}
+
+function getProtocol(srcStr: string): string {
+  try {
+    return new URL(srcStr, globalThis.location.href).protocol;
+  } catch {
+    return globalThis.location.protocol;
   }
 }
 
@@ -55,15 +62,14 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = {...cache[srcStr]};
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
     return;
   }
 
-  const parsedURL = url.parse(srcStr);
   // Removed the port validation from here
-  const protocol = parsedURL.protocol;
-  if (!/(http:|https:|data:)/.test(protocol || globalThis.location.protocol)) {
+  const protocol = getProtocol(srcStr);
+  if (!/(http:|https:|data:)/.test(protocol)) {
     resolve(result);
     return;
   }
@@ -71,5 +77,5 @@ function processPromise(
   resolve(result);
   // Fix: Inconsistent behavior on image load
   // Avoid image caching remove the below line
-  cache[srcStr] = {...result};
+  cache[srcStr] = { ...result };
 }

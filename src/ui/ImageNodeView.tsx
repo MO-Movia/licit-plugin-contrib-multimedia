@@ -3,14 +3,12 @@ import { Node } from 'prosemirror-model';
 import { Decoration } from 'prosemirror-view';
 import { NodeSelection } from 'prosemirror-state';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { CustomNodeView } from './CustomNodeView';
 import { Icon } from './Icon';
 import { ImageResizeBox, MIN_SIZE } from './ImageResizeBox';
 
 import { uuid } from './uuid';
-import ResizeObserver from './ResizeObserver';
 import { resolveImage } from './resolveImage';
 
 import type { EditorRuntime } from '../Types';
@@ -18,16 +16,13 @@ import type { NodeViewProps } from './CustomNodeView';
 import type { ResizeObserverEntry } from './ResizeObserver';
 import { ImageInlineEditor } from './ImageInlineEditor';
 import { FP_WIDTH } from '../Constants';
-
-const EMPTY_SRC =
-  'data:image/gif;base64,' +
-  'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-/* This value must be synced with the margin defined at .czi-image-view */
-const IMAGE_MARGIN = 2;
-
-const MAX_SIZE = 100000;
-const IMAGE_PLACEHOLDER_SIZE = 24;
+import {
+  EMPTY_MEDIA_SRC,
+  MEDIA_NODE_MAX_SIZE,
+  MEDIA_PLACEHOLDER_SIZE,
+  getMaxResizeWidth,
+  syncResizeObserver,
+} from './mediaNodeViewUtils';
 
 const DEFAULT_ORIGINAL_SIZE = {
   src: '',
@@ -50,28 +45,6 @@ type ImageState = {
   maxSize: MaxSize;
   originalSize: OriginalSize;
 };
-
-// Get the maxWidth that the image could be resized to.
-function getMaxResizeWidth(el): number {
-  // Ideally, the image should bot be wider then its containing element.
-  let node = el.parentElement;
-  while (node && !node.offsetParent) {
-    node = node.parentElement;
-  }
-  if ((node?.offsetParent?.offsetWidth || 0) > 0) {
-    const { offsetParent } = node;
-    const style = el.ownerDocument.defaultView.getComputedStyle(offsetParent);
-    let width = offsetParent.clientWidth - IMAGE_MARGIN * 2;
-    if (style.boxSizing === 'border-box') {
-      const pl = Number.parseInt(style.paddingLeft, 10);
-      const pr = Number.parseInt(style.paddingRight, 10);
-      width -= pl + pr;
-    }
-    return Math.max(width, MIN_SIZE);
-  }
-  // Let the image resize freely.
-  return MAX_SIZE;
-}
 
 async function resolveURL(
   runtime: EditorRuntime,
@@ -125,14 +98,14 @@ export class ImageViewBody extends React.PureComponent<
 > {
   declare props: NodeViewProps;
 
-  _body?: HTMLElement | React.ReactInstance;
+  _body?: HTMLElement | null;
   _id = uuid();
   _mounted = false;
 
   state = {
     maxSize: {
-      width: MAX_SIZE,
-      height: MAX_SIZE,
+      width: MEDIA_NODE_MAX_SIZE,
+      height: MEDIA_NODE_MAX_SIZE,
       complete: false,
     },
     originalSize: DEFAULT_ORIGINAL_SIZE,
@@ -208,7 +181,7 @@ export class ImageViewBody extends React.PureComponent<
     ) : null;
 
     const imageStyle: React.CSSProperties = {
-      backgroundImage: loading ? EMPTY_SRC : undefined,
+      backgroundImage: loading ? EMPTY_MEDIA_SRC : undefined,
       backgroundSize: 'cover',
       display: 'inline-block',
       height: height + 'px',
@@ -280,7 +253,6 @@ export class ImageViewBody extends React.PureComponent<
           <ImageInlineEditor
             editorView={editorView}
             getPos={this.props.getPos}
-            imageId={this._id}
             onSelect={this._onChange}
             value={attrs}
           />
@@ -336,8 +308,8 @@ export class ImageViewBody extends React.PureComponent<
     } else if (height && !width) {
       width = height * aspectRatio;
     } else if (!width && !height) {
-      width = originalSize.width || IMAGE_PLACEHOLDER_SIZE;
-      height = originalSize.height || IMAGE_PLACEHOLDER_SIZE;
+      width = originalSize.width || MEDIA_PLACEHOLDER_SIZE;
+      height = originalSize.height || MEDIA_PLACEHOLDER_SIZE;
     }
     return { width, height };
   }
@@ -353,7 +325,7 @@ export class ImageViewBody extends React.PureComponent<
       return; // already resolved
     }
     const url = await resolveURL(
-      this.props.editorView.runtime as EditorRuntime,
+      this.props.editorView.runtime,
       src,
       this.props.dom
     );
@@ -424,22 +396,8 @@ export class ImageViewBody extends React.PureComponent<
     editorView.dispatch(tr);
   };
 
-  _onBodyRef = (ref?: React.ReactInstance): void => {
-    if (ref) {
-      this._body = ref;
-      // Mounting
-      const el = ReactDOM.findDOMNode(ref);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.observe(el, this._onBodyResize);
-      }
-    } else {
-      // Unmounting.
-      const el = this._body && ReactDOM.findDOMNode(this._body);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.unobserve(el);
-      }
-      this._body = null;
-    }
+  _onBodyRef = (ref?: HTMLSpanElement | null): void => {
+    this._body = syncResizeObserver(this._body, ref, this._onBodyResize);
   };
 
   _onBodyResize = (_info: ResizeObserverEntry): void => {
@@ -448,13 +406,13 @@ export class ImageViewBody extends React.PureComponent<
       mActualWidth = _info.contentRect.width;
     }
     const width = this._body
-      ? getMaxResizeWidth(ReactDOM.findDOMNode(this._body))
-      : MAX_SIZE;
+      ? getMaxResizeWidth(this._body, MIN_SIZE)
+      : MEDIA_NODE_MAX_SIZE;
 
     this.setState({
       maxSize: {
         width: Math.max(mActualWidth, width),
-        height: MAX_SIZE,
+        height: MEDIA_NODE_MAX_SIZE,
         complete: !!this._body,
       },
     });

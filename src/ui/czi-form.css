@@ -65,14 +65,6 @@
   margin: 0 5px;
 }
 
-.licit-alert {
-  background-color: #f44336;
-  box-sizing: border-box;
-  color: white;
-  padding: 20px;
-  width: 340px;
-}
-
 .closebtn {
   color: #9a9090;
   cursor: pointer;

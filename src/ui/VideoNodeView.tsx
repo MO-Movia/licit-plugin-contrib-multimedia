@@ -3,7 +3,6 @@ import {Node} from 'prosemirror-model';
 import {Decoration} from 'prosemirror-view';
 import {NodeSelection} from 'prosemirror-state';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
@@ -16,23 +15,19 @@ import {
   createPopUp,
 } from '@modusoperandi/licit-ui-commands';
 import {v1 as uuid} from 'uuid';
-import ResizeObserver from './ResizeObserver';
 import {resolveVideo, VideoResult} from './resolveVideo';
 
 import type {ResizeObserverEntry} from './ResizeObserver';
 import {CustomNodeView} from './CustomNodeView';
 import type {NodeViewProps} from './CustomNodeView';
 import {VideoEditorState} from './VideoEditor';
-
-const EMPTY_SRC =
-  'data:image/gif;base64,' +
-  'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-/* This value must be synced with the margin defined at .czi-image-view */
-const IMAGE_MARGIN = 2;
-
-const MAX_SIZE = 100000;
-const IMAGE_PLACEHOLDER_SIZE = 24;
+import {
+  EMPTY_MEDIA_SRC,
+  MEDIA_NODE_MAX_SIZE,
+  MEDIA_PLACEHOLDER_SIZE,
+  getMaxResizeWidth,
+  syncResizeObserver,
+} from './mediaNodeViewUtils';
 
 const DEFAULT_ORIGINAL_SIZE = {
   src: '',
@@ -56,40 +51,18 @@ export type videoStyleType = {
   position?;
 };
 
-// Get the maxWidth that the image could be resized to.
-function getMaxResizeWidth(el): number {
-  // Ideally, the image should bot be wider then its containing element.
-  let node = el.parentElement;
-  while (node && !node.offsetParent) {
-    node = node.parentElement;
-  }
-  if (node?.offsetParent?.offsetWidth && node.offsetParent.offsetWidth > 0) {
-    const {offsetParent} = node;
-    const style = el.ownerDocument.defaultView.getComputedStyle(offsetParent);
-    let width = offsetParent.clientWidth - IMAGE_MARGIN * 2;
-    if (style.boxSizing === 'border-box') {
-      const pl = Number.parseInt(style.paddingLeft, 10);
-      const pr = Number.parseInt(style.paddingRight, 10);
-      width -= pl + pr;
-    }
-    return Math.max(width, MIN_SIZE);
-  }
-  // Let the image resize freely.
-  return MAX_SIZE;
-}
-
 export class VideoViewBody extends React.PureComponent {
   declare props: NodeViewProps;
 
-  _body?: React.ReactInstance;
+  _body?: HTMLElement | null;
   _id = uuid();
   _inlineEditor?: PopUpHandle;
   _mounted = false;
 
   state = {
     maxSize: {
-      width: MAX_SIZE,
-      height: MAX_SIZE,
+      width: MEDIA_NODE_MAX_SIZE,
+      height: MEDIA_NODE_MAX_SIZE,
       complete: false,
     },
     originalSize: DEFAULT_ORIGINAL_SIZE,
@@ -136,8 +109,8 @@ export class VideoViewBody extends React.PureComponent {
     let {width, height} = attrs;
 
     if (loading) {
-      width = width || IMAGE_PLACEHOLDER_SIZE;
-      height = height || IMAGE_PLACEHOLDER_SIZE;
+      width = width || MEDIA_PLACEHOLDER_SIZE;
+      height = height || MEDIA_PLACEHOLDER_SIZE;
     }
 
     if (width && !height) {
@@ -215,7 +188,7 @@ export class VideoViewBody extends React.PureComponent {
 
     // It's only active when the image's fully loaded.
     const active = !loading && focused && !readOnly && originalSize.complete;
-    const src = originalSize.complete ? originalSize.src : EMPTY_SRC;
+    const src = originalSize.complete ? originalSize.src : EMPTY_MEDIA_SRC;
     const error = !loading && !originalSize.complete;
 
     const className = cx('molm-czi-image-view-body', {
@@ -249,6 +222,7 @@ export class VideoViewBody extends React.PureComponent {
     const errorTitle = error
       ? `Unable to load image from ${attrs.src || ''}`
       : undefined;
+    const iframeTitle = attrs.title || `Embedded video ${this._id}`;
 
     return (
       <span
@@ -264,10 +238,11 @@ export class VideoViewBody extends React.PureComponent {
             <iframe
               className="molm-czi-image-view-body-img"
               data-align={align}
-              frameBorder={0}
               height={height}
               id={`${this._id}-img`}
               src={src}
+              style={{border: 0}}
+              title={iframeTitle}
               width={width}
             />
             {errorView}
@@ -280,7 +255,7 @@ export class VideoViewBody extends React.PureComponent {
 
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
-    if (!el || el.getAttribute('data-active') !== 'true') {
+    if (el?.dataset.active !== 'true') {
       this._inlineEditor?.close(undefined);
       return;
     }
@@ -389,33 +364,19 @@ export class VideoViewBody extends React.PureComponent {
     editorView.dispatch(tr);
   };
 
-  _onBodyRef = (ref?: React.ReactInstance): void => {
-    if (ref) {
-      this._body = ref;
-      // Mounting
-      const el = ReactDOM.findDOMNode(ref);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.observe(el, this._onBodyResize);
-      }
-    } else {
-      // Unmounting.
-      const el = this._body && ReactDOM.findDOMNode(this._body);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.unobserve(el);
-      }
-      this._body = null;
-    }
+  _onBodyRef = (ref?: HTMLSpanElement | null): void => {
+    this._body = syncResizeObserver(this._body, ref, this._onBodyResize);
   };
 
   _onBodyResize = (_info: ResizeObserverEntry): void => {
     const width = this._body
-      ? getMaxResizeWidth(ReactDOM.findDOMNode(this._body))
-      : MAX_SIZE;
+      ? getMaxResizeWidth(this._body, MIN_SIZE)
+      : MEDIA_NODE_MAX_SIZE;
 
     this.setState({
       maxSize: {
         width,
-        height: MAX_SIZE,
+        height: MEDIA_NODE_MAX_SIZE,
         complete: !!this._body,
       },
     });

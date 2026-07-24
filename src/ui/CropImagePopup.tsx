@@ -10,12 +10,19 @@ export type CropDataPropValue = {
   croppedBase64:string;
 };
 
-export function CropImagePopup({ src, onConfirm, onCancel, defaultUnit = 'px' }: {
+type CropImagePopupProps = Readonly<{
   src: string;
   onConfirm: (cropData: CropDataPropValue) => void;
   onCancel: () => void;
   defaultUnit?: 'px' | '%';
-}) {
+}>;
+
+export function CropImagePopup({
+  src,
+  onConfirm,
+  onCancel,
+  defaultUnit = 'px',
+}: CropImagePopupProps) {
   const imgRef = useRef(null);
   const [crop, setCrop] = useState<Crop>({
     unit: defaultUnit,
