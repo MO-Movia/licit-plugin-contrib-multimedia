@@ -23,13 +23,13 @@ export class VideoEditor extends React.PureComponent<
   VideoEditorState
 > {
   state: VideoEditorState = {
-    ...(this.props.initialValue || {}),
+    ...(this.props.initialValue),
     validValue: null,
     src: 'https://www.youtube.com/embed/',
   };
 
   render(): React.ReactNode {
-    const {src, width, height} = this.state;
+    const { src, width, height } = this.state;
 
     return (
       <div className="molm-czi-image-url-editor">
@@ -125,12 +125,12 @@ export class VideoEditor extends React.PureComponent<
     height: number,
     validValue: boolean
   ) => {
-    (this as VideoEditor).setState({src, width, height, validValue});
+    (this as VideoEditor).setState({ src, width, height, validValue });
   };
 
   _getYouTubeId = (url: string) => {
     const arr = url.split(/(vi\/|v%3D|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-    return undefined !== arr[2] ? arr[2].split(/[^\w-]/i)[0] : arr[0];
+    return arr[2] === undefined ? arr[0] : arr[2].split(/[^\w-]/i)[0];
   };
 
   _onWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {

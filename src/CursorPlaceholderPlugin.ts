@@ -46,9 +46,6 @@ const SPEC = {
 export class CursorPlaceholderPlugin extends Plugin {
   constructor() {
     super(SPEC);
-    if (!singletonInstance) {
-      singletonInstance = this as CursorPlaceholderPlugin;
-    }
   }
 }
 
@@ -69,18 +66,18 @@ function findCursorPlaceholderPos(state: EditorState): number | null {
   return pos || null;
 }
 
-export function isPlugin(plugin,tr):boolean {
+export function isPlugin(plugin, tr): boolean {
   if (!plugin || !tr.selection) {
     return true;
-}
-else{
-  return false;
-}
+  }
+  else {
+    return false;
+  }
 }
 export function showCursorPlaceholder(state: EditorState): Transform {
   const plugin = singletonInstance;
   let { tr } = state;
-  if (isPlugin(plugin,tr)) {
+  if (isPlugin(plugin, tr)) {
     return tr;
   }
 

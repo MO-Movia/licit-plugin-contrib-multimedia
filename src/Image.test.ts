@@ -90,34 +90,83 @@ describe('MultimediaPlugin', () => {
     ImgSrcCmd.__isEnabled(newstate, view);
     ImgSrcCmd.__isEnabled(newstate1, view);
     ImgSrcCmd.isEnabled(state, view);
+    expect(ImgSrcCmd).toBeDefined();
   });
 
   it('ImageNodespec ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
     img.setAttribute('align', 'left');
-    getAttrs(img);
+    expect(getAttrs(img)).toEqual({
+      'align': 'left',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
+    });
   });
 
-  it('ImageNodespec ', () => {
+  it('ImageNodespec-left ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
     img.style.cssFloat = 'left';
-    getAttrs(img);
+    expect(getAttrs(img)).toEqual({
+      'align': 'left',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
+    });
   });
 
-  it('ImageNodespec ', () => {
+  it('ImageNodespec-right ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
     img.style.cssFloat = 'right';
-    getAttrs(img);
+    expect(getAttrs(img)).toEqual({
+      'align': 'right',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
+    });
   });
 
-  it('ImageNodespec ', () => {
+  it('ImageNodespec-block ', () => {
     const img = document.createElement('img');
     img.src = '1200x800';
     img.style.display = 'block';
-    getAttrs(img);
+    expect(getAttrs(img)).toEqual({
+      'align': 'block',
+      'alt': null,
+      'capco': null,
+      'crop': null,
+      'cropData': null,
+      'fitToParent': 0,
+      'height': NaN,
+      'rotate': null,
+      'src': '1200x800',
+      'title': null,
+      'width': NaN,
+    });
   });
 
   it('ImageNodeView ', () => {
@@ -219,8 +268,8 @@ it('should resolve Image - Img Instance', async () => {
       return element;
     };
   })(document.createElement);
+  await expect(resolveImage(res.src)).resolves.toBeDefined();
 
-  await resolveImage(res.src);
 });
 
 describe('ImageEditor ', () => {
@@ -296,7 +345,7 @@ describe('ImageEditor ', () => {
     expect(uploadImageFiles(view, [filex], { x: 1, y: 2 })).toBeDefined();
   });
 
-  it('should upload image files readonly and disabled true and runtime.canuploadimage true', () => {
+  it('should upload image files readonly and disabled true', () => {
     const state: EditorState = EditorState.create({
       schema: schema,
       selection: editor.selection,
@@ -329,7 +378,7 @@ describe('resolveImage ', () => {
       width: 200,
     };
 
-    await resolveImage(res.src);
+    await expect(resolveImage(res.src)).resolves.toBeDefined();
   });
 });
 

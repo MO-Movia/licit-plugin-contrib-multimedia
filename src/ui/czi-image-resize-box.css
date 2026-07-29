@@ -55,7 +55,11 @@
 }
 
 .molm-czi-image-resize-box-control {
+  appearance: none;
+  background: transparent;
+  border: 0;
   height: 20px;
+  padding: 0;
   position: absolute;
   width: 20px;
   z-index: 2;
@@ -118,6 +122,7 @@
   border: solid 1px #fff;
   box-sizing: border-box;
   content: "";
+  cursor: inherit;
   height: 10px;
   left: 5px;
   position: absolute;
@@ -128,6 +133,7 @@
 .molm-czi-image-resize-box-control::before {
   inset: -10px;
   content: "";
+  cursor: inherit;
   position: absolute;
 }
 
